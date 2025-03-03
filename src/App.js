@@ -16,7 +16,7 @@ function Sidebar({ changeBackgroundColor }) {
         <li><FaBars /> Settings</li>
         <li><FaBars /> Logout</li>
       </ul>
-      <button className="color-btn" onClick={changeBackgroundColor}>Change Background</button>
+      <button className="sidebar-btn" onClick={changeBackgroundColor}>Change Background</button>
     </div>
   );
 }
@@ -44,59 +44,91 @@ function TodoItem({ todo, index, column, openEditModal }) {
 }
 
 // Todo Column Component
-function TodoColumn({ title, todos, columnName, allColumns, setAllColumns, openEditModal }) {
+// Todo Column Component
+function TodoColumn({ title, columnName, allColumns, setAllColumns, openEditModal, setSelectedTodo, changeColumnTitle }) {
   const [, drop] = useDrop({
     accept: ItemType,
     drop: (item) => {
       if (item.column !== columnName) {
-        const updatedPrevColumn = allColumns[item.column].filter((_, i) => i !== item.index);
-        const updatedNewColumn = [...todos, item.todo];
+        const updatedPrevColumn = Array.isArray(allColumns[item.column].tasks) ? allColumns[item.column].tasks.filter((_, i) => i !== item.index) : [];
+        const updatedNewColumn = Array.isArray(allColumns[columnName].tasks) ? [...allColumns[columnName].tasks, item.todo] : [item.todo];
 
         setAllColumns({
           ...allColumns,
-          [item.column]: updatedPrevColumn,
-          [columnName]: updatedNewColumn,
+          [item.column]: { ...allColumns[item.column], tasks: updatedPrevColumn },
+          [columnName]: { ...allColumns[columnName], tasks: updatedNewColumn },
         });
       }
     },
   });
 
+  // Function to handle adding a new todo
+  const openNewTodoModal = (column) => {
+    setSelectedTodo({ text: '', color: '#ffffff', column, isNew: true });
+  };
+
   return (
     <div ref={drop} className="todo-column">
-      <h2>{title}</h2>
+      <h2 onClick={() => changeColumnTitle(columnName)} style={{ color: allColumns[columnName].titleColor }}>{title}</h2>
       <div className="todo-list">
-        {todos.map((todo, index) => (
+        {/* Map through tasks (now it's accessed correctly from allColumns[columnName].tasks) */}
+        {allColumns[columnName].tasks.map((todo, index) => (
           <TodoItem key={index} index={index} todo={todo} column={columnName} openEditModal={openEditModal} />
         ))}
       </div>
+      {/* Transparent "+" Button to Add New Todo */}
+      <button className="add-todo-btn" onClick={() => openNewTodoModal(columnName)}>
+        <span>+</span>
+      </button>
     </div>
   );
 }
 
-// Edit Modal Component
-function EditModal({ selectedTodo, setSelectedTodo, saveChanges, deleteTodo }) {
+
+// Edit Modal Component for Todo or Column Title
+function EditModal({ selectedTodo, setSelectedTodo, saveChanges, deleteTodo, changeColumnTitle }) {
   if (!selectedTodo) return null;
+
+  const isNewTodo = selectedTodo.isNew;
 
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <h2>Edit To-Do</h2>
-        <input 
-          type="text" 
-          value={selectedTodo.text} 
-          onChange={(e) => setSelectedTodo({ ...selectedTodo, text: e.target.value })}
-        />
-        <input 
-          type="color" 
-          value={selectedTodo.color} 
-          onChange={(e) => setSelectedTodo({ ...selectedTodo, color: e.target.value })}
-        />
-        <div className="modal-buttons">
-          <button onClick={saveChanges}>Save</button>
-          <button className="delete-btn" onClick={() => deleteTodo(selectedTodo)}>
-            <FaTrash /> Delete
-          </button>
-        </div>
+        <h2>{isNewTodo ? 'Add New To-Do' : 'Edit To-Do'}</h2>
+        {isNewTodo ? (
+          <>
+            <input 
+              type="text" 
+              value={selectedTodo.text} 
+              onChange={(e) => setSelectedTodo({ ...selectedTodo, text: e.target.value })}
+              placeholder="Enter Todo text"
+            />
+            <input 
+              type="color" 
+              value={selectedTodo.color} 
+              onChange={(e) => setSelectedTodo({ ...selectedTodo, color: e.target.value })}
+            />
+          </>
+        ) : (
+          <>
+            <input 
+              type="text" 
+              value={selectedTodo.text} 
+              onChange={(e) => setSelectedTodo({ ...selectedTodo, text: e.target.value })}
+            />
+            <input 
+              type="color" 
+              value={selectedTodo.color} 
+              onChange={(e) => setSelectedTodo({ ...selectedTodo, color: e.target.value })}
+            />
+            <div className="modal-buttons">
+              <button onClick={saveChanges}>Save</button>
+              <button className="delete-btn" onClick={() => deleteTodo(selectedTodo)}>
+                <FaTrash /> Delete
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -106,29 +138,61 @@ function EditModal({ selectedTodo, setSelectedTodo, saveChanges, deleteTodo }) {
 function App() {
   const [backgroundColor, setBackgroundColor] = useState('#ffffff'); // Default background color
   const [allColumns, setAllColumns] = useState({
-    todo: [{ text: 'Learn React', color: '#ffffff' }, { text: 'Write Docs', color: '#ffffff' }],
-    working: [{ text: 'Fix Bug', color: '#ffffff' }],
-    done: [],
+    todo: { title: 'To-Do', titleColor: '#000000', tasks: [{ text: 'Learn React', color: '#ffffff' }, { text: 'Write Docs', color: '#ffffff' }] },
+    working: { title: 'Working', titleColor: '#000000', tasks: [{ text: 'Fix Bug', color: '#ffffff' }] },
+    done: { title: 'Done', titleColor: '#000000', tasks: [] },
   });
 
   const [selectedTodo, setSelectedTodo] = useState(null);
 
   const openEditModal = (index, column) => {
-    setSelectedTodo({ ...allColumns[column][index], index, column });
+    setSelectedTodo({ ...allColumns[column].tasks[index], index, column });
   };
 
   const saveChanges = () => {
-    const { column, index } = selectedTodo;
-    const updatedColumn = [...allColumns[column]];
-    updatedColumn[index] = selectedTodo;
-    setAllColumns({ ...allColumns, [column]: updatedColumn });
+    const { column, index, isNew } = selectedTodo;
+
+    if (isNew) {
+      if (!selectedTodo.text.trim()) {
+        alert("Todo text cannot be empty!");
+        return;
+      }
+      setAllColumns({
+        ...allColumns,
+        [column]: {
+          ...allColumns[column],
+          tasks: [...allColumns[column].tasks, { text: selectedTodo.text, color: selectedTodo.color }],
+        },
+      });
+    } else {
+      const updatedColumn = [...allColumns[column].tasks];
+      updatedColumn[index] = selectedTodo;
+      setAllColumns({ ...allColumns, [column]: { ...allColumns[column], tasks: updatedColumn } });
+    }
     setSelectedTodo(null);
   };
 
   const deleteTodo = (todoToDelete) => {
     const { column, index } = todoToDelete;
-    const updatedColumn = allColumns[column].filter((_, i) => i !== index);
-    setAllColumns({ ...allColumns, [column]: updatedColumn });
+    const updatedColumn = allColumns[column].tasks.filter((_, i) => i !== index);
+    setAllColumns({ ...allColumns, [column]: { ...allColumns[column], tasks: updatedColumn } });
+    setSelectedTodo(null);
+  };
+
+  const changeColumnTitle = (column) => {
+    setSelectedTodo({ text: allColumns[column].title, color: allColumns[column].titleColor, column, isNew: false, isTitleChange: true });
+  };
+
+  const updateColumnTitle = () => {
+    const { column } = selectedTodo;
+    setAllColumns({
+      ...allColumns,
+      [column]: {
+        ...allColumns[column],
+        title: selectedTodo.text,
+        titleColor: selectedTodo.color,
+      },
+    });
     setSelectedTodo(null);
   };
 
@@ -145,12 +209,22 @@ function App() {
         <div className="main-content">
           <h1>My To-Do App</h1>
           <div className="columns">
-            <TodoColumn title="To-Do" todos={allColumns.todo} columnName="todo" allColumns={allColumns} setAllColumns={setAllColumns} openEditModal={openEditModal} />
-            <TodoColumn title="Working" todos={allColumns.working} columnName="working" allColumns={allColumns} setAllColumns={setAllColumns} openEditModal={openEditModal} />
-            <TodoColumn title="Done" todos={allColumns.done} columnName="done" allColumns={allColumns} setAllColumns={setAllColumns} openEditModal={openEditModal} />
+            {['todo', 'working', 'done'].map((column) => (
+              <TodoColumn 
+                key={column} 
+                title={allColumns[column].title} 
+                todos={allColumns[column].tasks} 
+                columnName={column} 
+                allColumns={allColumns} 
+                setAllColumns={setAllColumns} 
+                openEditModal={openEditModal} 
+                setSelectedTodo={setSelectedTodo} 
+                changeColumnTitle={changeColumnTitle} 
+              />
+            ))}
           </div>
         </div>
-        <EditModal selectedTodo={selectedTodo} setSelectedTodo={setSelectedTodo} saveChanges={saveChanges} deleteTodo={deleteTodo} />
+        <EditModal selectedTodo={selectedTodo} setSelectedTodo={setSelectedTodo} saveChanges={saveChanges} deleteTodo={deleteTodo} changeColumnTitle={updateColumnTitle} />
       </div>
     </DndProvider>
   );
