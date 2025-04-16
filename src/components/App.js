@@ -11,6 +11,8 @@ import TodoColumn from './TodoColumn';
 import { AddColumnModal, EditModal } from './Modals';
 import Login from '../login/Login';
 import Register from '../login/Register';
+import PrivateRoute from './PrivateRoute';
+import LandingPage from './LandingPage';
 import './styles/App.css';
 import './styles/Calendar.css';
 import './styles/Columns.css';
@@ -148,6 +150,10 @@ function App() {
             <Routes>
                 <Route
                     path="/"
+                    element={<LandingPage />} // Set the root path to render the LandingPage
+                />
+                <Route
+                    path="/home"
                     element={
                         <DndProvider backend={HTML5Backend}>
                             <div className="app">
