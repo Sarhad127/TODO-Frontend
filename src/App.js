@@ -1,27 +1,18 @@
 import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { FaTrash, FaBars } from 'react-icons/fa';
+import { FaTrash, FaPlus } from 'react-icons/fa';
+import 'react-calendar/dist/Calendar.css';
+import CalendarPage from './Calender';
+import Sidebar from './Sidebar';
+import { ColumnSettingsDropdown } from './Sidebar';
+import BackgroundSettingsModal from './BackgroundSettingsModal';
 import './App.css';
 
 const ItemType = 'TODO';
+const ColumnType = 'COLUMN';
 
-// Sidebar Component
-function Sidebar({ changeBackgroundColor }) {
-  return (
-    <div className="sidebar">
-      <h2>Menu</h2>
-      <ul>
-        <li><FaBars /> Dashboard</li>
-        <li><FaBars /> Settings</li>
-        <li><FaBars /> Logout</li>
-      </ul>
-      <button className="sidebar-btn" onClick={changeBackgroundColor}>Change Background</button>
-    </div>
-  );
-}
-
-// Todo Item Component
 function TodoItem({ todo, index, column, openEditModal }) {
   const [{ isDragging }, drag] = useDrag({
     type: ItemType,
@@ -43,40 +34,74 @@ function TodoItem({ todo, index, column, openEditModal }) {
   );
 }
 
-// Todo Column Component
-// Todo Column Component
-function TodoColumn({ title, columnName, allColumns, setAllColumns, openEditModal, setSelectedTodo, changeColumnTitle }) {
-  const [, drop] = useDrop({
+function TodoColumn({
+  title,
+  columnName,
+  allColumns,
+  setAllColumns,
+  openEditModal,
+  setSelectedTodo,
+  changeColumnTitle,
+  removeColumn,
+  index,
+  moveColumn
+}) {
+  const [, dropTodo] = useDrop({
     accept: ItemType,
     drop: (item) => {
       if (item.column !== columnName) {
-        const updatedPrevColumn = Array.isArray(allColumns[item.column].tasks) ? allColumns[item.column].tasks.filter((_, i) => i !== item.index) : [];
-        const updatedNewColumn = Array.isArray(allColumns[columnName].tasks) ? [...allColumns[columnName].tasks, item.todo] : [item.todo];
-
-        setAllColumns({
-          ...allColumns,
-          [item.column]: { ...allColumns[item.column], tasks: updatedPrevColumn },
-          [columnName]: { ...allColumns[columnName], tasks: updatedNewColumn },
-        });
+        moveTodo(item.index, item.column, columnName);
       }
     },
   });
 
-  // Function to handle adding a new todo
+  const [, dropColumn] = useDrop({
+    accept: ColumnType,
+    hover: (item) => {
+      if (item.index !== index) {
+        moveColumn(item.index, index);
+        item.index = index;
+      }
+    },
+  });
+
+  const moveTodo = (fromIndex, fromColumn, toColumn) => {
+    const updatedColumns = { ...allColumns };
+    const [movedTodo] = updatedColumns[fromColumn].tasks.splice(fromIndex, 1);
+    updatedColumns[toColumn].tasks.push(movedTodo);
+    setAllColumns(updatedColumns);
+  };
+
+  const [{ isDragging }, drag] = useDrag({
+    type: ColumnType,
+    item: { index, columnName },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  });
+
   const openNewTodoModal = (column) => {
     setSelectedTodo({ text: '', color: '#ffffff', column, isNew: true });
   };
 
   return (
-    <div ref={drop} className="todo-column">
-      <h2 onClick={() => changeColumnTitle(columnName)} style={{ color: allColumns[columnName].titleColor }}>{title}</h2>
+    <div 
+      ref={(node) => drag(dropColumn(dropTodo(node)))} 
+      className="todo-column"
+      style={{ opacity: isDragging ? 0.5 : 1 }}
+    >
+      <div className="column-header">
+        <h2 onClick={() => changeColumnTitle(columnName)} style={{ color: allColumns[columnName].titleColor }}>
+          {title}
+        </h2>
+        <ColumnSettingsDropdown columnName={columnName} removeColumn={removeColumn} />
+      </div>
+
       <div className="todo-list">
-        {/* Map through tasks (now it's accessed correctly from allColumns[columnName].tasks) */}
         {allColumns[columnName].tasks.map((todo, index) => (
           <TodoItem key={index} index={index} todo={todo} column={columnName} openEditModal={openEditModal} />
         ))}
       </div>
-      {/* Transparent "+" Button to Add New Todo */}
       <button className="add-todo-btn" onClick={() => openNewTodoModal(columnName)}>
         <span>+</span>
       </button>
@@ -84,18 +109,56 @@ function TodoColumn({ title, columnName, allColumns, setAllColumns, openEditModa
   );
 }
 
+function AddColumnModal({ setNewColumnTitle, saveNewColumn, cancelAddColumn }) {
+  return (
+    <div className="modal-overlay">
+      <div className="modal">
+        <h2>Add New Column</h2>
+        <input
+          type="text"
+          onChange={(e) => setNewColumnTitle(e.target.value)}
+          placeholder="Enter new column title"
+        />
+        <div className="modal-buttons">
+          <button onClick={saveNewColumn}>Add Column</button>
+          <button className="cancel-btn" onClick={cancelAddColumn}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-// Edit Modal Component for Todo or Column Title
-function EditModal({ selectedTodo, setSelectedTodo, saveChanges, deleteTodo, changeColumnTitle }) {
+function EditModal({ selectedTodo, setSelectedTodo, saveChanges, deleteTodo, changeColumnTitle, cancelAddTodo }) {
   if (!selectedTodo) return null;
 
   const isNewTodo = selectedTodo.isNew;
+  const isTitleChange = selectedTodo.isTitleChange;
 
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <h2>{isNewTodo ? 'Add New To-Do' : 'Edit To-Do'}</h2>
-        {isNewTodo ? (
+        <h2>{isNewTodo ? 'Add New To-Do' : isTitleChange ? 'Change Column Title' : 'Edit To-Do'}</h2>
+        {isTitleChange ? (
+          <>
+            <input 
+              type="text" 
+              value={selectedTodo.text} 
+              onChange={(e) => setSelectedTodo({ ...selectedTodo, text: e.target.value })}
+              placeholder="Enter new column title"
+            />
+            <input 
+              type="color" 
+              value={selectedTodo.color} 
+              onChange={(e) => setSelectedTodo({ ...selectedTodo, color: e.target.value })}
+            />
+            <div className="modal-buttons">
+              <button onClick={saveChanges}>Save</button>
+              <button className="cancel-btn" onClick={cancelAddTodo}>Cancel</button>
+            </div>
+          </>
+        ) : isNewTodo ? (
           <>
             <input 
               type="text" 
@@ -108,6 +171,10 @@ function EditModal({ selectedTodo, setSelectedTodo, saveChanges, deleteTodo, cha
               value={selectedTodo.color} 
               onChange={(e) => setSelectedTodo({ ...selectedTodo, color: e.target.value })}
             />
+            <div className="modal-buttons">
+              <button onClick={saveChanges}>Add</button>
+              <button className="cancel-btn" onClick={cancelAddTodo}>Cancel</button>
+            </div>
           </>
         ) : (
           <>
@@ -134,25 +201,42 @@ function EditModal({ selectedTodo, setSelectedTodo, saveChanges, deleteTodo, cha
   );
 }
 
-// Main App Component
 function App() {
-  const [backgroundColor, setBackgroundColor] = useState('#ffffff'); // Default background color
+  const [backgroundColor, setBackgroundColor] = useState('#ffffff');
+  const [backgroundImage, setBackgroundImage] = useState(null);
+  const [showBackgroundModal, setShowBackgroundModal] = useState(false);
   const [allColumns, setAllColumns] = useState({
     todo: { title: 'To-Do', titleColor: '#000000', tasks: [{ text: 'Learn React', color: '#ffffff' }, { text: 'Write Docs', color: '#ffffff' }] },
     working: { title: 'Working', titleColor: '#000000', tasks: [{ text: 'Fix Bug', color: '#ffffff' }] },
     done: { title: 'Done', titleColor: '#000000', tasks: [] },
   });
-
   const [selectedTodo, setSelectedTodo] = useState(null);
+  const [showAddColumnModal, setShowAddColumnModal] = useState(false);
+  const [newColumnTitle, setNewColumnTitle] = useState('');
+
+  const removeColumn = (columnName) => {
+    const updatedColumns = { ...allColumns };
+    delete updatedColumns[columnName];
+    setAllColumns(updatedColumns);
+  };
 
   const openEditModal = (index, column) => {
     setSelectedTodo({ ...allColumns[column].tasks[index], index, column });
   };
 
   const saveChanges = () => {
-    const { column, index, isNew } = selectedTodo;
-
-    if (isNew) {
+    const { column, index, isNew, isTitleChange } = selectedTodo;
+  
+    if (isTitleChange) {
+      setAllColumns({
+        ...allColumns,
+        [column]: {
+          ...allColumns[column],
+          title: selectedTodo.text,
+          titleColor: selectedTodo.color,
+        },
+      });
+    } else if (isNew) {
       if (!selectedTodo.text.trim()) {
         alert("Todo text cannot be empty!");
         return;
@@ -179,54 +263,143 @@ function App() {
     setSelectedTodo(null);
   };
 
-  const changeColumnTitle = (column) => {
-    setSelectedTodo({ text: allColumns[column].title, color: allColumns[column].titleColor, column, isNew: false, isTitleChange: true });
-  };
-
-  const updateColumnTitle = () => {
-    const { column } = selectedTodo;
-    setAllColumns({
-      ...allColumns,
-      [column]: {
-        ...allColumns[column],
-        title: selectedTodo.text,
-        titleColor: selectedTodo.color,
-      },
-    });
+  const cancelAddTodo = () => {
     setSelectedTodo(null);
   };
 
-  const changeBackgroundColor = () => {
-    const colors = ['#ffffff', '#f0f0f0', '#cce7ff', '#ffcccb', '#e6ffcc'];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    setBackgroundColor(randomColor);
+  const changeColumnTitle = (column) => {
+    setSelectedTodo({
+      text: allColumns[column].title,
+      color: allColumns[column].titleColor,
+      column,
+      isNew: false,
+      isTitleChange: true,
+    });
+  };
+
+  const addNewColumn = () => {
+    if (newColumnTitle.trim()) {
+      const newColumnKey = `column${Object.keys(allColumns).length + 1}`;
+      setAllColumns({
+        ...allColumns,
+        [newColumnKey]: {
+          title: newColumnTitle,
+          titleColor: '#000000',
+          tasks: [],
+        },
+      });
+      setNewColumnTitle('');
+      setShowAddColumnModal(false);
+    } else {
+      alert('Column title cannot be empty!');
+    }
+  };
+
+  const moveColumn = (fromIndex, toIndex) => {
+    const columnsArray = Object.keys(allColumns);
+    const columnKeys = [...columnsArray];
+    const movedColumn = columnKeys.splice(fromIndex, 1);
+    columnKeys.splice(toIndex, 0, ...movedColumn);
+    
+    const reorderedColumns = {};
+    columnKeys.forEach((key) => {
+      reorderedColumns[key] = allColumns[key];
+    });
+
+    setAllColumns(reorderedColumns);
+  };
+
+  const changeBackgroundColor = (color) => {
+    setBackgroundColor(color);
+    setBackgroundImage(null);
+  };
+
+  const changeBackgroundImage = (imageUrl) => {
+    setBackgroundImage(imageUrl);
+    setBackgroundColor('transparent');
+  };
+
+  const mainContentStyle = {
+    backgroundColor: backgroundImage ? 'transparent' : backgroundColor,
+    backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
   };
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="app" style={{ backgroundColor }}>
-        <Sidebar changeBackgroundColor={changeBackgroundColor} />
-        <div className="main-content">
-          <h1>My To-Do App</h1>
-          <div className="columns">
-            {['todo', 'working', 'done'].map((column) => (
-              <TodoColumn 
-                key={column} 
-                title={allColumns[column].title} 
-                todos={allColumns[column].tasks} 
-                columnName={column} 
-                allColumns={allColumns} 
-                setAllColumns={setAllColumns} 
-                openEditModal={openEditModal} 
-                setSelectedTodo={setSelectedTodo} 
-                changeColumnTitle={changeColumnTitle} 
-              />
-            ))}
-          </div>
-        </div>
-        <EditModal selectedTodo={selectedTodo} setSelectedTodo={setSelectedTodo} saveChanges={saveChanges} deleteTodo={deleteTodo} changeColumnTitle={updateColumnTitle} />
-      </div>
-    </DndProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <DndProvider backend={HTML5Backend}>
+              <div className="app">
+                <Sidebar changeBackgroundColor={() => setShowBackgroundModal(true)} />
+                <div className="main-content" style={mainContentStyle}>
+                  <h1>Pluto</h1>
+                  <div className="columns">
+                    {Object.keys(allColumns).map((column, index) => (
+                      <TodoColumn
+                        key={column}
+                        title={allColumns[column].title}
+                        columnName={column}
+                        allColumns={allColumns}
+                        setAllColumns={setAllColumns}
+                        openEditModal={openEditModal}
+                        setSelectedTodo={setSelectedTodo}
+                        changeColumnTitle={changeColumnTitle}
+                        removeColumn={removeColumn}
+                        index={index}
+                        moveColumn={moveColumn}
+                      />
+                    ))}
+                    <div 
+                      className="todo-column transparent" 
+                      onClick={() => setShowAddColumnModal(true)}
+                    >
+                      <FaPlus size={40} />
+                    </div>
+                  </div>
+                </div>
+                {showAddColumnModal && (
+                  <AddColumnModal 
+                    setNewColumnTitle={setNewColumnTitle} 
+                    saveNewColumn={addNewColumn} 
+                    cancelAddColumn={() => setShowAddColumnModal(false)} 
+                  />
+                )}
+                {showBackgroundModal && (
+                  <BackgroundSettingsModal 
+                    onClose={() => setShowBackgroundModal(false)} 
+                    onColorChange={changeBackgroundColor} 
+                    onImageUpload={changeBackgroundImage} 
+                  />
+                )}
+                <EditModal 
+                  selectedTodo={selectedTodo} 
+                  setSelectedTodo={setSelectedTodo} 
+                  saveChanges={saveChanges} 
+                  deleteTodo={deleteTodo} 
+                  changeColumnTitle={changeColumnTitle} 
+                  cancelAddTodo={cancelAddTodo} 
+                />
+              </div>
+            </DndProvider>
+          }
+        />
+        <Route 
+          path="/calendar" 
+          element={
+            <div className="app">
+              <Sidebar changeBackgroundColor={() => setShowBackgroundModal(true)} />
+              <div className="main-content" style={mainContentStyle}>
+                <CalendarPage />
+              </div>
+            </div>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

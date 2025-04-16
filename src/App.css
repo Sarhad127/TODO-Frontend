@@ -5,86 +5,128 @@
   font-family: Arial, sans-serif;
   transition: background-color 0.3s ease;
 }
-
-/* Sidebar */
-.sidebar {
-  width: 200px;
-  background: #333;
-  color: white;
-  padding: 20px;
-  height: 100%;
+/* Sidebar Header for Pluto Text and Icon */
+.sidebar-header {
+  display: flex;
+  align-items: center; /* Vertically center the text and icon */
+  margin-bottom: 20px; /* Space below the header */
+  margin-top: 20px; /* Space above the header */
 }
 
+/* Style for the Pluto text */
+.pluto-text {
+  font-family:'Times New Roman', Times, serif;
+  font-size: 1.2em; /* Make the text smaller */
+  color: white;
+  margin-right: 10px; /* Space between text and icon */
+  line-height: 1; /* Ensure the text is properly aligned with the icon */
+  font-weight: bold; /* Optional: Make the text bold for emphasis */
+}
+
+/* Style for the Pluto icon */
+.pluto-icon {
+  width: 30px; /* Adjust the size of the icon */
+  height: 30px; /* Match the height to the width for a circle */
+  border-radius: 50%; /* Make the icon circular */
+  object-fit: cover; /* Ensure the image fits inside the circle */
+}
+/* Sidebar Styles */
+.sidebar {
+  width: 220px; /* Reduced sidebar width */
+  padding: 20px;
+  background-color: #2f2f2f;
+  color: white;
+}
+.sidebar-btn {
+  font-family:cursive;
+}
+.sidebar-line {
+  border: none;               /* Remove default border */
+  border-top: 1px solid #ccc; /* Thin gray line */
+  margin: 10px 0;             /* Add space above and below the line */
+  width: 100%;                /* Make it the same width as the sidebar */
+  height: 1px;                /* Set the line's height to 1px for a thin line */
+}
 .sidebar h2 {
-  font-size: 20px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .sidebar ul {
-  list-style: none;
+  list-style-type: none;
   padding: 0;
 }
 
 .sidebar ul li {
-  margin: 10px 0;
-  cursor: pointer;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-family:'Times New Roman', Times, serif;
   display: flex;
   align-items: center;
-  gap: 8px;
+  cursor: pointer;
 }
 
 .sidebar ul li:hover {
-  color: #ccc;
+  background-color: #444444;
+  border-radius: 4px;
 }
 
-/* Sidebar Button */
-.sidebar-btn {
-  background-color: transparent;
-  color: white;
+.sidebar ul li button,
+.sidebar ul li a { /* Add styles for <a> tags (used by Link) */
+  background: none;
   border: none;
+  color: white;
   font-size: 16px;
-  cursor: pointer;
-  padding: 10px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  width: 100%;
-  margin-top: 20px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+  padding: 10px;
+  cursor: pointer;
+  text-decoration: none; /* Remove underline from links */
 }
 
-.sidebar-btn:hover {
-  background-color: #444;
+.sidebar ul li button:hover,
+.sidebar ul li a:hover { /* Add hover styles for <a> tags */
+  background-color: #444444;
+  border-radius: 4px;
 }
+
+.sidebar ul li button svg,
+.sidebar ul li a svg { /* Add styles for icons inside <a> tags */
+  margin-right: 10px; /* Space between the icon and text */
+}
+
 
 /* Main Content */
 .main-content {
   flex: 1;
   padding: 20px;
   overflow-x: auto;
+  transition: background-color 0.3s, background-image 0.3s; /* Smooth transition for background changes */
 }
 
 /* Column Styles */
 .columns {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  align-items: flex-start; /* Align columns to the top */
+  gap: 10px;
 }
 
 .todo-column {
-  flex: 1;
+  flex: 0 0 16%; /* Adjust the width to be smaller (e.g., 18% of available space) */
   padding: 10px;
   border: 1px solid #ccc;
-  min-height: 300px;
-  background-color: #f9f9f9;
+  min-height: auto;
+  background-color: #dadada;
   border-radius: 8px;
-  position: relative; /* Make this column a positioning context */
+  position: relative;
+  box-sizing: border-box; /* Ensure padding does not affect column width */
+  overflow-y: auto; /* Allows vertical scrolling when content exceeds column height */
 }
 
 /* Column Title */
 .todo-column h2 {
-  font-size: 18px;
+  font-size: 16px; /* Smaller font size for the title */
   font-weight: 500;
   margin-bottom: 10px;
   cursor: pointer;
@@ -97,12 +139,17 @@
 
 /* To-Do Item */
 .todo-item {
-  padding: 10px;
+  padding: 8px;
   margin: 5px;
-  background-color: #fff;
+  background-color: #777777;
+  font-size:smaller;
+  font-style: oblique;
   border-radius: 5px;
   cursor: pointer;
   transition: transform 0.2s;
+  word-wrap: break-word; /* Ensure text wraps within the item */
+  white-space: normal; /* Allow long text to wrap to the next line */
+  word-break: break-word; /* Ensures words break when too long */
 }
 
 .todo-item:hover {
@@ -120,6 +167,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000; /* Ensure modal is on top */
 }
 
 .modal {
@@ -127,6 +175,12 @@
   padding: 20px;
   border-radius: 8px;
   text-align: center;
+  width: 400px;
+  max-width: 90%;
+}
+
+.modal h2 {
+  margin-bottom: 20px;
 }
 
 .modal-buttons {
@@ -153,27 +207,244 @@
 
 /* Add Todo Button */
 .add-todo-btn {
+  width: 100%; /* Same width as todo items */
+  padding: 8px;
+  margin: 5px 0;
   background-color: transparent;
-  border: 2px solid #3498db;
-  color: #3498db;
-  font-size: 16px; /* Adjust font size for smaller button */
+  border: 2px dashed #999999; /* Dashed border */
+  color: #999999;
+  font-size: 16px;
+  border-radius: 5px; /* Same rounded edges as todo items */
   cursor: pointer;
-  padding: 8px 16px; /* Reduce padding to make the button smaller */
-  width: auto; /* Set width to auto to fit the button to its content */
-  margin-top: 20px;
-  border-radius: 5px;
-  transition: all 0.3s;
-  position: absolute; /* Position it relative to the .todo-column */
-  bottom: 10px; /* Place it at the bottom */
-  right: 10px; /* Align it to the right */
+  transition: all 0.3s ease-in-out;
+  text-align: center;
 }
 
 .add-todo-btn:hover {
-  background-color: #3498db;
-  color: white;
+  background-color: rgba(52, 152, 219, 0.1); /* Light blue hover effect */
+  border-color: #313131;
 }
+
 
 .add-todo-btn span {
   display: block;
   text-align: center;
+}
+
+/* Cancel Button */
+.cancel-btn {
+  background-color: #f44336; /* Red */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.cancel-btn:hover {
+  background-color: #e53935; /* Darker red on hover */
+}
+
+.todo-column.transparent {
+  background-color: transparent;
+  border: 2px dashed #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  cursor: pointer;
+}
+
+.todo-column.transparent:hover {
+  border-color: #aaa;
+}
+
+.column-settings {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.dropdown-menu button {
+  background-color: #f8f8f8;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.dropdown-menu button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Background Settings Modal Styles */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  border: none;
+  background: #f0f0f0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.tabs button.active {
+  background: #007bff;
+  color: white;
+}
+
+.color-picker input[type="color"] {
+  width: 100%;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+}
+
+.image-upload input[type="file"] {
+  margin-bottom: 20px;
+}
+
+.image-preview img {
+  max-width: 100%;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.modal-buttons button {
+  padding: 10px 20px;
+  border: none;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.modal-buttons button.cancel-btn {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.modal-buttons button:hover {
+  background: #0056b3;
+}
+
+.modal-buttons button.cancel-btn:hover {
+  background: #ddd;
+}
+/* App.css */
+.calendar-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: 100vh;
+  background-color: transparent; /* Set background to transparent */
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333; /* Optional: Ensure the header text is readable */
+}
+
+.calendar-container {
+  width: 70%; /* Make the calendar take up 70% of the page width */
+  max-width: 800px; /* Optional: Max width for the calendar */
+  margin-left: 10px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.notes-container {
+  width: 25%; /* Make the notes section take up the remaining space */
+  max-width: 400px; /* Optional: Set a max width for the notes section */
+  margin-left: 20px;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.notes-container h2 {
+  margin-top: 0;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+}
+
+.note-line {
+  width: 100%;
+  height: 30px;
+  margin-bottom: 8px;
+  padding: 5px;
+  font-size: 1.1em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  line-height: 1.5em;
+  resize: none;
+}
+
+.note-line:focus {
+  border-color: #4c90d4;
+  outline: none;
+}
+
+.react-calendar {
+  width: 100% !important;
+  font-size: 1.2em;
+  max-width: 100% !important;
+}
+
+.day-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px; /* Increase height for a better input area */
+  width: 100%;
+  text-align: center;
+  padding: 5px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background-color: #f1f1f1;
+}
+
+input[type="text"] {
+  width: 120px;
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+  margin-top: 5px;
+}
+
+input[type="text"]:focus {
+  border-color: #4c90d4;
+  outline: none;
 }
