@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './styles/login.css';
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -15,6 +18,7 @@ const Register = () => {
 
         if (response.ok) {
             alert('Registration successful!');
+            navigate('/login');
         } else {
             alert('Registration failed');
         }
