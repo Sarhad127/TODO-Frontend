@@ -9,6 +9,8 @@ import Sidebar from '../Sidebar';
 import BackgroundSettingsModal from '../BackgroundSettingsModal';
 import TodoColumn from './TodoColumn';
 import { AddColumnModal, EditModal } from './Modals';
+import Login from '../login/Login';
+import Register from '../login/Register';
 import './styles/App.css';
 import './styles/Calendar.css';
 import './styles/Columns.css';
@@ -201,6 +203,14 @@ function App() {
                             </div>
                         </DndProvider>
                     }
+                />
+                <Route
+                    path="/login"
+                    element={<Login />} // Ensure this renders the Login component
+                />
+                <Route
+                    path="/register"
+                    element={<Register />} // Ensure this renders the Login component
                 />
                 <Route
                     path="/calendar"

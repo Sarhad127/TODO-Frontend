@@ -62,6 +62,11 @@ function Sidebar({ changeBackgroundColor }) {
             <FaBars /> Change Background
           </button>
         </li>
+        <li>
+          <Link to="/login" className="sidebar-btn">
+            <FaBars /> Login
+          </Link>
+        </li>
       </ul>
     </div>
   );
