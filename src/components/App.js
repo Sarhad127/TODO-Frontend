@@ -9,7 +9,12 @@ import Sidebar from '../Sidebar';
 import BackgroundSettingsModal from '../BackgroundSettingsModal';
 import TodoColumn from './TodoColumn';
 import { AddColumnModal, EditModal } from './Modals';
-import '../App.css';
+import './styles/App.css';
+import './styles/Calendar.css';
+import './styles/Columns.css';
+import './styles/Modals.css';
+import './styles/TodoItem.css';
+import './styles/Sidebar.css';
 
 function App() {
     const [backgroundColor, setBackgroundColor] = useState('#ffffff');

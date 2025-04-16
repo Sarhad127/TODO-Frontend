@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Import calendar styles
-import './App.css'; // Import your main CSS file for consistent styling
+import './components/styles/App.css'; // Import your main CSS file for consistent styling
 
 function CalendarPage() {
   const [date, setDate] = useState(new Date());
