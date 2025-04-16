@@ -150,7 +150,7 @@ function App() {
             <Routes>
                 <Route
                     path="/"
-                    element={<LandingPage />} // Set the root path to render the LandingPage
+                    element={<LandingPage />}
                 />
                 <Route
                     path="/home"
