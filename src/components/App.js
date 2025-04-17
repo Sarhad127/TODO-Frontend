@@ -11,14 +11,15 @@ import TodoColumn from './TodoColumn';
 import { AddColumnModal, EditModal } from './Modals';
 import Login from '../login/Login';
 import Register from '../login/Register';
-import PrivateRoute from './PrivateRoute';
-import LandingPage from './LandingPage';
+import NotesPage from './NotesPage';
+
 import './styles/App.css';
 import './styles/Calendar.css';
 import './styles/Columns.css';
 import './styles/Modals.css';
 import './styles/TodoItem.css';
 import './styles/Sidebar.css';
+
 
 function App() {
     const [backgroundColor, setBackgroundColor] = useState('#ffffff');
@@ -32,6 +33,7 @@ function App() {
     const [selectedTodo, setSelectedTodo] = useState(null);
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
+    const [showNotes, setShowNotes] = useState(false);
 
     const removeColumn = (columnName) => {
         const updatedColumns = { ...allColumns };
@@ -149,8 +151,8 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route
-                    path="/"
-                    element={<LandingPage />}
+                    path="/notes"
+                    element={<NotesPage />}
                 />
                 <Route
                     path="/home"
@@ -212,11 +214,11 @@ function App() {
                 />
                 <Route
                     path="/login"
-                    element={<Login />} // Ensure this renders the Login component
+                    element={<Login />}
                 />
                 <Route
                     path="/register"
-                    element={<Register />} // Ensure this renders the Login component
+                    element={<Register />}
                 />
                 <Route
                     path="/calendar"

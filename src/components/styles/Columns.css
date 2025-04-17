@@ -1,25 +1,24 @@
-/* Column Styles */
+
 .columns {
     display: flex;
-    align-items: flex-start; /* Align columns to the top */
+    align-items: flex-start;
     gap: 10px;
 }
 
 .todo-column {
-    flex: 0 0 16%; /* Adjust the width to be smaller (e.g., 18% of available space) */
+    flex: 0 0 16%;
     padding: 10px;
     border: 1px solid #ccc;
     min-height: auto;
     background-color: #dadada;
     border-radius: 8px;
     position: relative;
-    box-sizing: border-box; /* Ensure padding does not affect column width */
-    overflow-y: auto; /* Allows vertical scrolling when content exceeds column height */
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 
-/* Column Title */
 .todo-column h2 {
-    font-size: 16px; /* Smaller font size for the title */
+    font-size: 16px;
     font-weight: 500;
     margin-bottom: 10px;
     cursor: pointer;

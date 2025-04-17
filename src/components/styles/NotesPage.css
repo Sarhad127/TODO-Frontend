@@ -1,0 +1,58 @@
+
+.notes-page {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+}
+
+.note-column {
+    flex: 1;
+    padding: 20px;
+}
+
+.note-column h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.note-input input,
+.note-input textarea {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.note-input button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.note-input button:hover {
+    background-color: #0056b3;
+}
+
+.notes-container {
+    margin-top: 20px;
+}
+
+.note {
+    background-color: #ffffff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.note h3 {
+    margin: 0 0 10px 0;
+}
+
+.note p {
+    margin: 0;
+}
+
+.transparent {
+    background: transparent;
+}

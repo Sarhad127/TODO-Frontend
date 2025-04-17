@@ -1,21 +1,22 @@
-/* Sidebar Styles */
 .sidebar {
-    width: 220px; /* Reduced sidebar width */
+    width: 290px;
     padding: 20px;
     background-color: #2f2f2f;
     color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 }
 
 .sidebar-btn {
-    font-family: cursive;
+    font-family: "Calibri Light", "Arial", sans-serif;
 }
 
-.sidebar-line {
-    border: none;               /* Remove default border */
-    border-top: 1px solid #ccc; /* Thin gray line */
-    margin: 10px 0;             /* Add space above and below the line */
-    width: 100%;                /* Make it the same width as the sidebar */
-    height: 1px;                /* Set the line's height to 1px for a thin line */
+.tasks-title h2 {
+    background-color: #2f2f2f;
+    color: white;
+    font-size: 11px;
 }
 
 .sidebar h2 {
@@ -42,7 +43,7 @@
 }
 
 .sidebar ul li button,
-.sidebar ul li a { /* Add styles for <a> tags (used by Link) */
+.sidebar ul li a {
     background: none;
     border: none;
     color: white;
@@ -53,42 +54,121 @@
     justify-content: flex-start;
     padding: 10px;
     cursor: pointer;
-    text-decoration: none; /* Remove underline from links */
+    text-decoration: none;
 }
 
 .sidebar ul li button:hover,
-.sidebar ul li a:hover { /* Add hover styles for <a> tags */
+.sidebar ul li a:hover {
     background-color: #444444;
     border-radius: 4px;
 }
 
 .sidebar ul li button svg,
-.sidebar ul li a svg { /* Add styles for icons inside <a> tags */
-    margin-right: 10px; /* Space between the icon and text */
+.sidebar ul li a svg {
+    margin-right: 10px;
 }
 
-/* Sidebar Header for Pluto Text and Icon */
 .sidebar-header {
     display: flex;
-    align-items: center; /* Vertically center the text and icon */
-    margin-bottom: 20px; /* Space below the header */
-    margin-top: 20px; /* Space above the header */
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
-/* Style for the Pluto text */
-.pluto-text {
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 1.2em; /* Make the text smaller */
-    color: white;
-    margin-right: 10px; /* Space between text and icon */
-    line-height: 1; /* Ensure the text is properly aligned with the icon */
-    font-weight: bold; /* Optional: Make the text bold for emphasis */
-}
-
-/* Style for the Pluto icon */
 .pluto-icon {
-    width: 30px; /* Adjust the size of the icon */
-    height: 30px; /* Match the height to the width for a circle */
-    border-radius: 50%; /* Make the icon circular */
-    object-fit: cover; /* Ensure the image fits inside the circle */
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1.6em;
+    color: white;
+    margin-right: 10px;
+    line-height: 1;
+    font-weight: bold;
+}
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.search-bar {
+    flex: 1;
+    padding: 8px;
+    padding-left: 30px;
+    border: 1px solid #bbb;
+    background-color: transparent;
+    color: white;
+    font-size: 16px;
+    border-radius: 4px;
+    outline: none;
+}
+
+.search-icon {
+    position: absolute;
+    left: 3px;
+    top: 15px;
+    color: #aaa;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 1;
+    padding: 0 10px;
+}
+
+.search-container {
+    position: relative;
+    width: 100%;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.sidebar-btn-bottom {
+    margin-top: auto;
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.sidebar-btn-bottom ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-btn-bottom li {
+    list-style-type: none;
+    margin: 0;
+}
+
+.sidebar-btn-settings,
+.sidebar-btn-logout {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-family: "Calibri Light", "Arial", sans-serif;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.sidebar-btn-settings:hover,
+.sidebar-btn-logout:hover {
+    background-color: #444444;
+    border-radius: 4px;
+}
+
+.sidebar-btn-settings svg,
+.sidebar-btn-logout svg {
+    margin-right: 10px;
 }

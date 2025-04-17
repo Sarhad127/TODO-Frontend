@@ -1,4 +1,4 @@
-/* To-Do Item */
+
 .todo-item {
     padding: 8px;
     margin: 5px;
@@ -8,32 +8,31 @@
     border-radius: 5px;
     cursor: pointer;
     transition: transform 0.2s;
-    word-wrap: break-word; /* Ensure text wraps within the item */
-    white-space: normal; /* Allow long text to wrap to the next line */
-    word-break: break-word; /* Ensures words break when too long */
+    word-wrap: break-word;
+    white-space: normal;
+    word-break: break-word;
 }
 
 .todo-item:hover {
     transform: scale(1.05);
 }
 
-/* Add Todo Button */
 .add-todo-btn {
-    width: 100%; /* Same width as todo items */
+    width: 100%;
     padding: 8px;
     margin: 5px 0;
     background-color: transparent;
-    border: 2px dashed #999999; /* Dashed border */
+    border: 2px dashed #999999;
     color: #999999;
     font-size: 16px;
-    border-radius: 5px; /* Same rounded edges as todo items */
+    border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
     text-align: center;
 }
 
 .add-todo-btn:hover {
-    background-color: rgba(52, 152, 219, 0.1); /* Light blue hover effect */
+    background-color: rgba(52, 152, 219, 0.1);
     border-color: #313131;
 }
 

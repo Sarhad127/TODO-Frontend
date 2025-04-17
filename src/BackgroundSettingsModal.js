@@ -1,8 +1,8 @@
-// src/BackgroundSettingsModal.js
+
 import React from 'react';
 
 function BackgroundSettingsModal({ onClose, onColorChange, onImageUpload }) {
-  const [selectedTab, setSelectedTab] = React.useState('color'); // 'color' or 'image'
+  const [selectedTab, setSelectedTab] = React.useState('color');
   const [selectedColor, setSelectedColor] = React.useState('#ffffff');
   const [uploadedImage, setUploadedImage] = React.useState(null);
 

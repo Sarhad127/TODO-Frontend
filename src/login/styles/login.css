@@ -1,6 +1,4 @@
-/* login/styles/login.css */
 
-/* General container style */
 form {
     display: flex;
     flex-direction: column;
@@ -15,7 +13,6 @@ form {
     background-color: #f9f9f9;
 }
 
-/* Header styling */
 h2 {
     margin-bottom: 20px;
     font-size: 24px;
@@ -23,7 +20,6 @@ h2 {
     color: #333;
 }
 
-/* Input field styling */
 input {
     width: 100%;
     padding: 10px;
