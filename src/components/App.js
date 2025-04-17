@@ -12,6 +12,8 @@ import { AddColumnModal, EditModal } from './Modals';
 import Login from '../login/Login';
 import Register from '../login/Register';
 import NotesPage from './NotesPage';
+import PrivateRoute from './PrivateRoute';
+import UserAvatar from './UserAvatar';
 
 import './styles/App.css';
 import './styles/Calendar.css';
@@ -152,16 +154,22 @@ function App() {
             <Routes>
                 <Route
                     path="/notes"
-                    element={<NotesPage />}
+                    element={
+                        <PrivateRoute>
+                            <NotesPage />
+                        </PrivateRoute>
+                    }
                 />
                 <Route
                     path="/home"
                     element={
+                        <PrivateRoute>
                         <DndProvider backend={HTML5Backend}>
                             <div className="app">
                                 <Sidebar changeBackgroundColor={() => setShowBackgroundModal(true)} />
                                 <div className="main-content" style={mainContentStyle}>
                                     <h1>Pluto</h1>
+                                    <UserAvatar />
                                     <div className="columns">
                                         {Object.keys(allColumns).map((column, index) => (
                                             <TodoColumn
@@ -210,6 +218,7 @@ function App() {
                                 />
                             </div>
                         </DndProvider>
+                        </PrivateRoute>
                     }
                 />
                 <Route
@@ -223,12 +232,14 @@ function App() {
                 <Route
                     path="/calendar"
                     element={
-                        <div className="app">
-                            <Sidebar changeBackgroundColor={() => setShowBackgroundModal(true)} />
-                            <div className="main-content" style={mainContentStyle}>
-                                <CalendarPage />
+                        <PrivateRoute>
+                            <div className="app">
+                                <Sidebar changeBackgroundColor={() => setShowBackgroundModal(true)} />
+                                <div className="main-content" style={mainContentStyle}>
+                                    <CalendarPage />
+                                </div>
                             </div>
-                        </div>
+                        </PrivateRoute>
                     }
                 />
             </Routes>
