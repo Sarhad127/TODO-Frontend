@@ -168,7 +168,6 @@ function App() {
                             <div className="app">
                                 <Sidebar changeBackgroundColor={() => setShowBackgroundModal(true)} />
                                 <div className="main-content" style={mainContentStyle}>
-                                    <h1>Pluto</h1>
                                     <UserAvatar />
                                     <div className="columns">
                                         {Object.keys(allColumns).map((column, index) => (

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './components/styles/App.css';
+import UserAvatar from "./components/UserAvatar";
 
 function CalendarPage() {
   const [date, setDate] = useState(new Date());
@@ -39,7 +40,7 @@ function CalendarPage() {
 
   return (
     <div className="calendar-page">
-      <h1>Calendar</h1>
+      <UserAvatar />
       <div style={{ display: 'flex', width: '100%' }}>
         <div className="calendar-container">
           <Calendar

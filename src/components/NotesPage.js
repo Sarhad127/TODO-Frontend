@@ -1,40 +1,74 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaPlus } from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../Sidebar';
 import './styles/NotesPage.css';
+import UserAvatar from "./UserAvatar";
+import colorIcon from '../icons/color-icon.png';
+import trashIcon from '../icons/trash-icon.png';
 
 const NotesPage = () => {
-    const [backgroundColor, setBackgroundColor] = useState('#ffffff');
-    const [backgroundImage, setBackgroundImage] = useState(null);
-    const [notes, setNotes] = useState([
-        { title: 'Sample Note', text: 'This is a sample note.', color: '#ffffff' },
-    ]);
-    const [showAddColumnModal, setShowAddColumnModal] = useState(false);
-    const [noteTitle, setNoteTitle] = useState('');
-    const [noteText, setNoteText] = useState('');
-    const [noteColor, setNoteColor] = useState('#ffffff');
+    const [backgroundColor] = useState('#ffffff');
+    const [backgroundImage] = useState(null);
+    const [notes, setNotes] = useState([]);
+    const [openDropdown, setOpenDropdown] = useState(null);
+    const textareaRefs = useRef([]);
+    const dropdownRefs = useRef([]);
 
-    const changeBackgroundColor = (color) => {
-        setBackgroundColor(color);
-        setBackgroundImage(null);
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRefs.current.some(ref =>
+                ref && ref.contains(event.target)
+            )) return;
+            setOpenDropdown(null);
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    useEffect(() => {
+        const savedNotes = localStorage.getItem('notes');
+        if (savedNotes) setNotes(JSON.parse(savedNotes));
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('notes', JSON.stringify(notes));
+    }, [notes]);
+
+    useEffect(() => {
+        textareaRefs.current.forEach((textarea) => {
+            if (textarea) {
+                textarea.style.height = "auto";
+                textarea.style.height = `${textarea.scrollHeight}px`;
+            }
+        });
+    }, [notes]);
+
+    const addNewNote = () => {
+        setNotes([...notes, {
+            title: 'New Note',
+            text: '',
+            color: '#ffffff'
+        }]);
     };
 
-    const changeBackgroundImage = (imageUrl) => {
-        setBackgroundImage(imageUrl);
-        setBackgroundColor('transparent');
+    const deleteNote = (index) => {
+        const updatedNotes = [...notes];
+        updatedNotes.splice(index, 1);
+        setNotes(updatedNotes);
+        setOpenDropdown(null);
     };
 
-    const addNote = () => {
-        if (!noteTitle || !noteText) {
-            alert('Please provide both a title and text for the note!');
-            return;
-        }
-        const newNote = { title: noteTitle, text: noteText, color: noteColor };
-        setNotes([...notes, newNote]);
-        setNoteTitle('');
-        setNoteText('');
-        setNoteColor('#ffffff');
+    const changeNoteColor = (index, color) => {
+        const updatedNotes = [...notes];
+        updatedNotes[index].color = color;
+        setNotes(updatedNotes);
+        setOpenDropdown(null);
+    };
+
+    const toggleDropdown = (index) => {
+        setOpenDropdown(openDropdown === index ? null : index);
     };
 
     const mainContentStyle = {
@@ -46,53 +80,79 @@ const NotesPage = () => {
 
     return (
         <div className="app">
-            <Sidebar changeBackgroundColor={() => setShowAddColumnModal(true)} />
-            <div className="main-content" style={mainContentStyle}>
-                <h1>Pluto - Notes</h1>
-                <div className="columns">
-                    {/* Display Notes in Columns */}
-                    <div className="note-column">
-                        <h2>Notes</h2>
-                        <div className="note-input">
-                            <input
-                                type="text"
-                                placeholder="Note Title"
-                                value={noteTitle}
-                                onChange={(e) => setNoteTitle(e.target.value)}
-                            />
-                            <textarea
-                                placeholder="Note Text"
-                                value={noteText}
-                                onChange={(e) => setNoteText(e.target.value)}
-                            />
-                            <input
-                                type="color"
-                                value={noteColor}
-                                onChange={(e) => setNoteColor(e.target.value)}
-                            />
-                            <button onClick={addNote}>Add Note</button>
-                        </div>
-                        <div className="notes-container">
-                            {notes.map((note, index) => (
-                                <div
-                                    key={index}
-                                    className="note"
-                                    style={{ backgroundColor: note.color }}
-                                >
-                                    <h3>{note.title}</h3>
-                                    <p>{note.text}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+            <Sidebar changeBackgroundColor={() => true} />
+            <UserAvatar />
+            <div>
+                <h1 className="notes-title">Notes</h1>
+                <div className="notes-grid">
+                {notes.map((note, index) => (
                     <div
-                        className="note-column transparent"
-                        onClick={() => setShowAddColumnModal(true)}
+                        key={index}
+                        className="note"
+                        style={{ backgroundColor: note.color }}
                     >
-                        <FaPlus size={40} />
+                        <div className="note-header">
+                            <input
+                                className="title-input"
+                                value={note.title}
+                                onChange={(e) => {
+                                    const updatedNotes = [...notes];
+                                    updatedNotes[index].title = e.target.value;
+                                    setNotes(updatedNotes);
+                                }}
+                                placeholder="Note title"
+                            />
+                            <div className="note-actions" ref={el => dropdownRefs.current[index] = el}>
+                                <button
+                                    className="dropdown-toggle"
+                                    onClick={() => toggleDropdown(index)}
+                                >
+                                    ⋮
+                                </button>
+                                {openDropdown === index && (
+                                    <div className="dropdown-menu">
+                                        <div className="color-picker-option">
+                                            <label className="color-text-label">
+                                                <img src={colorIcon} alt="Color Icon" className="color-icon" />
+                                                Color
+                                                <input
+                                                    type="color"
+                                                    value={note.color}
+                                                    onChange={(e) => changeNoteColor(index, e.target.value)}
+                                                    className="hidden-color-input"
+                                                />
+                                            </label>
+
+                                        </div>
+                                        <label className="delete-option" onClick={() => deleteNote(index)}>
+                                            <img src={trashIcon} alt="Delete Note" className="delete-icon" />
+                                            Delete Note
+                                        </label>
+
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <textarea
+                            ref={(el) => (textareaRefs.current[index] = el)}
+                            value={note.text}
+                            onChange={(e) => {
+                                const updatedNotes = [...notes];
+                                updatedNotes[index].text = e.target.value;
+                                setNotes(updatedNotes);
+                                e.target.style.height = "auto";
+                                e.target.style.height = `${e.target.scrollHeight}px`;
+                            }}
+                            placeholder="Start typing your note..."
+                        />
                     </div>
-                </div>
+                ))}
+
+                <button className="add-note-btn" onClick={addNewNote}>
+                    +
+                </button>
             </div>
+         </div>
         </div>
     );
 };

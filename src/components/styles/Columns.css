@@ -6,7 +6,8 @@
 }
 
 .todo-column {
-    flex: 0 0 16%;
+    flex: 0 0 260px;
+    min-width: 200px;
     padding: 10px;
     border: 1px solid #ccc;
     min-height: auto;
