@@ -38,7 +38,6 @@ const Register = () => {
         }
     };
 
-
     return (
         <div className={styles.formContainer}>
             <h2 className={styles.registerTitle}>Sign up</h2>

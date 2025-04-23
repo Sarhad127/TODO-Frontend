@@ -10,11 +10,10 @@ const VerifyEmail = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Extract email from URL parameters
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const emailFromUrl = queryParams.get('email');
-        console.log('Extracted email from URL:', emailFromUrl);  // Log email
+        console.log('Extracted email from URL:', emailFromUrl);
         if (emailFromUrl) {
             setEmail(emailFromUrl);
         }
@@ -24,23 +23,18 @@ const VerifyEmail = () => {
         e.preventDefault();
         setIsLoading(true);
         setError('');
-        console.error(`Encoded email: ${encodeURIComponent(email)}`);  // Log the email
-        const verificationData = { email, verificationCode };
-        console.log('Email to verify:', email);
 
         try {
-            // Changed to use query parameters as your backend expects
             const response = await fetch(`http://localhost:8080/auth/verify?email=${encodeURIComponent(email)}&verificationCode=${encodeURIComponent(verificationCode)}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             });
 
-            const responseData = await response.text(); // First get the raw response
+            const responseData = await response.text();
 
             if (response.ok) {
-                navigate('/auth/login'); // Changed to common login route
+                navigate('/auth/login');
             } else {
-                // Try to parse as JSON if possible, otherwise use the raw text
                 try {
                     const errorData = JSON.parse(responseData);
                     setError(errorData.message || 'Verification failed. Please try again.');
