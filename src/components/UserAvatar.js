@@ -1,32 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles/Avatar.css';
 import { jwtDecode } from 'jwt-decode';
 
 const UserAvatar = () => {
-    const token = localStorage.getItem('token');
-    let userEmail = '';
+    const [username, setUsername] = useState('Unknown');
 
-    if (token) {
-        try {
-            const decodedToken = jwtDecode(token);
-            userEmail = decodedToken.email || 'Unknown';
-        } catch (error) {
-            console.error("Invalid token:", error);
-            userEmail = 'Unknown';
-        }
-    } else {
-        userEmail = 'Unknown';
-    }
+    useEffect(() => {
+        const updateAvatar = () => {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (token) {
+                try {
+                    const decodedToken = jwtDecode(token);
+                    const name = decodedToken.sub || 'Unknown';
+                    setUsername(name);
+                } catch (error) {
+                    console.error('Failed to decode token:', error);
+                    setUsername('Unknown');
+                }
+            } else {
+                setUsername('Unknown');
+            }
+        };
 
-    const getInitials = (email) => {
-        if (!email) return 'U';
-        const nameParts = email.split('@')[0].split('.');
-        return nameParts.map((part) => part.charAt(0).toUpperCase()).join('');
+        updateAvatar();
+
+        const handleStorage = (event) => {
+            if (event.key === 'token') {
+                updateAvatar();
+            }
+        };
+        window.addEventListener('storage', handleStorage);
+        return () => window.removeEventListener('storage', handleStorage);
+    }, []);
+
+    const getInitials = (name) => {
+        if (!name || name === 'Unknown') return 'U';
+        const parts = name.split(/[.\-_]/);
+        return parts.map(part => part[0]?.toUpperCase()).join('').slice(0, 2);
     };
 
     return (
         <div className="avatar-container">
-            <div className="avatar">{getInitials(userEmail)}</div>
+            <div className="avatar">{getInitials(username)}</div>
         </div>
     );
 };
