@@ -10,6 +10,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -31,7 +32,14 @@ const Login = () => {
 
             if (response.ok) {
                 const token = responseData.token || responseData;
-                localStorage.setItem('token', token);
+
+                if (rememberMe) {
+                    localStorage.setItem('token', token);
+                } else {
+                    sessionStorage.setItem('token', token);
+                    console.log('Token stored in sessionStorage:', sessionStorage.getItem('token'));
+                }
+
                 navigate('/home');
             } else {
                 if (responseData.error === "UNVERIFIED_USER") {
@@ -92,6 +100,16 @@ const Login = () => {
                             onChange={() => setShowPassword(!showPassword)}
                         />
                         Show Password
+                    </label>
+                </div>
+                <div className={styles.showPasswordToggle}>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={rememberMe}
+                            onChange={() => setRememberMe(!rememberMe)}
+                        />
+                        Remember Me
                     </label>
                 </div>
                 <button
