@@ -1,36 +1,100 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './styles/login.css';
+import styles from './styles/Register.module.css';
 
 const Register = () => {
     const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        const response = await fetch('http://localhost:8080/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-        });
+        if (password !== confirmPassword) {
+            setError('Passwords do not match.');
+            return;
+        }
 
-        if (response.ok) {
-            alert('Registration successful!');
-            navigate('/login');
-        } else {
-            alert('Registration failed');
+        const registerData = { email, username, password };
+
+        try {
+            const response = await fetch('http://localhost:8080/auth/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(registerData),
+            });
+
+            if (response.ok) {
+                navigate(`/auth/verify-email?email=${encodeURIComponent(email)}`);
+            } else {
+                const errorData = await response.text();
+                setError(errorData || 'Registration failed. Please try again.');
+            }
+        } catch (err) {
+            setError('An error occurred. Please try again later.');
         }
     };
 
+
     return (
-        <form onSubmit={handleRegister}>
-            <h2>Register</h2>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
-            <button type="submit">Register</button>
-        </form>
+        <div className={styles.formContainer}>
+            <h2 className={styles.registerTitle}>Sign up</h2>
+            <h3 className={styles.smallText}>Create a free account!</h3>
+            <p className={styles.emailConfirmationText}>We'll send you a verification code to confirm your email</p>
+
+            <form onSubmit={handleRegister}>
+                <label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Email"
+                        required
+                    />
+                </label>
+                <label>
+                    <input
+                        type="mycustom"
+                        name="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Username"
+                        required
+                    />
+                </label>
+                <label>
+                    <input
+                        type="password"
+                        name="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Password"
+                        required
+                    />
+                </label>
+                <label>
+                    <input
+                        type="password"
+                        name="confirmPassword"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Confirm Password"
+                        required
+                    />
+                </label>
+
+
+                <button type="submit" className={styles.signupButton}>Sign up</button>
+                {error && <div className={styles.errorMessage}>{error}</div>}
+            </form>
+            <div className={styles.link}>
+                <span>Already have an account? <a href="/auth/login">Login</a></span>
+            </div>
+        </div>
     );
 };
 

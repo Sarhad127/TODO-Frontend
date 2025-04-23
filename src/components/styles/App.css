@@ -22,5 +22,6 @@ html, body {
     padding: 70px 20px 20px;
     overflow-x: auto;
     transition: background-color 0.3s, background-image 0.3s;
-    background-color: #2e003e;
+    background-color: transparent !important;
+    background-image: none !important;
 }

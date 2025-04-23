@@ -11,16 +11,17 @@ import TodoColumn from './TodoColumn';
 import { AddColumnModal, EditModal } from './Modals';
 import Login from '../login/Login';
 import Register from '../login/Register';
+import VerifyEmail from '../login/VerifyEmail';
 import NotesPage from './NotesPage';
 import PrivateRoute from './PrivateRoute';
 import UserAvatar from './UserAvatar';
-
 import './styles/App.css';
 import './styles/Calendar.css';
 import './styles/Columns.css';
 import './styles/Modals.css';
 import './styles/TodoItem.css';
 import './styles/Sidebar.css';
+import OAuth2RedirectHandler from "./OAuth2RedirectHandler";
 
 
 function App() {
@@ -221,13 +222,16 @@ function App() {
                     }
                 />
                 <Route
-                    path="/login"
+                    path="/auth/login"
                     element={<Login />}
                 />
                 <Route
-                    path="/register"
+                    path="/auth/register"
                     element={<Register />}
                 />
+                <Route path="/auth/verify-email" element={<VerifyEmail />} />
+                // Add this to your routes
+                <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
                 <Route
                     path="/calendar"
                     element={

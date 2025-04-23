@@ -4,6 +4,15 @@
     background-image: url('../../Images/background.jpg');
     background-size: cover;
 }
+.main-content {
+    flex: 1;
+    padding: 70px 20px 20px;
+    overflow-x: auto;
+    transition: background-color 0.3s, background-image 0.3s;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
 .calendar-page {
     padding: 20px;
     font-family: Arial, sans-serif;
@@ -14,6 +23,15 @@
     background-color: transparent;
 }
 
+.react-calendar__navigation__prev2-button,
+.react-calendar__navigation__prev-button,
+.react-calendar__navigation__label,
+.react-calendar__navigation__next-button,
+.react-calendar__navigation__next2-button
+{
+    color: black;
+}
+
 h1 {
     margin-top: 0;
     margin-bottom: 20px;
@@ -22,7 +40,7 @@ h1 {
 
 .calendar-container {
     width: 70%;
-    max-width: 800px;
+    max-width: 1200px;
     margin-left: 10px;
     display: flex;
     justify-content: flex-start;
@@ -83,6 +101,23 @@ h1 {
     box-sizing: border-box;
     border-radius: 4px;
     background-color: #f1f1f1;
+    overflow: hidden;
+}
+
+.note-preview {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-word;
+    width: 100%;
+    height: 100%;
+    line-height: 1.2rem;
+    padding: 2px 4px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
 }
 
 input[type="text"] {

@@ -1,10 +1,22 @@
-
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
+// Function to decode JWT token
+const decodeToken = (token) => {
+    try {
+        return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+        return null;
+    }
+};
+
 const PrivateRoute = ({ children }) => {
     const token = localStorage.getItem('token');
-    return token ? children : <Navigate to="/login" />;
+    const decodedToken = token ? decodeToken(token) : null;
+
+    const isAuthenticated = token && decodedToken && decodedToken.exp > Date.now() / 1000;
+
+    return isAuthenticated ? children : <Navigate to="/auth/login" />;
 };
 
 export default PrivateRoute;

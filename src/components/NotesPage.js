@@ -5,6 +5,7 @@ import UserAvatar from "./UserAvatar";
 import colorIcon from '../icons/color-icon.png';
 import trashIcon from '../icons/trash-icon.png';
 import dateIcon from '../icons/date-icon.png';
+import './styles/App.css'
 
 const NotesPage = () => {
     const [notes, setNotes] = useState([]);
