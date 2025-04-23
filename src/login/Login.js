@@ -4,6 +4,7 @@ import styles from './styles/Login.module.css';
 import plutoIcon from '../icons/pluto-icon.png';
 import googleIcon from '../icons/google-icon.png';
 import githubIcon from '../icons/github-icon.png';
+
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -33,7 +34,12 @@ const Login = () => {
                 localStorage.setItem('token', token);
                 navigate('/home');
             } else {
-                setErrorMessage(responseData?.message || responseData?.error || 'Login failed.');
+                if (responseData.error === "UNVERIFIED_USER") {
+                    navigate(`/auth/verify-email?email=${encodeURIComponent(email)}`);
+                }
+                else {
+                    setErrorMessage(responseData?.message || responseData?.error || 'Login failed.');
+                }
             }
         } catch (error) {
             setErrorMessage('Network error. Please try again later.');
