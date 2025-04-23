@@ -1,4 +1,3 @@
-// src/components/OAuth2RedirectHandler.js
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,36 +5,28 @@ const OAuth2RedirectHandler = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log('OAuth2RedirectHandler mounted');
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-        const error = urlParams.get('error');
-
-        console.log('URL params:', { token, error });
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
 
         if (token) {
-            console.log('OAuth2 login successful, token received');
+
             localStorage.setItem('token', token);
-
-            // Clear URL parameters
-            window.history.replaceState({}, document.title, window.location.pathname);
-
-            // Redirect to home or original path
-            const redirectPath = localStorage.getItem('preAuthPath') || '/home';
+            const preAuthPath = localStorage.getItem('preAuthPath') || '/home';
             localStorage.removeItem('preAuthPath');
-            console.log('Redirecting to:', redirectPath);
-            navigate(redirectPath);
-        } else if (error) {
-            console.error('OAuth2 login failed:', error);
-            navigate('/auth/login', { state: { error: `OAuth login failed: ${error}` } });
+            navigate(preAuthPath, { replace: true });
+
         } else {
-            console.error('No token or error parameter found');
-            navigate('/auth/login', { state: { error: 'Authentication failed' } });
+            const storedToken = localStorage.getItem('token');
+
+            if (storedToken) {
+                navigate('/home');
+            } else {
+                navigate('/login');
+            }
         }
     }, [navigate]);
 
-    return <div>Processing OAuth2 login...</div>;
+    return <p>Logging you in...</p>;
 };
 
 export default OAuth2RedirectHandler;
