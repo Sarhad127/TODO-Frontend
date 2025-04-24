@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './styles/Avatar.css';
+import './styles/username-avatar.css';
 import { jwtDecode } from 'jwt-decode';
 
 const UserAvatar = () => {

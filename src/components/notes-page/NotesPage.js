@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../Sidebar';
-import './styles/NotesPage.css';
+import './NotesPage.css';
 
-import UserAvatar from "./UserAvatar";
-import colorIcon from '../icons/color-icon.png';
-import trashIcon from '../icons/trash-icon.png';
-import dateIcon from '../icons/date-icon.png';
+import UserAvatar from "../UserAvatar";
+import colorIcon from '../../icons/color-icon.png';
+import trashIcon from '../../icons/trash-icon.png';
+import dateIcon from '../../icons/date-icon.png';
 
 const generateNotesColor = () => {
     const r = Math.floor(Math.random() * 100 + 100);

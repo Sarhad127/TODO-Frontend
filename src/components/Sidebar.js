@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link, useNavigate} from 'react-router-dom';
-import plutoIcon from './icons/pluto-icon.png';
+import plutoIcon from '../icons/pluto-icon.png';
 
 function Sidebar() {
     const navigate = useNavigate();
