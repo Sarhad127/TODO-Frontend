@@ -24,7 +24,7 @@ body, html {
 .tasks-title,
 ul {
     flex-grow: 0;
-    padding-top: 20px;
+    padding-top: 10px;
 }
 
 .tasks-title h2 {
@@ -137,16 +137,15 @@ ul {
     display: flex;
     align-items: center;
     font-size: 30px;
-    font-family: Century, sans-serif;
+    font-family: Verdana, sans-serif;
     color: white;
-    margin-right: 10px;
     line-height: 1;
     font-weight: bold;
+    margin: 25px 0 0;
 }
 
 .sidebar-icon img {
-    width: 30px;
+    width: 40px;
     height: auto;
-    border-radius: 50%;
-    margin-right: 10px;
+    margin: 0 10px 0;
 }
