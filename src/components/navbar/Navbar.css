@@ -6,13 +6,18 @@
     margin-left: 260px;
     width: auto;
     z-index: 1;
+    display: flex;
+    align-items: center;
 }
 
 .navbar-menu {
+    justify-content: space-between;
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
+    align-items: center;
+    width: 100%;
 }
 
 .navbar-item {
@@ -32,7 +37,6 @@
     background-color: transparent;
 }
 
-/* Dropdown menu styles */
 .dropdown-menu {
     position: absolute;
     top: 100%;
@@ -56,8 +60,31 @@
     background-color: #555;
 }
 
-/* Show dropdown on click */
 .navbar-item:hover .dropdown-menu,
 .navbar-item .dropdown-menu {
     display: block;
+}
+
+.avatar-container {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-right: 15px;
+    background-color: transparent;
+}
+
+.avatar {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    text-align: center;
 }

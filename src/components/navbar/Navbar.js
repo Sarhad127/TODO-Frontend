@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Navbar.css';
+import UserAvatar from '../UserAvatar';
 
 const Navbar = () => {
     const [isDropdownOpen1, setIsDropdownOpen1] = useState(false);
@@ -11,7 +12,7 @@ const Navbar = () => {
     return (
         <nav className="navbar">
             <ul className="navbar-menu">
-                {/* Dropdown 1 */}
+
                 <li className="navbar-item" onClick={toggleDropdown1}>
                     <button className="navbar-button">Dropdown 1</button>
                     {isDropdownOpen1 && (
@@ -23,7 +24,6 @@ const Navbar = () => {
                     )}
                 </li>
 
-                {/* Dropdown 2 */}
                 <li className="navbar-item" onClick={toggleDropdown2}>
                     <button className="navbar-button">Dropdown 2</button>
                     {isDropdownOpen2 && (
@@ -33,6 +33,9 @@ const Navbar = () => {
                             <li className="dropdown-item">Option C</li>
                         </ul>
                     )}
+                </li>
+                <li>
+                    <UserAvatar />
                 </li>
             </ul>
         </nav>

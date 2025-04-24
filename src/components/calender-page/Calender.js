@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, addMonths, subMonths, isSameMonth, isSameDay } from 'date-fns';
-import UserAvatar from "../UserAvatar";
 import './Calendar.css';
 
 function CalendarPage() {
@@ -71,7 +70,6 @@ function CalendarPage() {
 
   return (
       <div className="calendar-app">
-        <UserAvatar />
         <h1 className="calendar-title">Calendar</h1>
         <div className="calendar-container">
           {renderHeader()}

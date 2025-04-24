@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../Sidebar';
 import './NotesPage.css';
 
-import UserAvatar from "../UserAvatar";
 import colorIcon from '../../icons/color-icon.png';
 import trashIcon from '../../icons/trash-icon.png';
 import dateIcon from '../../icons/date-icon.png';
@@ -88,7 +87,6 @@ const NotesPage = () => {
     return (
         <div className="notesPage-app">
             <Sidebar changeBackgroundColor={() => true} />
-            <UserAvatar />
 
             <h1 className="notes-title">Notes</h1>
             <div className="notes-grid">

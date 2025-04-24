@@ -120,7 +120,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <div className="main-content" style={mainContentStyle}>
+            <div style={mainContentStyle}>
                 <div className="columns">
                     {Object.keys(allColumns).map((column, index) => (
                         <TodoColumn
