@@ -141,7 +141,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                         className="todo-column transparent"
                         onClick={() => setShowAddColumnModal(true)}
                     >
-                        <FaPlus size={40} />
+                        <FaPlus size={20} />
                     </div>
                 </div>
                 {showAddColumnModal && (

@@ -1,23 +1,8 @@
-html, body, #root {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    scrollbar-gutter: stable;
-    background-color: rgba(55, 54, 80, 0.93);
-}
-
-.main-content {
-    margin-left: 290px;
-    flex-grow: 1;
-    min-height: 100vh;
-    background-color: #f9f9f9;
-}
-
 .sidebar {
     width: 260px;
     height: 100%;
     padding: 20px;
-    background-color: rgba(31, 31, 38, 0.61);
+    background-color: rgba(31, 31, 38, 1);
     color: white;
     display: flex;
     flex-direction: column;
@@ -26,10 +11,11 @@ html, body, #root {
     left: 0;
     box-sizing: border-box;
     overflow-y: auto;
+    z-index: 999;
 }
 
 body, html {
-    background-color: #29292d;
+    background: linear-gradient(to bottom, rgba(74, 74, 161, 0.76), rgb(12, 42, 107));
     height: 100%;
     margin: 0;
     padding: 0;

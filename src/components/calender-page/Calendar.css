@@ -1,29 +1,23 @@
-.main-content {
-    background-color: transparent !important;
-}
 .calendar-app {
-    padding: 20px 30px;
+    margin-left: 278px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
-    min-height: 100vh;
     box-sizing: border-box;
 }
 
 .calendar-title {
     font-size: 3rem;
     font-weight: bold;
-    margin: 20px 25px 10px;
     color: snow;
     text-align: center;
-    padding-bottom: 20px;
     font-family: "Book Antiqua", sans-serif;
+    margin: 18px 0 14px;
 }
 
 .calendar-container {
     background: white;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 25px;
     width: calc(100% - 40px);
     max-width: none;
 }
