@@ -1,0 +1,112 @@
+
+.columns {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.todo-column {
+    flex: 0 0 260px;
+    min-width: 200px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    min-height: 100px;
+    background-color: rgba(255, 255, 255, 0.89);
+    border-radius: 3px;
+    position: relative;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.todo-column h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 1px 0 15px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.todo-column h2:hover {
+    color: #3498db;
+}
+
+.todo-column.transparent {
+    background-color: transparent;
+    border: 2px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    cursor: pointer;
+}
+
+.todo-column.transparent:hover {
+    border-color: #aaa;
+}
+
+.column-settings {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.column-settings-dropdown-menu {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px 15px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    min-width: 150px;
+    font-family: "Arial", sans-serif;
+    font-size: 10px;
+    color: #333;
+    display: none; /* Hide by default */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.column-settings-dropdown-menu.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+}
+
+.column-settings-dropdown-menu button {
+    background: none;
+    border: none;
+    color: #333;
+    padding: 8px 15px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.column-settings-dropdown-menu button:hover {
+    background-color: #f4f4f4;
+}
+
+.column-settings-dropdown-menu button:focus {
+    outline: none;
+    background-color: #e9e9e9;
+}
+
+
+.column-settings-dropdown-menu button {
+    background-color: #f8f8f8;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.column-settings-dropdown-menu button:hover {
+    background-color: #e0e0e0;
+}

@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../Sidebar';
 import './styles/NotesPage.css';
+
 import UserAvatar from "./UserAvatar";
 import colorIcon from '../icons/color-icon.png';
 import trashIcon from '../icons/trash-icon.png';
 import dateIcon from '../icons/date-icon.png';
-import './styles/App.css'
+
+const generateNotesColor = () => {
+    const r = Math.floor(Math.random() * 100 + 100);
+    const g = Math.floor(Math.random() * 100 + 100);
+    const b = Math.floor(Math.random() * 120 + 100);
+    return `rgb(${r}, ${g}, ${b})`;
+};
 
 const NotesPage = () => {
     const [notes, setNotes] = useState([]);
@@ -49,7 +56,7 @@ const NotesPage = () => {
         setNotes([...notes, {
             title: 'New Note',
             text: '',
-            color: '#ffffff',
+            color: generateNotesColor(),
             date: '',
         }]);
     };
@@ -79,86 +86,86 @@ const NotesPage = () => {
     };
 
     return (
-        <div className="app">
+        <div className="notesPage-app">
             <Sidebar changeBackgroundColor={() => true} />
             <UserAvatar />
-            <div>
-                <h1 className="notes-title">Notes</h1>
-                <div className="notes-grid">
-                    {notes.map((note, index) => (
-                        <div
-                            key={index}
-                            className="note"
-                            style={{ backgroundColor: note.color }}
-                        >
-                            <div className="note-header">
-                                <input
-                                    className="title-input"
-                                    value={note.title}
-                                    onChange={(e) => {
-                                        const updatedNotes = [...notes];
-                                        updatedNotes[index].title = e.target.value;
-                                        setNotes(updatedNotes);
-                                    }}
-                                    placeholder="Note title"
-                                />
-                                <div className="note-actions" ref={el => dropdownRefs.current[index] = el}>
-                                    <button
-                                        className="dropdown-toggle"
-                                        onClick={() => toggleDropdown(index)}
-                                    >
-                                        ⋮
-                                    </button>
-                                    {openDropdown === index && (
-                                        <div className="dropdown-menu">
-                                            <label className="color-text-label">
-                                                <img src={colorIcon} alt="Color Icon" className="color-icon" />
-                                                Color
-                                                <input
-                                                    type="color"
-                                                    value={note.color}
-                                                    onChange={(e) => changeNoteColor(index, e.target.value)}
-                                                    className="hidden-color-input"
-                                                />
-                                            </label>
-                                            <label className="delete-option" onClick={() => deleteNote(index)}>
-                                                <img src={trashIcon} alt="Delete Note" className="delete-icon" />
-                                                Delete Note
-                                            </label>
-                                            <label className="date-option">
-                                                <img src={dateIcon} alt="Date Icon" className="date-icon" />
-                                                Date
-                                                <input
-                                                    type="date"
-                                                    value={note.date}
-                                                    onChange={(e) => changeNoteDate(index, e.target.value)}
-                                                    className="date-input"
-                                                />
-                                            </label>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <textarea
-                                ref={(el) => (textareaRefs.current[index] = el)}
-                                value={note.text}
+
+            <h1 className="notes-title">Notes</h1>
+            <div className="notes-grid">
+                {notes.map((note, index) => (
+                    <div
+                        key={index}
+                        className="note"
+                        style={{ backgroundColor: note.color }}
+                    >
+                        <div className="note-header">
+                            <input
+                                className="title-input"
+                                value={note.title}
                                 onChange={(e) => {
                                     const updatedNotes = [...notes];
-                                    updatedNotes[index].text = e.target.value;
+                                    updatedNotes[index].title = e.target.value;
                                     setNotes(updatedNotes);
-                                    e.target.style.height = "auto";
-                                    e.target.style.height = `${e.target.scrollHeight}px`;
                                 }}
-                                placeholder="Start typing your note..."
+                                placeholder="Note"
                             />
+                            <div className="note-actions" ref={el => dropdownRefs.current[index] = el}>
+                                <button
+                                    className="dropdown-toggle"
+                                    onClick={() => toggleDropdown(index)}
+                                >
+                                    ⋮
+                                </button>
+                                {openDropdown === index && (
+                                    <div className="dropdown-menu-notes">
+                                        <label className="color-text-label">
+                                            <img src={colorIcon} alt="Color Icon" className="color-icon" />
+                                            Color
+                                            <input
+                                                type="color"
+                                                value={note.color}
+                                                onChange={(e) => changeNoteColor(index, e.target.value)}
+                                                className="hidden-color-input"
+                                            />
+                                        </label>
+                                        <label className="delete-option" onClick={() => deleteNote(index)}>
+                                            <img src={trashIcon} alt="Delete Note" className="delete-icon" />
+                                            Delete Note
+                                        </label>
+                                        <label className="date-option">
+                                            <img src={dateIcon} alt="Date Icon" className="date-icon" />
+                                            Date
+                                            <input
+                                                type="date"
+                                                value={note.date}
+                                                onChange={(e) => changeNoteDate(index, e.target.value)}
+                                                className="date-input"
+                                            />
+                                        </label>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    ))}
+                        <textarea
+                            ref={(el) => (textareaRefs.current[index] = el)}
+                            value={note.text}
+                            onChange={(e) => {
+                                const updatedNotes = [...notes];
+                                updatedNotes[index].text = e.target.value;
+                                setNotes(updatedNotes);
+                                e.target.style.height = "auto";
+                                e.target.style.height = `${e.target.scrollHeight}px`;
+                            }}
+                            placeholder="Start typing your note..."
+                        />
+                    </div>
+                ))}
 
-                    <button className="add-note-btn" onClick={addNewNote}>
-                        +
-                    </button>
-                </div>
+                <button className="add-note-btn" onClick={addNewNote}>
+                    +
+                </button>
             </div>
+
         </div>
     );
 };

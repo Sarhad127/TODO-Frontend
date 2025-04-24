@@ -4,7 +4,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { FaPlus } from 'react-icons/fa';
 import 'react-calendar/dist/Calendar.css';
-import CalendarPage from '../Calender';
+import CalendarPage from './Calender';
 import Sidebar from '../Sidebar';
 import BackgroundSettingsModal from '../BackgroundSettingsModal';
 import TodoColumn from './TodoColumn';
@@ -17,7 +17,7 @@ import PrivateRoute from './PrivateRoute';
 import UserAvatar from './UserAvatar';
 import './styles/App.css';
 import './styles/Calendar.css';
-import './styles/Columns.css';
+import './styles/TodoColumn.css';
 import './styles/Modals.css';
 import './styles/TodoItem.css';
 import './styles/Sidebar.css';
@@ -29,8 +29,8 @@ function App() {
     const [backgroundImage, setBackgroundImage] = useState(null);
     const [showBackgroundModal, setShowBackgroundModal] = useState(false);
     const [allColumns, setAllColumns] = useState({
-        todo: { title: 'To-Do', titleColor: '#000000', tasks: [{ text: 'Learn React', color: '#ffffff' }, { text: 'Write Docs', color: '#ffffff' }] },
-        working: { title: 'Working', titleColor: '#000000', tasks: [{ text: 'Fix Bug', color: '#ffffff' }] },
+        todo: { title: 'To Do', titleColor: '#000000', tasks: [{ text: 'Learn React', color: '#ffffff' }, { text: 'Write Docs', color: '#ffffff' }] },
+        working: { title: 'Doing', titleColor: '#000000', tasks: [{ text: 'Fix Bug', color: '#ffffff' }] },
         done: { title: 'Done', titleColor: '#000000', tasks: [] },
     });
     const [selectedTodo, setSelectedTodo] = useState(null);

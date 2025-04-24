@@ -1,91 +1,63 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FaBars, FaSearch, FaEllipsisH } from 'react-icons/fa';
+import React from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import plutoIcon from './icons/pluto-icon.png';
 
-export function ColumnSettingsDropdown({ columnName, removeColumn }) {
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+function Sidebar() {
+    const navigate = useNavigate();
 
-  const toggleDropdown = () => {
-    setIsDropdownVisible(!isDropdownVisible);
-  };
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/auth/login');
+    };
 
-  return (
-    <div className="column-settings">
-      <FaEllipsisH size={20} onClick={toggleDropdown} />
-      {isDropdownVisible && (
-        <div className="dropdown-menu">
-          <button onClick={() => removeColumn(columnName)}>Remove Column</button>
+    const handleBackgroundChange = () => {
+        document.body.style.backgroundColor = document.body.style.backgroundColor === 'lightblue' ? 'purple' : 'lightblue';
+    };
+
+    return (
+        <div className="sidebar">
+            <h2 className="sidebar-icon">
+                <img src={plutoIcon} alt="Pluto Icon" />
+                Pluto
+            </h2>
+
+            <div className="tasks-title">
+                <h2>TASKS</h2>
+            </div>
+
+            <ul>
+                <li>
+                    <Link to="/home" className="sidebar-btn">
+                        Boards
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/calendar" className="sidebar-btn">
+                        Calendar
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/notes" className="sidebar-btn">
+                        Notes
+                    </Link>
+                </li>
+
+                <div className="tasks-title">
+                    <h2>SETTINGS</h2>
+                </div>
+                <li>
+                    <button className="sidebar-settings-styles" onClick={handleBackgroundChange}>
+                        Change Background
+                    </button>
+                </li>
+                <li>
+                    <button className="sidebar-settings-styles" onClick={handleLogout}>
+                         Logout
+                    </button>
+                </li>
+            </ul>
         </div>
-      )}
-    </div>
-  );
-}
-
-
-function Sidebar({ changeBackgroundColor }) {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/auth/login');
-  };
-
-  return (
-      <div className="sidebar">
-        <div className="logo-container">
-          <span className="pluto-icon">Pluto</span>
-        </div>
-
-        <div className="search-container">
-          <input type="text" className="search-bar" placeholder="Search" />
-          <FaSearch className="search-icon" />
-        </div>
-
-        <div className="tasks-title">
-          <h2>TASKS</h2>
-        </div>
-
-        <ul>
-          <li>
-            <Link to="/home" className="sidebar-btn">
-              <FaBars /> Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link to="/calendar" className="sidebar-btn">
-              <FaBars /> Calendar
-            </Link>
-          </li>
-          <li>
-            <Link to="/notes" className="sidebar-btn">
-              <FaBars /> Notes
-            </Link>
-          </li>
-          {/*<li>*/}
-          {/*  <button className="sidebar-btn" onClick={changeBackgroundColor}>*/}
-          {/*    <FaBars /> Change Background*/}
-          {/*  </button>*/}
-          {/*</li>*/}
-          {/*<li>*/}
-          {/*  <Link to="/login" className="sidebar-btn">*/}
-          {/*    <FaBars /> Login*/}
-          {/*  </Link>*/}
-          {/*</li>*/}
-        </ul>
-        <div className="sidebar-btn-bottom">
-          <li>
-            <button className="sidebar-btn-settings">
-              <FaBars /> Settings
-            </button>
-          </li>
-          <li>
-            <button className="sidebar-btn-settings" onClick={handleLogout}>
-              <FaBars /> Logout
-            </button>
-          </li>
-        </div>
-      </div>
-  );
+    );
 }
 
 export default Sidebar;

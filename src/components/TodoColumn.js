@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import TodoItem from './TodoItem';
-import { ColumnSettingsDropdown } from '../Sidebar';
 
 const ItemType = 'TODO';
 const ColumnType = 'COLUMN';
@@ -55,6 +54,8 @@ function TodoColumn({
     const openNewTodoModal = (column) => {
         setSelectedTodo({ text: '', color: '#ffffff', column, isNew: true });
     };
+    const [showDropdown, setShowDropdown] = useState(false);
+    const toggleDropdown = () => setShowDropdown(prev => !prev);
 
     return (
         <div
@@ -63,10 +64,21 @@ function TodoColumn({
             style={{ opacity: isDragging ? 0.5 : 1 }}
         >
             <div className="column-header">
-                <h2 onClick={() => changeColumnTitle(columnName)} style={{ color: allColumns[columnName].titleColor }}>
-                    {title}
+                <h2 onClick={() => changeColumnTitle(columnName)}>
+                    <span className="title">{title}</span>
                 </h2>
-                <ColumnSettingsDropdown columnName={columnName} removeColumn={removeColumn} />
+
+                <div className="column-settings-wrapper">
+                    <button className="column-settings-btn" onClick={toggleDropdown}>
+                        <span>⋯</span>
+                    </button>
+                    {showDropdown && (
+                        <div className="column-settings-dropdown-menu show">
+                            <button onClick={() => changeColumnTitle(columnName)}>Edit Title</button>
+                            <button onClick={() => removeColumn(columnName)}>Delete Column</button>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="todo-list">
@@ -74,9 +86,11 @@ function TodoColumn({
                     <TodoItem key={index} index={index} todo={todo} column={columnName} openEditModal={openEditModal} />
                 ))}
             </div>
+
             <button className="add-todo-btn" onClick={() => openNewTodoModal(columnName)}>
                 <span>+</span>
             </button>
+
         </div>
     );
 }

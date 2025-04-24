@@ -1,3 +1,7 @@
+.notesPage-app {
+    margin-left: 290px;
+    padding: 20px;
+}
 
 .note {
     background-color: lightgray;
@@ -6,26 +10,10 @@
     margin: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
-    height: 300px;
+    max-width: 350px;
+    height: 350px;
     display: flex;
     flex-direction: column;
-}
-
-.title-input {
-    width: 100%;
-    font-size: 18px;
-    font-weight: bold;
-    border: none;
-    background: transparent;
-    margin-bottom: 10px;
-    padding: 5px;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-}
-
-.title-input:focus {
-    outline: none;
-    border-bottom: 1px solid rgba(0,0,0,0.3);
 }
 
 textarea {
@@ -71,15 +59,6 @@ textarea:focus {
     align-items: center;
 }
 
-.title-input {
-    flex-grow: 1;
-    border: none;
-    font-size: 1.1rem;
-    font-weight: bold;
-    background: transparent;
-    outline: none;
-}
-
 .note-actions {
     position: relative;
 }
@@ -99,19 +78,6 @@ textarea:focus {
     color: #000;
 }
 
-.dropdown-menu {
-    position: absolute;
-    top: 24px;
-    width: 150px;
-    height: 150px;
-    right: 0;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    z-index: 10;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    padding: 0.5rem;
-}
 .color-text-label {
     cursor: pointer;
     color: black;
@@ -217,7 +183,63 @@ textarea:focus {
     transition: opacity 0.2s ease-in-out;
 }
 
-.note .dropdown-menu {
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 10px;
+    margin-right: 310px;
+}
+
+.note textarea {
+    flex-grow: 1;
+    min-height: 120px;
+    width: calc(100% - 30px);
+    padding: 12px;
+    border: 1px solid #e0d6b9;
+    background: repeating-linear-gradient(
+            #fdf6e3,
+            #fdf6e3 30px,
+            #f8f1d9 30px,
+            #f8f1d9 31px
+    );
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 0 3px rgba(0, 0, 0, 0.05);
+    resize: none;
+    font-size: 18px;
+    line-height: 1.6;
+    font-family: "Segoe Print", "Calibri Light", serif;
+    border-radius: 8px;
+    outline: none;
+    margin-top: 10px;
+}
+
+.note textarea:focus {
+    box-shadow: 0 0 0 2px #ffe599, 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.notes-title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 20px 25px 10px;
+    color: snow;
+    font-family: "Book Antiqua", sans-serif;
+}
+
+.dropdown-menu-notes {
+    position: absolute;
+    top: 24px;
+    width: 150px;
+    height: 150px;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 0.5rem;
+}
+
+.note .dropdown-menu-notes {
     color: black;
     border: none;
     padding: 0.4rem 0.75rem;
@@ -227,32 +249,19 @@ textarea:focus {
     transition: background-color 0.2s ease;
 }
 
-.notes-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    padding: 25px;
-    margin: 10px;
-    height: 300px;
-    border-radius: 8px;
-}
-
-.note textarea {
-    flex-grow: 1;
-    min-height: 100px;
+.title-input {
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
     border: none;
     background: transparent;
-    resize: none;
-    font-size: 18px;
-    line-height: 1.5;
+    margin-bottom: 10px;
     padding: 5px;
-    font-family: "Calibri Light", serif;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
-.notes-title {
-        font-size: 3rem;
-        font-weight: bold;
-        margin: 20px 25px 10px;
-        color: #333;
-        font-family: "Book Antiqua";
+.title-input:focus {
+    outline: none;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
 }
