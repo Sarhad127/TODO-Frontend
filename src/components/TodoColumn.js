@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import TodoItem from './TodoItem';
 
@@ -54,8 +54,22 @@ function TodoColumn({
     const openNewTodoModal = (column) => {
         setSelectedTodo({ text: '', color: '#ffffff', column, isNew: true });
     };
+
     const [showDropdown, setShowDropdown] = useState(false);
+    const dropdownRef = useRef(null);
+
     const toggleDropdown = () => setShowDropdown(prev => !prev);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     return (
         <div
@@ -68,12 +82,12 @@ function TodoColumn({
                     <span className="title">{title}</span>
                 </h2>
 
-                <div className="column-settings-wrapper">
+                <div className="column-settings-wrapper" ref={dropdownRef}>
                     <button className="column-settings-btn" onClick={toggleDropdown}>
                         <span>⋯</span>
                     </button>
                     {showDropdown && (
-                        <div className="column-settings-dropdown-menu show">
+                        <div className="column-settings-dropdown-menu">
                             <button onClick={() => changeColumnTitle(columnName)}>Edit Title</button>
                             <button onClick={() => removeColumn(columnName)}>Delete Column</button>
                         </div>
@@ -90,7 +104,6 @@ function TodoColumn({
             <button className="add-todo-btn" onClick={() => openNewTodoModal(columnName)}>
                 <span>+</span>
             </button>
-
         </div>
     );
 }
