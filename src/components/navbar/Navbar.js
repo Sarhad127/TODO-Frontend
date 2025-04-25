@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
 import './Navbar.css';
 import UserAvatar from '../UserAvatar';
+import {useNavigate} from "react-router-dom";
 
 const Navbar = () => {
+    const navigate = useNavigate();
     const [isBoardsDropdownOpen, setIsBoardsDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
     const toggleBoardsDropdown = () => setIsBoardsDropdownOpen(!isBoardsDropdownOpen);
     const toggleUserDropdown = () => setIsUserDropdownOpen(!isUserDropdownOpen);
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
+        console.log('token removed');
+        navigate('/auth/login');
+    };
 
     return (
         <nav className="navbar">
@@ -34,7 +43,7 @@ const Navbar = () => {
                     {isUserDropdownOpen && (
                         <ul className="dropdown-menu user-dropdown">
                             <li className="dropdown-item">Profile</li>
-                            <li className="dropdown-item">Logout</li>
+                            <li className="dropdown-item" onClick={handleLogout}>Logout</li>
                         </ul>
                     )}
                 </div>

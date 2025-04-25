@@ -79,41 +79,19 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         });
     };
 
-    const addNewColumn = async () => {
+    const addNewColumn = () => {
         if (newColumnTitle.trim()) {
-            const newColumn = { title: newColumnTitle, titleColor: '#000000', tasks: [] };
-
-            console.log('Adding new column with title:', newColumnTitle);
-
-            try {
-                const response = await fetch('http://localhost:8080/api/columns', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(newColumn),
-                });
-
-                console.log('Response status:', response.status);
-
-                if (response.ok) {
-                    const createdColumn = await response.json();
-                    console.log('Created column:', createdColumn);
-
-                    setAllColumns((prevColumns) => ({
-                        ...prevColumns,
-                        [createdColumn.id]: createdColumn,
-                    }));
-                    setNewColumnTitle('');
-                    setShowAddColumnModal(false);
-                } else {
-                    console.log('Failed to add column. Response:', await response.text());
-                    alert('Failed to add column!');
-                }
-            } catch (error) {
-                console.log('Error while adding column:', error);
-                alert('Error adding column: ' + error.message);
-            }
+            const newColumnKey = `column${Object.keys(allColumns).length + 1}`;
+            setAllColumns({
+                ...allColumns,
+                [newColumnKey]: {
+                    title: newColumnTitle,
+                    titleColor: '#000000',
+                    tasks: [],
+                },
+            });
+            setNewColumnTitle('');
+            setShowAddColumnModal(false);
         } else {
             alert('Column title cannot be empty!');
         }

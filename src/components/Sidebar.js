@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import plutoIcon from '../icons/pluto-icon.png';
 import boardsIcon from '../icons/boards.png';
 import notesIcon from '../icons/notes.png';
 import calenderIcon from '../icons/calender.png';
 
 function Sidebar() {
-    const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const predefinedColors = [
@@ -16,13 +15,6 @@ function Sidebar() {
         '#4dd0e1', '#7986cb', '#ff8a65', '#a1887f', '#90a4ae',
         '#b39ddb', '#ffcc80', '#c5e1a5', '#b0bec5', '#dce775'
     ];
-
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        sessionStorage.removeItem('token');
-        console.log('token removed');
-        navigate('/auth/login');
-    };
 
     const toggleDropDown = () => {
         setIsDropdownOpen(prevState => !prevState);
@@ -104,11 +96,6 @@ function Sidebar() {
                         </div>
                     </div>
                 )}
-                <li>
-                    <button className="sidebar-settings-styles" onClick={handleLogout}>
-                        Logout
-                    </button>
-                </li>
             </ul>
         </div>
     );
