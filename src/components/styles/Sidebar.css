@@ -130,11 +130,6 @@ body, html {
     margin-right: 10px;
 }
 
-.sidebar-settings-styles {
-    font-family: "Calibri Light", "Arial", sans-serif;
-    font-weight: normal;
-}
-
 .sidebar-icon-pluto {
     display: flex;
     align-items: center;
@@ -160,4 +155,72 @@ body, html {
     height: 15px;
     object-fit: contain;
     margin-right: 9px;
+}
+
+.sidebar-settings-styles {
+    font-family: "Calibri Light", "Arial", sans-serif;
+    font-weight: normal;
+}
+
+.dropdown-content {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+    background-color: transparent;
+}
+.dropdown-content button {
+    background-color: transparent;
+    transition: all 0.3s ease-in-out;
+    color: white;
+}
+
+.dropdown-content button:hover {
+    border-radius: 0;
+    background-color: #444444;
+    transition: all 0.1s ease-in-out;
+    color: white;
+}
+
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 30px);
+    gap: 8px;
+    margin: 10px 30px 0 10px;
+    padding: 10px;
+    background-color: #2f2f2f;
+    border-radius: 4px;
+}
+
+.color-swatch {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s, border 0.2s;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+    border: 2px solid white;
+}
+
+.upload-wrapper {
+    grid-column: span 5;
+    margin-top: 2px;
+    text-align: center;
+}
+
+.upload-btn {
+    display: inline-block;
+    background-color: #444;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.upload-btn:hover {
+    background-color: #666;
 }
