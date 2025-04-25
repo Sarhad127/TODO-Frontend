@@ -1,0 +1,267 @@
+.notesPage-app {
+    margin-left: 290px;
+    padding: 20px;
+}
+
+.note {
+    background-color: lightgray;
+    position: relative;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    max-width: 350px;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
+textarea {
+    width: 100%;
+    min-height: 100px;
+    border: none;
+    background: transparent;
+    resize: none;
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 5px;
+    font-family: inherit;
+}
+
+textarea:focus {
+    outline: none;
+}
+
+.add-note-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #4285f4;
+    color: white;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.add-note-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.note-actions {
+    position: relative;
+}
+
+.dropdown-toggle {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+    padding: 0 8px;
+    margin-left: 8px;
+}
+
+.dropdown-toggle:hover {
+    background: lightgray;
+    color: #000;
+}
+
+.color-text-label {
+    cursor: pointer;
+    color: black;
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-family: "Calibri", sans-serif;
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: none;
+    border-radius: 50px;
+    padding: 4px 10px;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.color-text-label:hover {
+    opacity: 1;
+}
+
+.color-icon {
+    padding-right: 6px;
+    width: 20px;
+    height: 20px;
+}
+
+.hidden-color-input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+}
+
+.delete-option {
+    cursor: pointer;
+    color: black;
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-family: "Calibri", sans-serif;
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: none;
+    border-radius: 50px;
+    padding: 4px 10px;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    background: none;
+    outline: none;
+}
+
+.delete-option:hover {
+    opacity: 1;
+}
+
+.delete-icon {
+    padding-right: 6px;
+    opacity: 0.6;
+    width: 20px;
+    height: 20px;
+}
+
+.date-option {
+    cursor: pointer;
+    color: black;
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-family: "Calibri", sans-serif;
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: none;
+    border-radius: 50px;
+    padding: 4px 10px;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.date-option:hover .date-input {
+    visibility: visible;
+    opacity: 1;
+}
+
+.date-icon {
+    padding-right: 6px;
+    width: 20px;
+    height: 20px;
+}
+
+.date-input {
+    position: absolute;
+    visibility: hidden;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    z-index: 9999;
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 10px;
+    margin-right: 310px;
+}
+
+.note textarea {
+    flex-grow: 1;
+    min-height: 120px;
+    width: calc(100% - 30px);
+    padding: 12px;
+    border: 1px solid #e0d6b9;
+    background: repeating-linear-gradient(
+            #fdf6e3,
+            #fdf6e3 30px,
+            #f8f1d9 30px,
+            #f8f1d9 31px
+    );
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 0 3px rgba(0, 0, 0, 0.05);
+    resize: none;
+    font-size: 18px;
+    line-height: 1.6;
+    font-family: "Segoe Print", "Calibri Light", serif;
+    border-radius: 8px;
+    outline: none;
+    margin-top: 10px;
+}
+
+.note textarea:focus {
+    box-shadow: 0 0 0 2px #ffe599, 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.notes-title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 20px 25px 10px;
+    color: snow;
+    font-family: "Book Antiqua", sans-serif;
+}
+
+.dropdown-menu-notes {
+    position: absolute;
+    top: 24px;
+    width: 150px;
+    height: 150px;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 0.5rem;
+}
+
+.note .dropdown-menu-notes {
+    color: black;
+    border: none;
+    padding: 0.4rem 0.75rem;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease;
+}
+
+.title-input {
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    background: transparent;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.title-input:focus {
+    outline: none;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+}

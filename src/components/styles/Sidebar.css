@@ -1,34 +1,59 @@
-/* Sidebar Styles */
 .sidebar {
-    width: 220px; /* Reduced sidebar width */
-    padding: 20px;
-    background-color: #2f2f2f;
+    width: 260px;
+    height: 100%;
+    background-color: rgba(31, 31, 38, 1);
     color: white;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+    z-index: 999;
 }
 
-.sidebar-btn {
-    font-family: cursive;
+body, html {
+    background: linear-gradient(to bottom, rgba(74, 74, 161, 0.85), rgb(128, 0, 128));
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-.sidebar-line {
-    border: none;               /* Remove default border */
-    border-top: 1px solid #ccc; /* Thin gray line */
-    margin: 10px 0;             /* Add space above and below the line */
-    width: 100%;                /* Make it the same width as the sidebar */
-    height: 1px;                /* Set the line's height to 1px for a thin line */
+.tasks-title-first {
+    flex-grow: 0;
+    padding-top: 10px;
+    color: white;
+    font-size: 7px;
+    margin: 10px 0 0 14px;
+}
+.tasks-title-first h2{
+    margin: 0;
 }
 
-.sidebar h2 {
-    margin-bottom: 20px;
+.tasks-title-second {
+    flex-grow: 0;
+    padding-top: 10px;
+    color: white;
+    font-size: 7px;
+    margin: 10px 0 0 14px;
+}
+.tasks-title-second h2{
+    margin: 0;
 }
 
 .sidebar ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .sidebar ul li {
-    margin-bottom: 10px;
+    padding-left: 18px;
+    margin: 8px 0 0 0;
     font-size: 18px;
     font-family: 'Times New Roman', Times, serif;
     display: flex;
@@ -38,57 +63,164 @@
 
 .sidebar ul li:hover {
     background-color: #444444;
-    border-radius: 4px;
 }
 
 .sidebar ul li button,
-.sidebar ul li a { /* Add styles for <a> tags (used by Link) */
+.sidebar ul li a {
     background: none;
     border: none;
     color: white;
     font-size: 16px;
+    font-style: italic;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     padding: 10px;
     cursor: pointer;
-    text-decoration: none; /* Remove underline from links */
+    text-decoration: none;
 }
 
 .sidebar ul li button:hover,
-.sidebar ul li a:hover { /* Add hover styles for <a> tags */
+.sidebar ul li a:hover {
     background-color: #444444;
     border-radius: 4px;
 }
 
 .sidebar ul li button svg,
-.sidebar ul li a svg { /* Add styles for icons inside <a> tags */
-    margin-right: 10px; /* Space between the icon and text */
+.sidebar ul li a svg {
+    margin-right: 10px;
 }
 
-/* Sidebar Header for Pluto Text and Icon */
 .sidebar-header {
     display: flex;
-    align-items: center; /* Vertically center the text and icon */
-    margin-bottom: 20px; /* Space below the header */
-    margin-top: 20px; /* Space above the header */
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
-/* Style for the Pluto text */
-.pluto-text {
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 1.2em; /* Make the text smaller */
+.sidebar-btn {
+    font-family: "Calibri Light", "Arial", sans-serif;
+}
+
+.sidebar-btn-settings,
+.sidebar-btn-logout {
+    background: none;
+    border: none;
     color: white;
-    margin-right: 10px; /* Space between text and icon */
-    line-height: 1; /* Ensure the text is properly aligned with the icon */
-    font-weight: bold; /* Optional: Make the text bold for emphasis */
+    font-size: 16px;
+    font-family: "Calibri Light", "Arial", sans-serif;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
+    cursor: pointer;
+    text-decoration: none;
 }
 
-/* Style for the Pluto icon */
-.pluto-icon {
-    width: 30px; /* Adjust the size of the icon */
-    height: 30px; /* Match the height to the width for a circle */
-    border-radius: 50%; /* Make the icon circular */
-    object-fit: cover; /* Ensure the image fits inside the circle */
+.sidebar-btn-settings:hover,
+.sidebar-btn-logout:hover {
+    background-color: #444444;
+    border-radius: 4px;
+}
+
+.sidebar-btn-settings svg,
+.sidebar-btn-logout svg {
+    margin-right: 10px;
+}
+
+.sidebar-icon-pluto {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    font-family: Verdana, sans-serif;
+    color: white;
+    line-height: 1;
+    font-weight: bold;
+    margin: 8px 0 18px 12px;
+}
+
+.sidebar-icon-pluto h2 {
+    margin: 0;
+}
+
+.sidebar-icon-pluto img {
+    width: 30px;
+    height: auto;
+}
+
+.sidebar-icon-small{
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    margin-right: 9px;
+}
+
+.sidebar-settings-styles {
+    font-family: "Calibri Light", "Arial", sans-serif;
+    font-weight: normal;
+}
+
+.dropdown-content {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+    background-color: transparent;
+}
+.dropdown-content button {
+    background-color: transparent;
+    transition: all 0.3s ease-in-out;
+    color: white;
+}
+
+.dropdown-content button:hover {
+    border-radius: 0;
+    background-color: #444444;
+    transition: all 0.1s ease-in-out;
+    color: white;
+}
+
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 30px);
+    gap: 8px;
+    margin: 10px 30px 0 10px;
+    padding: 10px;
+    background-color: #2f2f2f;
+    border-radius: 4px;
+}
+
+.color-swatch {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s, border 0.2s;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+    border: 2px solid white;
+}
+
+.upload-wrapper {
+    grid-column: span 5;
+    margin-top: 2px;
+    text-align: center;
+}
+
+.upload-btn {
+    display: inline-block;
+    background-color: #444;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.upload-btn:hover {
+    background-color: #666;
 }

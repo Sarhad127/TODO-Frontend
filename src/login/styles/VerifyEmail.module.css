@@ -1,0 +1,69 @@
+/* VerifyEmail.module.css */
+.formContainer {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: white;
+    padding: 40px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.formContainer h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+.verifyEmailText{
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.inputFieldText input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 12px;
+    margin: 20px 0 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: block;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1e88e5;
+}
+
+.errorMessage {
+    color: red;
+    margin-bottom: 10px;
+}
+.inputFieldText{
+    width: 100%;
+}

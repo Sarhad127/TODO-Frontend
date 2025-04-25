@@ -1,4 +1,4 @@
-/* Modal Styles */
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -9,7 +9,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Ensure modal is on top */
+    z-index: 1000;
 }
 
 .modal {
@@ -47,9 +47,8 @@
     background: #b52b38;
 }
 
-/* Cancel Button */
 .cancel-btn {
-    background-color: #f44336; /* Red */
+    background-color: #f44336;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -60,10 +59,9 @@
 }
 
 .cancel-btn:hover {
-    background-color: #e53935; /* Darker red on hover */
+    background-color: #e53935;
 }
 
-/* Background Settings Modal Styles */
 .tabs {
     display: flex;
     gap: 10px;

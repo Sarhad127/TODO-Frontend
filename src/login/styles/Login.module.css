@@ -1,0 +1,181 @@
+.loginContainer {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: white;
+    padding: 40px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.loginTitle {
+    font-family: Century, sans-serif;
+    margin-top: 3px;
+    margin-right: 18px;
+    font-size: 35px;
+    color: #333;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    width: 33px;
+    height: 33px;
+    margin-right: 10px;
+    border-radius: 50px;
+}
+.buttonIcon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 50px;
+}
+.buttonIcon2 {
+    background-color: white;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 50px;
+}
+
+.smallText {
+    font-family: Cambria, sans-serif;
+    margin-top: 2px;
+    font-size: 18px;
+    color: #333;
+    text-align: center;
+}
+.loginForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.loginForm input[type="email"],
+.loginForm input[type="text"],
+.loginForm input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 12px;
+    font-size: 13px;
+    margin: 10px 0 26px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: block;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.loginButton {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.1s;
+}
+
+.loginButton:hover {
+    background-color: #026ee1;
+}
+
+.loginButton:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.errorMessage {
+    text-align: center;
+    margin-top: 18px;
+    color: red;
+    margin-bottom: 10px;
+}
+
+.link {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.link a {
+    color: #2196F3;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+.link a:hover {
+    color: #79bcee;
+}
+
+.oauthButtons {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.oauthButton {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+}
+
+.oauthButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.googleButton {
+    background-color: darkslateblue;
+    color: white;
+    transition: background-color 0.1s;
+}
+.googleButton:hover {
+    background-color: #5343ad;
+}
+
+.githubButton {
+    background-color: #333;
+    color: white;
+    transition: background-color 0.1s;
+}
+
+.githubButton:hover {
+    background-color: #232323;
+}
+
+.orDivider {
+    margin: 20px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.orDivider span {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    color: #aaa;
+}
+.showPasswordToggle {
+    margin-top: -10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #333;
+}
