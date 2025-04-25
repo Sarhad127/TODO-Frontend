@@ -14,7 +14,7 @@ const Navbar = () => {
             <ul className="navbar-menu">
 
                 <li className="navbar-item" onClick={toggleDropdown1}>
-                    <button className="navbar-button">Dropdown 1</button>
+                    <button className="navbar-button">Boards</button>
                     {isDropdownOpen1 && (
                         <ul className="dropdown-menu">
                             <li className="dropdown-item">Option 1</li>
