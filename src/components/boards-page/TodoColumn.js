@@ -4,7 +4,6 @@ import TodoItem from './TodoItem';
 
 const ItemType = 'TODO';
 const ColumnType = 'COLUMN';
-
 function TodoColumn({
                         title,
                         columnName,
@@ -71,6 +70,8 @@ function TodoColumn({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const tasks = allColumns[columnName]?.tasks || [];
+
     return (
         <div
             ref={(node) => drag(dropColumn(dropTodo(node)))}
@@ -96,7 +97,7 @@ function TodoColumn({
             </div>
 
             <div className="todo-list">
-                {allColumns[columnName].tasks.map((todo, index) => (
+                {tasks.map((todo, index) => (
                     <TodoItem key={index} index={index} todo={todo} column={columnName} openEditModal={openEditModal} />
                 ))}
             </div>
