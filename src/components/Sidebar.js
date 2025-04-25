@@ -19,6 +19,8 @@ function Sidebar() {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
+        console.log('token removed');
         navigate('/auth/login');
     };
 

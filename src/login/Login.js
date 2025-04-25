@@ -35,6 +35,7 @@ const Login = () => {
 
                 if (rememberMe) {
                     localStorage.setItem('token', token);
+                    console.log('Token stored in localStorage:', localStorage.getItem('token'));
                 } else {
                     sessionStorage.setItem('token', token);
                     console.log('Token stored in sessionStorage:', sessionStorage.getItem('token'));
