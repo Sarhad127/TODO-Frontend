@@ -3,19 +3,21 @@ import './Navbar.css';
 import UserAvatar from '../UserAvatar';
 
 const Navbar = () => {
-    const [isDropdownOpen1, setIsDropdownOpen1] = useState(false);
+    const [isBoardsDropdownOpen, setIsBoardsDropdownOpen] = useState(false);
+    const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
-    const toggleDropdown1 = () => setIsDropdownOpen1(!isDropdownOpen1);
+    const toggleBoardsDropdown = () => setIsBoardsDropdownOpen(!isBoardsDropdownOpen);
+    const toggleUserDropdown = () => setIsUserDropdownOpen(!isUserDropdownOpen);
 
     return (
         <nav className="navbar">
-            <ul className="navbar-menu">
+            <ul className="navbar-buttons">
 
-                <li className="navbar-item" onClick={toggleDropdown1}>
+                <li className="boards-item" onClick={toggleBoardsDropdown}>
                     <button className="navbar-button">
-                        Boards <span className="dropdown-arrow">{isDropdownOpen1 ? '▲' : '▼'}</span>
+                        Boards <span className="dropdown-arrow">{isBoardsDropdownOpen ? '▲' : '▼'}</span>
                     </button>
-                    {isDropdownOpen1 && (
+                    {isBoardsDropdownOpen && (
                         <ul className="dropdown-menu">
                             <li className="dropdown-item">Option 1</li>
                             <li className="dropdown-item">Option 2</li>
@@ -24,9 +26,18 @@ const Navbar = () => {
                     )}
                 </li>
             </ul>
-            <div>
-                <UserAvatar />
-            </div>
+
+                <div className="navbar-item-avatar" onClick={toggleUserDropdown}>
+                    <button className="avatar-button">
+                        <UserAvatar />
+                    </button>
+                    {isUserDropdownOpen && (
+                        <ul className="dropdown-menu user-dropdown">
+                            <li className="dropdown-item">Profile</li>
+                            <li className="dropdown-item">Logout</li>
+                        </ul>
+                    )}
+                </div>
         </nav>
     );
 };
