@@ -7,11 +7,7 @@ import { AddColumnModal } from './AddColumnModal';
 import { EditModal } from './EditTodoModal';
 
 const TodoBoard = ({ backgroundColor, backgroundImage }) => {
-    const [allColumns, setAllColumns] = useState({
-        todo: { title: 'To Do', titleColor: '#000000', tasks: [{ text: 'Learn React', color: '#ffffff' }, { text: 'Write Docs', color: '#ffffff' }] },
-        working: { title: 'Doing', titleColor: '#000000', tasks: [{ text: 'Fix Bug', color: '#ffffff' }] },
-        done: { title: 'Done', titleColor: '#000000', tasks: [] },
-    });
+    const [allColumns, setAllColumns] = useState({});
     const [selectedTodo, setSelectedTodo] = useState(null);
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
@@ -123,19 +119,52 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
     };
 
-    const moveColumn = (fromIndex, toIndex) => {
+    const moveColumn = async (fromIndex, toIndex) => {
         const columnsArray = Object.keys(allColumns);
         const columnKeys = [...columnsArray];
         const movedColumn = columnKeys.splice(fromIndex, 1);
         columnKeys.splice(toIndex, 0, ...movedColumn);
 
         const reorderedColumns = {};
-        columnKeys.forEach((key) => {
-            reorderedColumns[key] = allColumns[key];
+        columnKeys.forEach((key, index) => {
+            reorderedColumns[key] = { ...allColumns[key], placement: index + 1 };
         });
 
         setAllColumns(reorderedColumns);
+
+        let token = localStorage.getItem('token');
+        if (!token) {
+            token = sessionStorage.getItem('token');
+        }
+        if (!token) {
+            console.error('No authentication token found');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/auth/columns/reorder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(
+                    columnKeys.map((key, index) => ({
+                        title: allColumns[key].title,
+                        placement: index + 1,
+                    }))
+                ),
+            });
+            if (response.ok) {
+                console.log('Columns reordered successfully');
+            } else {
+                console.error('Error reordering columns in the backend');
+            }
+        } catch (error) {
+            console.error('Error with API call:', error);
+        }
     };
+
 
     const mainContentStyle = {
         backgroundColor: backgroundImage ? 'transparent' : backgroundColor,
