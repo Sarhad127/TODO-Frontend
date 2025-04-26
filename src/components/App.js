@@ -16,6 +16,7 @@ import './boards-page/boards-styles/TodoColumn.css';
 import './boards-page/boards-styles/Modals.css';
 import './boards-page/boards-styles/TodoItem.css';
 import './styles/Sidebar.css';
+import ProfilePage from "./profile-page/ProfilePage";
 
 function App() {
     return (
@@ -29,6 +30,16 @@ function App() {
                                 <Layout>
                                     <NotesPage />
                                 </Layout>
+                            }
+                        />
+                        <Route
+                            path="/profile"
+                            element={
+                                <PrivateRoute>
+                                    <Layout>
+                                        <ProfilePage />
+                                    </Layout>
+                                </PrivateRoute>
                             }
                         />
                         <Route

@@ -42,7 +42,7 @@ const Navbar = () => {
                     </button>
                     {isUserDropdownOpen && (
                         <ul className="dropdown-menu user-dropdown">
-                            <li className="dropdown-item">Profile</li>
+                            <li className="dropdown-item" onClick={() => navigate('/profile')}>Profile</li>
                             <li className="dropdown-item" onClick={handleLogout}>Logout</li>
                         </ul>
                     )}
