@@ -79,17 +79,43 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         });
     };
 
-    const addNewColumn = () => {
+    const addNewColumn = async () => {
         if (newColumnTitle.trim()) {
             const newColumnKey = `column${Object.keys(allColumns).length + 1}`;
+            const newColumn = {
+                title: newColumnTitle,
+                titleColor: '#000000',
+                tasks: [],
+            };
             setAllColumns({
                 ...allColumns,
-                [newColumnKey]: {
-                    title: newColumnTitle,
-                    titleColor: '#000000',
-                    tasks: [],
-                },
+                [newColumnKey]: newColumn,
             });
+            let token = localStorage.getItem('token');
+            if (!token) {
+                token = sessionStorage.getItem('token');
+            }
+            if (!token) {
+                console.error('No authentication token found');
+                return;
+            }
+            try {
+                const response = await fetch('http://localhost:8080/auth/columns', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ title: newColumnTitle }),
+                });
+                if (response.ok) {
+                    console.log('Column added successfully');
+                } else {
+                    console.error('Error adding column to backend');
+                }
+            } catch (error) {
+                console.error('Error with API call:', error);
+            }
             setNewColumnTitle('');
             setShowAddColumnModal(false);
         } else {
