@@ -22,18 +22,51 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         setSelectedTodo({ ...allColumns[column].tasks[index], index, column });
     };
 
-    const saveChanges = () => {
+    const saveChanges = async () => { /* TODO saves changes made to columns*/
         const { column, index, isNew, isTitleChange } = selectedTodo;
+        const columnData = allColumns[column];
 
         if (isTitleChange) {
             setAllColumns({
                 ...allColumns,
                 [column]: {
-                    ...allColumns[column],
+                    ...columnData,
                     title: selectedTodo.text,
                     titleColor: selectedTodo.color,
                 },
             });
+
+            let token = localStorage.getItem('token');
+            if (!token) {
+                token = sessionStorage.getItem('token');
+            }
+            if (!token) {
+                console.error('No authentication token found');
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8080/auth/columns/${columnData.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        title: selectedTodo.text,
+                        titleColor: selectedTodo.color,
+                    }),
+                });
+
+                if (response.ok) {
+                    console.log('Column updated successfully');
+                } else {
+                    console.error('Failed to update column on backend');
+                }
+            } catch (error) {
+                console.error('Error updating column:', error);
+            }
+
         } else if (isNew) {
             if (!selectedTodo.text.trim()) {
                 alert("Todo text cannot be empty!");
@@ -42,15 +75,16 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
             setAllColumns({
                 ...allColumns,
                 [column]: {
-                    ...allColumns[column],
-                    tasks: [...allColumns[column].tasks, { text: selectedTodo.text, color: selectedTodo.color }],
+                    ...columnData,
+                    tasks: [...columnData.tasks, { text: selectedTodo.text, color: selectedTodo.color }],
                 },
             });
         } else {
-            const updatedColumn = [...allColumns[column].tasks];
+            const updatedColumn = [...columnData.tasks];
             updatedColumn[index] = selectedTodo;
-            setAllColumns({ ...allColumns, [column]: { ...allColumns[column], tasks: updatedColumn } });
+            setAllColumns({ ...allColumns, [column]: { ...columnData, tasks: updatedColumn } });
         }
+
         setSelectedTodo(null);
     };
 
@@ -102,9 +136,21 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
                     },
-                    body: JSON.stringify({ title: newColumnTitle }),
+                    body: JSON.stringify({
+                        title: newColumnTitle,
+                        titleColor: '#000000',
+                        tasks: [],}),
                 });
                 if (response.ok) {
+                    const data = await response.json();
+                    const backendId = data.id;
+                    setAllColumns({
+                        ...allColumns,
+                        [`column${backendId}`]: {
+                            ...newColumn,
+                            id: backendId,
+                        },
+                    });
                     console.log('Column added successfully');
                 } else {
                     console.error('Error adding column to backend');
@@ -119,7 +165,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
     };
 
-    const moveColumn = async (fromIndex, toIndex) => { /* TODO updates moved columns*/
+    const moveColumn = async (fromIndex, toIndex) => { /* TODO updates moved placements*/
         const columnsArray = Object.keys(allColumns);
         const columnKeys = [...columnsArray];
         const movedColumn = columnKeys.splice(fromIndex, 1);
