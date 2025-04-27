@@ -51,6 +51,40 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         setSelectedTodo({ ...allColumns[column].tasks[index], index, column });
     };
 
+    const updateTask = async (taskData) => { /* TODO update a task */
+        let token = localStorage.getItem('token');
+        if (!token) {
+            token = sessionStorage.getItem('token');
+        }
+        if (!token) {
+            console.error('No authentication token found');
+            return;
+        }
+        try {
+            const response = await fetch(`http://localhost:8080/tasks/update/${taskData.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    text: taskData.text,
+                    color: taskData.color,
+                    columnId: taskData.columnId,
+                }),
+            });
+
+            if (response.ok) {
+                console.log('Task updated successfully');
+                return await response.json();
+            } else {
+                console.error('Failed to update task on backend');
+            }
+        } catch (error) {
+            console.error('Error updating task:', error);
+        }
+    };
+
     const saveChanges = async () => { /* TODO saves changes made to columns*/
         const { column, index, isNew, isTitleChange } = selectedTodo;
         const columnData = allColumns[column];
@@ -157,9 +191,17 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
             }
 
         } else {
-            const updatedColumn = [...columnData.tasks];
-            updatedColumn[index] = selectedTodo;
-            setAllColumns({ ...allColumns, [column]: { ...columnData, tasks: updatedColumn } });
+            const updatedTask = { ...selectedTodo, columnId: columnData.id };
+            const updatedTaskFromBackend = await updateTask(updatedTask);
+            if (updatedTaskFromBackend) {
+                const updatedColumn = [...columnData.tasks];
+                updatedColumn[index] = updatedTaskFromBackend;
+                setAllColumns({
+                    ...allColumns,
+                    [column]: { ...columnData, tasks: updatedColumn },
+                });
+                console.log('Task updated locally');
+            }
         }
 
         setSelectedTodo(null);
