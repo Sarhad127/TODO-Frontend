@@ -75,7 +75,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         });
     };
 
-    const addNewColumn = async () => {
+    const addNewColumn = async () => {  /*TODO saves new column to database */
         if (newColumnTitle.trim()) {
             const newColumnKey = `column${Object.keys(allColumns).length + 1}`;
             const newColumn = {
@@ -119,7 +119,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
     };
 
-    const moveColumn = async (fromIndex, toIndex) => {
+    const moveColumn = async (fromIndex, toIndex) => { /* TODO updates moved columns*/
         const columnsArray = Object.keys(allColumns);
         const columnKeys = [...columnsArray];
         const movedColumn = columnKeys.splice(fromIndex, 1);
