@@ -25,11 +25,51 @@ function TodoColumn({
         },
     });
 
-    const moveTodoWithinColumn = (fromIndex, toIndex, column) => {
+    const moveTodoWithinColumn = async (fromIndex, toIndex, column) => {
         const updatedColumns = { ...allColumns };
-        const [movedTodo] = updatedColumns[column].tasks.splice(fromIndex, 1);
-        updatedColumns[column].tasks.splice(toIndex, 0, movedTodo);
+        const columnTasks = [...updatedColumns[column].tasks];
+        const [movedTodo] = columnTasks.splice(fromIndex, 1);
+        columnTasks.splice(toIndex, 0, movedTodo);
+        const columnId = updatedColumns[column].id;
+        const tasksWithNewPositions = columnTasks.map((task, index) => ({
+            ...task,
+            position: index + 1,
+            columnId: columnId,
+        }));
+
+        updatedColumns[column].tasks = tasksWithNewPositions;
         setAllColumns(updatedColumns);
+
+        console.log('Tasks to be sent:', tasksWithNewPositions);
+
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) throw new Error('No authentication token found');
+
+            const response = await fetch('http://localhost:8080/tasks/reorder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+
+                body: JSON.stringify(tasksWithNewPositions.map(task => ({
+                    id: task.id,
+                    text: task.text,
+                    color: task.color,
+                    columnId: task.columnId,
+                    position: task.position
+                })))
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Failed to reorder tasks');
+            }
+        } catch (error) {
+            console.error('Error updating task position:', error);
+            setAllColumns(allColumns);
+        }
     };
 
     const [, dropColumn] = useDrop({

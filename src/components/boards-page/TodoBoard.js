@@ -137,6 +137,18 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                 if (response.ok) {
                     const newTask = await response.json();
                     console.log('Task created successfully:', newTask);
+
+                    setAllColumns({
+                        ...allColumns,
+                        [column]: {
+                            ...columnData,
+                            tasks: [...columnData.tasks, {
+                                id: newTask.id,
+                                text: selectedTodo.text,
+                                color: selectedTodo.color
+                            }],
+                        },
+                    });
                 } else {
                     console.error('Failed to create task in backend');
                 }
@@ -206,6 +218,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                         titleColor: '#000000',
                         tasks: [],}),
                 });
+
                 if (response.ok) {
                     const data = await response.json();
                     const backendId = data.id;
@@ -275,7 +288,6 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
             console.error('Error with API call:', error);
         }
     };
-
 
     const mainContentStyle = {
         backgroundColor: backgroundImage ? 'transparent' : backgroundColor,
