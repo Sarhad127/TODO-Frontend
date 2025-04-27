@@ -12,10 +12,39 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
 
-    const removeColumn = (columnName) => {
+    const removeColumn = async (columnName) => {
+        const columnId = columnName.replace('column', '');
+
         const updatedColumns = { ...allColumns };
         delete updatedColumns[columnName];
         setAllColumns(updatedColumns);
+
+        let token = localStorage.getItem('token');
+        if (!token) {
+            token = sessionStorage.getItem('token');
+        }
+        if (!token) {
+            console.error('No authentication token found');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/auth/columns/delete/${columnId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                console.log('Column removed successfully');
+            } else {
+                console.error('Failed to remove column from backend');
+            }
+        } catch (error) {
+            console.error('Error removing column:', error);
+        }
     };
 
     const openEditModal = (index, column) => {
