@@ -25,6 +25,13 @@ function TodoColumn({
         },
     });
 
+    const moveTodoWithinColumn = (fromIndex, toIndex, column) => {
+        const updatedColumns = { ...allColumns };
+        const [movedTodo] = updatedColumns[column].tasks.splice(fromIndex, 1);
+        updatedColumns[column].tasks.splice(toIndex, 0, movedTodo);
+        setAllColumns(updatedColumns);
+    };
+
     const [, dropColumn] = useDrop({
         accept: ColumnType,
         hover: (item) => {
@@ -105,7 +112,14 @@ function TodoColumn({
 
             <div className="todo-list">
                 {tasks.map((todo, index) => (
-                    <TodoItem key={index} index={index} todo={todo} column={columnName} openEditModal={openEditModal} />
+                    <TodoItem
+                        key={todo.id || index}
+                        index={index}
+                        todo={todo}
+                        column={columnName}
+                        openEditModal={openEditModal}
+                        moveTodoWithinColumn={moveTodoWithinColumn}
+                    />
                 ))}
             </div>
 
