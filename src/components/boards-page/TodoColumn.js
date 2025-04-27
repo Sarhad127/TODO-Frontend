@@ -51,8 +51,15 @@ function TodoColumn({
     });
 
     const openNewTodoModal = (column) => {
-        setSelectedTodo({ text: '', color: '#ffffff', column, isNew: true });
+        setSelectedTodo({
+            text: '',
+            color: '#ffffff',
+            column,
+            columnId: allColumns[column].id,
+            isNew: true,
+        });
     };
+
 
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef(null);

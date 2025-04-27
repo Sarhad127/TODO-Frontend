@@ -12,7 +12,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
 
-    const removeColumn = async (columnName) => {
+    const removeColumn = async (columnName) => { /* --------------------- TODO removes columns ---------------------*/
         const columnId = columnName.replace('column', '');
 
         const updatedColumns = { ...allColumns };
@@ -96,7 +96,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                 console.error('Error updating column:', error);
             }
 
-        } else if (isNew) {
+        } else if (isNew) { /* TODO handles new todo task*/
             if (!selectedTodo.text.trim()) {
                 alert("Todo text cannot be empty!");
                 return;
@@ -108,6 +108,42 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                     tasks: [...columnData.tasks, { text: selectedTodo.text, color: selectedTodo.color }],
                 },
             });
+
+            let token = localStorage.getItem('token');
+            if (!token) {
+                token = sessionStorage.getItem('token');
+            }
+            if (!token) {
+                console.error('No authentication token found');
+                return;
+            }
+
+            try {
+                const taskData = {
+                    text: selectedTodo.text,
+                    color: selectedTodo.color,
+                    columnId: columnData.id,
+                };
+
+                const response = await fetch('http://localhost:8080/tasks/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(taskData),
+                });
+
+                if (response.ok) {
+                    const newTask = await response.json();
+                    console.log('Task created successfully:', newTask);
+                } else {
+                    console.error('Failed to create task in backend');
+                }
+            } catch (error) {
+                console.error('Error creating task:', error);
+            }
+
         } else {
             const updatedColumn = [...columnData.tasks];
             updatedColumn[index] = selectedTodo;
@@ -138,7 +174,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         });
     };
 
-    const addNewColumn = async () => {  /*TODO saves new column to database */
+    const addNewColumn = async () => {  /* --------------------- TODO saves new column to database ---------------------*/
         if (newColumnTitle.trim()) {
             const newColumnKey = `column${Object.keys(allColumns).length + 1}`;
             const newColumn = {
@@ -194,7 +230,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
     };
 
-    const moveColumn = async (fromIndex, toIndex) => { /* TODO updates moved placements*/
+    const moveColumn = async (fromIndex, toIndex) => { /* --------------------- TODO updates moved placements ---------------------*/
         const columnsArray = Object.keys(allColumns);
         const columnKeys = [...columnsArray];
         const movedColumn = columnKeys.splice(fromIndex, 1);
