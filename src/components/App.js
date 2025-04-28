@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import 'react-calendar/dist/Calendar.css';
 import CalendarPage from './calender-page/Calender';
 import Login from '../login/Login';
@@ -23,62 +25,64 @@ function App() {
         <BrowserRouter>
             <BackgroundManager>
                 {() => (
-                    <Routes>
-                        <Route
-                            path="/notes"
-                            element={
-                                <Layout>
-                                    <NotesPage />
-                                </Layout>
-                            }
-                        />
-                        <Route
-                            path="/profile"
-                            element={
-                                <PrivateRoute>
+                    <DndProvider backend={HTML5Backend}>
+                        <Routes>
+                            <Route
+                                path="/notes"
+                                element={
                                     <Layout>
-                                        <ProfilePage />
+                                        <NotesPage />
                                     </Layout>
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/home"
-                            element={
-                                <PrivateRoute>
-                                    <Layout>
-                                        <TodoBoard/>
-                                    </Layout>
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/calendar"
-                            element={
-                                <PrivateRoute>
-                                    <Layout>
+                                }
+                            />
+                            <Route
+                                path="/profile"
+                                element={
+                                    <PrivateRoute>
+                                        <Layout>
+                                            <ProfilePage />
+                                        </Layout>
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/home"
+                                element={
+                                    <PrivateRoute>
+                                        <Layout>
+                                            <TodoBoard/>
+                                        </Layout>
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/calendar"
+                                element={
+                                    <PrivateRoute>
+                                        <Layout>
                                             <CalendarPage />
-                                    </Layout>
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/auth/login"
-                            element={<Login />}
-                        />
-                        <Route
-                            path="/auth/register"
-                            element={<Register />}
-                        />
-                        <Route
-                            path="/auth/verify-email"
-                            element={<VerifyEmail />}
-                        />
-                        <Route
-                            path="/oauth2/redirect"
-                            element={<OAuth2RedirectHandler />}
-                        />
-                    </Routes>
+                                        </Layout>
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/auth/login"
+                                element={<Login />}
+                            />
+                            <Route
+                                path="/auth/register"
+                                element={<Register />}
+                            />
+                            <Route
+                                path="/auth/verify-email"
+                                element={<VerifyEmail />}
+                            />
+                            <Route
+                                path="/oauth2/redirect"
+                                element={<OAuth2RedirectHandler />}
+                            />
+                        </Routes>
+                    </DndProvider>
                 )}
             </BackgroundManager>
         </BrowserRouter>
