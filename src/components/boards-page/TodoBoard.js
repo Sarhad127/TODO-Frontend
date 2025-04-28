@@ -276,11 +276,39 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         setSelectedTodo(null);
     };
 
-    const deleteTodo = (todoToDelete) => {
-        const { column, index } = todoToDelete;
+    const deleteTodo = async (todoToDelete) => {
+        const { column, index, id } = todoToDelete;
         const updatedColumn = allColumns[column].tasks.filter((_, i) => i !== index);
+
         setAllColumns({ ...allColumns, [column]: { ...allColumns[column], tasks: updatedColumn } });
         setSelectedTodo(null);
+
+        let token = localStorage.getItem('token');
+        if (!token) {
+            token = sessionStorage.getItem('token');
+        }
+        if (!token) {
+            console.error('No authentication token found');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/tasks/delete/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                console.log('Task deleted successfully');
+            } else {
+                console.error('Failed to delete task from backend');
+            }
+        } catch (error) {
+            console.error('Error deleting task:', error);
+        }
     };
 
     const cancelAddTodo = () => {
