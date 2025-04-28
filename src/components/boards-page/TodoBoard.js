@@ -1,16 +1,55 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { FaPlus } from 'react-icons/fa';
 import TodoColumn from './TodoColumn';
 import { AddColumnModal } from './AddColumnModal';
 import { EditModal } from './EditTodoModal';
+import { useLocation } from 'react-router-dom';
 
 const TodoBoard = ({ backgroundColor, backgroundImage }) => {
     const [allColumns, setAllColumns] = useState({});
     const [selectedTodo, setSelectedTodo] = useState(null);
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
+
+    const location = useLocation();
+    const userData = location.state?.userData;
+
+    useEffect(() => {
+        if (userData) {
+            const { columns = [], tasks = [] } = userData;
+
+            const formattedColumns = {};
+            columns.forEach(column => {
+                formattedColumns[`column${column.id}`] = {
+                    id: column.id,
+                    title: column.title,
+                    titleColor: column.titleColor,
+                    tasks: [],
+                    position: column.placement
+                };
+            });
+
+            tasks.forEach(task => {
+                const columnKey = `column${task.columnId}`;
+                if (formattedColumns[columnKey]) {
+                    formattedColumns[columnKey].tasks.push({
+                        id: task.id,
+                        text: task.text,
+                        color: task.color,
+                        position: task.position
+                    });
+                }
+            });
+
+            Object.keys(formattedColumns).forEach(columnKey => {
+                formattedColumns[columnKey].tasks.sort((a, b) => a.position - b.position);
+            });
+
+            setAllColumns(formattedColumns);
+        }
+    }, [userData]);
 
     const removeColumn = async (columnName) => { /* --------------------- TODO removes columns ---------------------*/
         const columnId = columnName.replace('column', '');
@@ -53,7 +92,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
     };
 
-    const updateColumnPositions = async (updatedColumns) => {
+    const updateColumnPositions = async (updatedColumns) => { /* TODO updates column position*/
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) throw new Error('No authentication token found');

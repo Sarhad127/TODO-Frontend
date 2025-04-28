@@ -4,6 +4,7 @@ import TodoItem from './TodoItem';
 
 const ItemType = 'TODO';
 const ColumnType = 'COLUMN';
+
 function TodoColumn({
                         title,
                         columnName,

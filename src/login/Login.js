@@ -41,12 +41,20 @@ const Login = () => {
                     console.log('Token stored in sessionStorage:', sessionStorage.getItem('token'));
                 }
 
-                navigate('/home');
+                const userDataResponse = await fetch('http://localhost:8080/api/userdata', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                const userData = await userDataResponse.json();
+                navigate('/home', { state: { userData } });
+                console.log(userData)
             } else {
                 if (responseData.error === "UNVERIFIED_USER") {
                     navigate(`/auth/verify-email?email=${encodeURIComponent(email)}`);
-                }
-                else {
+                } else {
                     setErrorMessage(responseData?.message || responseData?.error || 'Login failed.');
                 }
             }
