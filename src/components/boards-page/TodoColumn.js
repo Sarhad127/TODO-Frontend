@@ -25,7 +25,7 @@ function TodoColumn({
         },
     });
 
-    const moveTodoWithinColumn = async (fromIndex, toIndex, column) => {
+    const moveTodoWithinColumn = async (fromIndex, toIndex, column) => { /* TODO moves task within same column */
         const updatedColumns = { ...allColumns };
         const columnTasks = [...updatedColumns[column].tasks];
         const [movedTodo] = columnTasks.splice(fromIndex, 1);
@@ -82,11 +82,48 @@ function TodoColumn({
         },
     });
 
-    const moveTodo = (fromIndex, fromColumn, toColumn) => {
+    const moveTodo = async (fromIndex, fromColumn, toColumn) => {
         const updatedColumns = { ...allColumns };
+
         const [movedTodo] = updatedColumns[fromColumn].tasks.splice(fromIndex, 1);
         updatedColumns[toColumn].tasks.push(movedTodo);
+
+        updatedColumns[fromColumn].tasks = updatedColumns[fromColumn].tasks.map((task, index) => ({
+            ...task,
+            position: index + 1,
+        }));
+        updatedColumns[toColumn].tasks = updatedColumns[toColumn].tasks.map((task, index) => ({
+            ...task,
+            position: index + 1,
+        }));
+
         setAllColumns(updatedColumns);
+
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) throw new Error('No authentication token found');
+
+            const taskId = movedTodo.id;
+            const newColumnId = updatedColumns[toColumn].id;
+
+            const response = await fetch(`http://localhost:8080/tasks/move/${taskId}?newColumnId=${newColumnId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Failed to move task');
+            }
+
+            console.log('Task moved successfully');
+        } catch (error) {
+            console.error('Error moving task:', error);
+            setAllColumns(allColumns);
+        }
     };
 
     const [{ isDragging }, drag] = useDrag({
