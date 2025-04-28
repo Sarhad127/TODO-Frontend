@@ -14,9 +14,14 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
 
     const removeColumn = async (columnName) => { /* --------------------- TODO removes columns ---------------------*/
         const columnId = columnName.replace('column', '');
-
         const updatedColumns = { ...allColumns };
         delete updatedColumns[columnName];
+
+        const columnKeys = Object.keys(updatedColumns);
+        columnKeys.forEach((column, index) => {
+            updatedColumns[column].position = index + 1;
+        });
+
         setAllColumns(updatedColumns);
 
         let token = localStorage.getItem('token');
@@ -39,11 +44,36 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
 
             if (response.ok) {
                 console.log('Column removed successfully');
+                await updateColumnPositions(updatedColumns);
             } else {
                 console.error('Failed to remove column from backend');
             }
         } catch (error) {
             console.error('Error removing column:', error);
+        }
+    };
+
+    const updateColumnPositions = async (updatedColumns) => {
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) throw new Error('No authentication token found');
+            const columnsArray = Object.values(updatedColumns);
+            const response = await fetch('http://localhost:8080/columns/update-positions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(columnsArray),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update column positions');
+            }
+
+            console.log('Column positions updated successfully');
+        } catch (error) {
+            console.error('Error updating column positions:', error);
         }
     };
 
