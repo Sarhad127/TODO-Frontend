@@ -3,11 +3,11 @@
     margin: 0 0 0 0;
     padding: 20px;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    border-radius: 4px;
     background-color: #f9f9f9;
     position: absolute;
-    top: 51%;
-    left: 52%;
+    top: 48%;
+    left: 53%;
     transform: translate(-50%, -50%);
 }
 
@@ -37,7 +37,7 @@
 .username-formGroup button {
     width: 100%;
     padding: 10px;
-    background-color: #007bff;
+    background-color: rgba(0, 89, 187, 0.87);
     color: white;
     border: none;
     border-radius: 4px;

@@ -24,7 +24,7 @@ const Navbar = () => {
 
                 <li className="boards-item" onClick={toggleBoardsDropdown}>
                     <button className="navbar-button">
-                        Boards <span className="dropdown-arrow">{isBoardsDropdownOpen ? '▲' : '▼'}</span>
+                        Boards <span className="dropdown-arrow">{isBoardsDropdownOpen}</span>
                     </button>
                     {isBoardsDropdownOpen && (
                         <ul className="dropdown-menu">
