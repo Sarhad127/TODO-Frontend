@@ -27,10 +27,10 @@ const Navbar = () => {
                         Boards <span className="dropdown-arrow">{isBoardsDropdownOpen}</span>
                     </button>
                     {isBoardsDropdownOpen && (
-                        <ul className="dropdown-menu">
-                            <li className="dropdown-item">Option 1</li>
-                            <li className="dropdown-item">Option 2</li>
-                            <li className="dropdown-item">Option 3</li>
+                        <ul className="dropdown-menu boards-dropdown">
+                            <li className="dropdown-boards">Option 1</li>
+                            <li className="dropdown-boards">Option 2</li>
+                            <li className="dropdown-boards">Option 3</li>
                         </ul>
                     )}
                 </li>
