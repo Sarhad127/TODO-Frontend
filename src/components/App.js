@@ -18,7 +18,7 @@ import './boards-page/boards-styles/TodoColumn.css';
 import './boards-page/boards-styles/Modals.css';
 import './boards-page/boards-styles/TodoItem.css';
 import './styles/Sidebar.css';
-import ProfilePage from "./profile-page/ProfilePage";
+import ProfilePage from "./profile-page/Profile";
 
 function App() {
     return (

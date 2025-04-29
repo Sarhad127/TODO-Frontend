@@ -1,58 +1,72 @@
-.profile-page {
-    margin-left: 260px;
-    height: calc(100vh - 46px);
-    display: flex;
-    box-sizing: border-box;
-    justify-content: center;
-    align-items: center;
+.user-profileContainer {
+    width: 400px;
+    margin: 0 0 0 0;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    position: absolute;
+    top: 51%;
+    left: 52%;
+    transform: translate(-50%, -50%);
 }
 
-.profile-container {
-    width: 600px;
-    height: 600px;
-    background-color: white;
-    border-radius: 6px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.profile-container ul {
-    list-style: none;
-    padding: 0;
-    margin: 40px;
-}
-
-.profile-container li {
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-}
-
-.profile-container label {
-    margin-bottom: 8px;
-    font-size: 14px;
+.user-profileContainer h2 {
+    text-align: center;
     color: #333;
+}
+
+.username-formGroup {
+    margin-bottom: 20px;
+}
+
+.username-formGroup label {
+    display: block;
+    margin-bottom: 5px;
     font-weight: bold;
 }
 
-.profile-container input[type="text"],
-.profile-container input[type="email"] {
+.username-formGroup input {
     width: 100%;
     padding: 10px;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 14px;
+}
+
+.username-formGroup button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.username-formGroup button:hover {
+    background-color: #0056b3;
+}
+
+.username-text {
+    width: 70%;
+    max-width: 400px;
+    margin-top: 10px;
     box-sizing: border-box;
 }
 
-.avatar-wrapper .avatar-container .avatar {
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 50px auto 20px auto;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    font-size: 40px;
-    font-weight: bold;
+.username-success {
+    color: green;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.username-error {
+    color: red;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.user-profileContainer hr {
+    margin: 20px 0;
 }

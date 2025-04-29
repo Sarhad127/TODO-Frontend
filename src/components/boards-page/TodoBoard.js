@@ -199,18 +199,11 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                 console.error('Error updating column:', error);
             }
 
-        } else if (isNew) { /* TODO handles new todo task*/
+        } else if (isNew) { /* TODO handles new todo task */
             if (!selectedTodo.text.trim()) {
                 alert("Todo text cannot be empty!");
                 return;
             }
-            setAllColumns({
-                ...allColumns,
-                [column]: {
-                    ...columnData,
-                    tasks: [...columnData.tasks, { text: selectedTodo.text, color: selectedTodo.color }],
-                },
-            });
 
             let token = localStorage.getItem('token');
             if (!token) {
@@ -247,8 +240,10 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                             ...columnData,
                             tasks: [...columnData.tasks, {
                                 id: newTask.id,
-                                text: selectedTodo.text,
-                                color: selectedTodo.color
+                                text: newTask.text,
+                                color: newTask.color,
+                                position: newTask.position,
+                                columnId: newTask.columnId,
                             }],
                         },
                     });
