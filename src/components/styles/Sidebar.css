@@ -1,7 +1,23 @@
+.sidebar ul li button,
+.sidebar-btn-settings,
+.sidebar-btn-logout,
+.upload-btn,
+.color-swatch,
+.sidebar-icon-pluto h2,
+.sidebar-icon-pluto,
+.tasks-title-first,
+.tasks-title-second,
+.sidebar-btn,
+.dropdown-content button {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 .sidebar {
     width: 260px;
     height: 100%;
-    background-color: rgba(31, 31, 38, 0.98);
+    background-color: rgb(31, 31, 38);
     color: white;
     display: flex;
     flex-direction: column;

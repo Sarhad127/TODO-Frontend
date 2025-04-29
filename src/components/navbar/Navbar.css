@@ -10,6 +10,15 @@
     align-items: center;
 }
 
+.dropdown-menu.boards-dropdown,
+.navbar-button,
+.avatar-button,
+.dropdown-item {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 .navbar-buttons {
     justify-content: start;
     list-style: none;
