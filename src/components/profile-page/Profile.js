@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Profile.css';
 
 const Profile = () => {
@@ -8,17 +8,34 @@ const Profile = () => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [decodedToken, setDecodedToken] = useState(null);
+
+    useEffect(() => {
+        if (token) {
+            const decoded = JSON.parse(atob(token.split('.')[1]));
+            setDecodedToken(decoded);
+            const currentUsername = decoded.sub || decoded.username;
+            setUsername(currentUsername);
+        }
+    }, [token]);
 
     const handleUsernameUpdate = async () => {
         setError('');
         setMessage('');
 
-        try {
-            console.log('Sending request to update username...');
+        if (!username.trim()) {
+            setError('Username cannot be empty.');
+            return;
+        }
 
+        if (decodedToken && (username === decodedToken.sub || username === decodedToken.username)) {
+            setError('New username cannot be the same as the current username.');
+            return;
+        }
+
+        try {
             const response = await fetch('http://localhost:8080/user/update-username', {
                 method: 'PUT',
                 headers: {
@@ -28,19 +45,24 @@ const Profile = () => {
                 body: JSON.stringify({ username }),
             });
 
-            console.log('Response received:', response);
-
             if (response.ok) {
-                setMessage('Username updated successfully.');
-                console.log('Username updated successfully');
-            } else {
+                const data = await response.json();
+                setMessage(data.message || 'Username updated successfully.');
+
+                if (data.token) {
+                    if (localStorage.getItem('token')) {
+                        localStorage.setItem('token', data.token);
+                    } else {
+                        sessionStorage.setItem('token', data.token);
+                    }
+                }
+            }
+            else {
                 const data = await response.json();
                 setError(data.message || 'Failed to update username.');
-                console.error('Error:', data.message || 'Failed to update username.');
             }
         } catch (err) {
             setError('Network error.');
-            console.error('Network error:', err);
         }
     };
 
@@ -89,7 +111,8 @@ const Profile = () => {
 
             <div className="username-formGroup">
                 <label>New Username:</label>
-                <input className="username-text"
+                <input
+                    className="username-text"
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
