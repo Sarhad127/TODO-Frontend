@@ -148,8 +148,8 @@ body, html {
 
 .sidebar-icon-pluto {
     display: flex;
-    align-items: center;
-    font-size: 20px;
+    align-items: end;
+    font-size: 35px;
     font-family: Verdana, sans-serif;
     color: white;
     line-height: 1;
@@ -162,7 +162,8 @@ body, html {
 }
 
 .sidebar-icon-pluto img {
-    width: 30px;
+    padding-right: 10px;
+    width: 40px;
     height: auto;
 }
 

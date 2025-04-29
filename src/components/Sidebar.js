@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import plutoIcon from '../icons/pluto-icon.png';
+import plutoIcon from '../icons/Pluto.png';
 import boardsIcon from '../icons/boards.png';
 import notesIcon from '../icons/notes.png';
 import calenderIcon from '../icons/calender.png';
