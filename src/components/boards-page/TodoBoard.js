@@ -5,7 +5,7 @@ import { FaPlus } from 'react-icons/fa';
 import TodoColumn from './TodoColumn';
 import { AddColumnModal } from './AddColumnModal';
 import { EditModal } from './EditTodoModal';
-import { useLocation } from 'react-router-dom';
+import { useUser } from '../../context/UserContext';
 
 const TodoBoard = ({ backgroundColor, backgroundImage }) => {
     const [allColumns, setAllColumns] = useState({});
@@ -13,8 +13,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
 
-    const location = useLocation();
-    const userData = location.state?.userData;
+
+    const { userData } = useUser();
 
     useEffect(() => {
         if (userData) {

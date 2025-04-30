@@ -4,6 +4,7 @@ import styles from './styles/Login.module.css';
 import plutoIcon from '../icons/pluto-icon.png';
 import googleIcon from '../icons/google-icon.png';
 import githubIcon from '../icons/github-icon.png';
+import { useUser } from '../context/UserContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ const Login = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const { updateUserData } = useUser();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -35,22 +37,12 @@ const Login = () => {
 
                 if (rememberMe) {
                     localStorage.setItem('token', token);
-                    console.log('Token stored in localStorage:', localStorage.getItem('token'));
                 } else {
                     sessionStorage.setItem('token', token);
-                    console.log('Token stored in sessionStorage:', sessionStorage.getItem('token'));
                 }
 
-                const userDataResponse = await fetch('http://localhost:8080/api/userdata', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                const userData = await userDataResponse.json();
-                navigate('/home', { state: { userData } });
-                console.log(userData)
+                await updateUserData();
+                navigate('/home');
             } else {
                 if (responseData.error === "UNVERIFIED_USER") {
                     navigate(`/auth/verify-email?email=${encodeURIComponent(email)}`);
@@ -60,6 +52,7 @@ const Login = () => {
             }
         } catch (error) {
             setErrorMessage('Network error. Please try again later.');
+            console.error('Login error:', error);
         } finally {
             setIsLoading(false);
         }
@@ -144,11 +137,7 @@ const Login = () => {
                     className={`${styles.oauthButton} ${styles.googleButton}`}
                     disabled={isLoading}
                 >
-                    <img
-                        src={googleIcon}
-                        alt="Google"
-                        className={styles.buttonIcon}
-                    />
+                    <img src={googleIcon} alt="Google" className={styles.buttonIcon} />
                     <span>Login with Google</span>
                 </button>
 
@@ -157,11 +146,7 @@ const Login = () => {
                     className={`${styles.oauthButton} ${styles.githubButton}`}
                     disabled={isLoading}
                 >
-                    <img
-                        src={githubIcon}
-                        alt="Github"
-                        className={styles.buttonIcon2}
-                    />
+                    <img src={githubIcon} alt="Github" className={styles.buttonIcon2} />
                     <span>Login with GitHub</span>
                 </button>
             </div>

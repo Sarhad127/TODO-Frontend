@@ -1,41 +1,28 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 const OAuth2RedirectHandler = () => {
     const navigate = useNavigate();
+    const { updateUserData } = useUser();
 
     useEffect(() => {
-        const fetchAndNavigateWithUserData = async (token) => {
+        const handleOAuthSuccess = async (token) => {
             try {
-                const userDataResponse = await fetch('http://localhost:8080/api/userdata', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                if (userDataResponse.ok) {
-                    const userData = await userDataResponse.json();
-                    const preAuthPath = localStorage.getItem('preAuthPath') || '/home';
-                    localStorage.removeItem('preAuthPath');
-
-                    const rememberMe = localStorage.getItem('rememberMe') === 'true';
-                    if (rememberMe) {
-                        localStorage.setItem('token', token);
-                    } else {
-                        sessionStorage.setItem('token', token);
-                    }
-
-                    navigate(preAuthPath, {
-                        state: { userData },
-                        replace: true
-                    });
+                const rememberMe = localStorage.getItem('rememberMe') === 'true';
+                if (rememberMe) {
+                    localStorage.setItem('token', token);
                 } else {
-                    console.error('Failed to fetch user data');
-                    navigate('/login');
+                    sessionStorage.setItem('token', token);
                 }
+
+                await updateUserData();
+
+                const preAuthPath = localStorage.getItem('preAuthPath') || '/home';
+                localStorage.removeItem('preAuthPath');
+                navigate(preAuthPath, { replace: true });
             } catch (error) {
-                console.error('Error fetching user data:', error);
+                console.error('OAuth processing error:', error);
                 navigate('/login');
             }
         };
@@ -51,18 +38,20 @@ const OAuth2RedirectHandler = () => {
         }
 
         if (token) {
-            fetchAndNavigateWithUserData(token);
+            handleOAuthSuccess(token);
         } else {
             const storedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (storedToken) {
-                fetchAndNavigateWithUserData(storedToken);
+                handleOAuthSuccess(storedToken);
             } else {
                 navigate('/login');
             }
         }
-    }, [navigate]);
+    }, [navigate, updateUserData]);
 
-    return <p>Logging you in...</p>;
+    return <div className="oauth-redirect-handler">
+        <p>Logging you in...</p>
+    </div>;
 };
 
 export default OAuth2RedirectHandler;
