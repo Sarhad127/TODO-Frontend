@@ -17,6 +17,9 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
         accept: ItemType,
         hover(item, monitor) {
             if (!ref.current) return;
+            if (item.column !== column) {
+                return;
+            }
             const dragIndex = item.index;
             const hoverIndex = index;
             if (dragIndex === hoverIndex) return;
@@ -39,11 +42,16 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
                 backgroundColor: todo.color,
                 opacity: isDragging ? 0.5 : 1,
                 cursor: 'move',
-                transition: 'transform 0.2s ease'
+                transition: 'transform 0.2s ease',
+                padding: '8px',
+                zIndex: isDragging ? 9999 : 1,
             }}
             onClick={() => openEditModal(index, column)}
         >
-            {todo.text}
+            <strong>{todo.text}</strong>
+            <div style={{ fontSize: '0.75rem', marginTop: '4px', color: '#333' }}>
+                ID: {todo.id} | Column ID: {todo.columnId} | Position: {todo.position}
+            </div>
         </div>
     );
 }
