@@ -54,6 +54,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
     const removeColumn = async (columnName) => { /* --------------------- TODO removes columns ---------------------*/
         const columnId = columnName.replace('column', '');
         const updatedColumns = { ...allColumns };
+        const columnTasks = updatedColumns[columnName].tasks;
         delete updatedColumns[columnName];
 
         const columnKeys = Object.keys(updatedColumns);
@@ -73,7 +74,23 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8080/auth/columns/delete/${columnId}`, {
+            await Promise.all(
+                columnTasks.map(async (task) => {
+                    const taskId = task.id;
+                    const response = await fetch(`http://localhost:8080/tasks/delete/${taskId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                    });
+
+                    if (!response.ok) {
+                        console.error(`Failed to delete task ${taskId} from backend`);
+                    }
+                })
+            );
+            const columnResponse = await fetch(`http://localhost:8080/auth/columns/delete/${columnId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -81,7 +98,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                 },
             });
 
-            if (response.ok) {
+            if (columnResponse.ok) {
                 console.log('Column removed successfully');
                 await updateColumnPositions(updatedColumns);
             } else {

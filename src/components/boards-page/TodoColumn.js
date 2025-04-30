@@ -87,6 +87,10 @@ function TodoColumn({
         const updatedColumns = { ...allColumns };
 
         const [movedTodo] = updatedColumns[fromColumn].tasks.splice(fromIndex, 1);
+
+        const newColumnId = updatedColumns[toColumn].id;
+        movedTodo.columnId = newColumnId;
+
         updatedColumns[toColumn].tasks.push(movedTodo);
 
         updatedColumns[fromColumn].tasks = updatedColumns[fromColumn].tasks.map((task, index) => ({
@@ -105,7 +109,6 @@ function TodoColumn({
             if (!token) throw new Error('No authentication token found');
 
             const taskId = movedTodo.id;
-            const newColumnId = updatedColumns[toColumn].id;
 
             const response = await fetch(`http://localhost:8080/tasks/move/${taskId}?newColumnId=${newColumnId}`, {
                 method: 'PUT',
