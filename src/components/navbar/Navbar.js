@@ -8,13 +8,38 @@ const Navbar = () => {
     const navigate = useNavigate();
     const [isBoardsDropdownOpen, setIsBoardsDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+    const [boards, setBoards] = useState([]);
 
     const { userData, updateUserData } = useUser();
 
     useEffect(() => {
+        const fetchBoards = async () => {
+            try {
+                const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                if (!token) {
+                    console.error("No token found");
+                    return;
+                }
+
+                const response = await fetch('http://localhost:8080/api/boards', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch boards');
+                }
+
+                const boardsData = await response.json();
+                setBoards(boardsData);
+            } catch (error) {
+                console.error('Error fetching boards:', error);
+            }
+        };
+
         if (userData) {
-            console.log("Board ID:", userData.boardId);
-            console.log("Board Position:", userData.boardPosition);
+            fetchBoards();
         }
     }, [userData]);
 
@@ -73,13 +98,13 @@ const Navbar = () => {
                     </button>
                     {isBoardsDropdownOpen && (
                         <ul className="dropdown-menu boards-dropdown">
-                            {userData && userData.boards && userData.boards.length > 0 ? (
-                                userData.boards.map((board, index) => (
+                            {boards && boards.length > 0 ? (
+                                boards.map((board) => (
                                     <li
                                         key={board.id}
                                         className={`dropdown-boards ${board.position === userData.boardPosition ? 'default-board' : ''}`}
                                     >
-                                        {board.title || `Board ${index + 1}`}
+                                        {board.title || `Board ${board.position}`}
                                     </li>
                                 ))
                             ) : (
