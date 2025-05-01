@@ -12,13 +12,18 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
     const [selectedTodo, setSelectedTodo] = useState(null);
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
+    const [board, setBoard] = useState(null);
 
 
     const { userData } = useUser();
 
     useEffect(() => {
         if (userData) {
-            const { columns = [], tasks = [] } = userData;
+            const { boardId, columns = [], tasks = [] } = userData;
+
+            if (boardId) {
+                setBoard({ id: boardId });
+            }
 
             const formattedColumns = {};
             columns.forEach(column => {
@@ -51,12 +56,13 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
     }, [userData]);
 
-    const removeColumn = async (columnName) => { /* --------------------- TODO removes columns ---------------------*/
+
+    const removeColumn = async (columnName) => {                      /* TODO removes tasks and columns */
         const columnId = columnName.replace('column', '');
         const updatedColumns = { ...allColumns };
         const columnTasks = updatedColumns[columnName].tasks;
         delete updatedColumns[columnName];
-
+        console.log('Attempting to delete column with ID:', columnId);
         const columnKeys = Object.keys(updatedColumns);
         columnKeys.forEach((column, index) => {
             updatedColumns[column].position = index + 1;
@@ -90,7 +96,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                     }
                 })
             );
-            const columnResponse = await fetch(`http://localhost:8080/auth/columns/delete/${columnId}`, {
+            const columnResponse = await fetch(`http://localhost:8080/auth/boards/${board.id}/columns/${columnId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -109,7 +115,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
     };
 
-    const updateColumnPositions = async (updatedColumns) => { /* TODO updates column position*/
+    const updateColumnPositions = async (updatedColumns) => {                         /* TODO updates column position*/
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) throw new Error('No authentication token found');
@@ -137,7 +143,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         setSelectedTodo({ ...allColumns[column].tasks[index], index, column });
     };
 
-    const updateTask = async (taskData) => { /* TODO update a task */
+    const updateTask = async (taskData) => {                                                   /* TODO updates tasks */
         let token = localStorage.getItem('token');
         if (!token) {
             token = sessionStorage.getItem('token');
@@ -171,7 +177,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
     };
 
-    const saveChanges = async () => { /* TODO saves changes made to columns*/
+    const saveChanges = async () => {                                                        /* TODO updates columns */
         const { column, index, isNew, isTitleChange } = selectedTodo;
         const columnData = allColumns[column];
 
@@ -195,7 +201,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
             }
 
             try {
-                const response = await fetch(`http://localhost:8080/auth/columns/${columnData.id}`, {
+                const response = await fetch(
+                    `http://localhost:8080/auth/boards/${board.id}/columns/${columnData.id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -288,7 +295,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         setSelectedTodo(null);
     };
 
-    const deleteTodo = async (todoToDelete) => {
+    const deleteTodo = async (todoToDelete) => {                                                /* TODO removes task */
         const { column, index, id } = todoToDelete;
         const updatedColumn = allColumns[column].tasks.filter((_, i) => i !== index);
 
@@ -337,56 +344,55 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         });
     };
 
-    const addNewColumn = async () => {  /* --------------------- TODO saves new column to database ---------------------*/
+    const addNewColumn = async () => {                                              /* TODO creates new column*/
         if (newColumnTitle.trim()) {
-            const newColumnKey = `column${Object.keys(allColumns).length + 1}`;
             const newColumn = {
                 title: newColumnTitle,
                 titleColor: '#000000',
                 tasks: [],
             };
-            setAllColumns({
-                ...allColumns,
-                [newColumnKey]: newColumn,
-            });
-            let token = localStorage.getItem('token');
-            if (!token) {
-                token = sessionStorage.getItem('token');
-            }
+
+            let token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) {
                 console.error('No authentication token found');
                 return;
             }
+
+            const boardId = board?.id;
+            if (!boardId) {
+                console.error('Board ID is missing');
+                return;
+            }
+
             try {
-                const response = await fetch('http://localhost:8080/auth/columns', {
+                const response = await fetch(`http://localhost:8080/auth/boards/${board.id}/columns`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
                     },
-                    body: JSON.stringify({
-                        title: newColumnTitle,
-                        titleColor: '#000000',
-                        tasks: [],}),
+                    body: JSON.stringify(newColumn),
                 });
 
                 if (response.ok) {
                     const data = await response.json();
                     const backendId = data.id;
-                    setAllColumns({
-                        ...allColumns,
-                        [`column${backendId}`]: {
+                    const newColumnKey = `column${backendId}`;
+                    setAllColumns((prev) => ({
+                        ...prev,
+                        [newColumnKey]: {
                             ...newColumn,
                             id: backendId,
                         },
-                    });
+                    }));
                     console.log('Column added successfully');
                 } else {
-                    console.error('Error adding column to backend');
+                    console.error('Error adding column to backend:', await response.text());
                 }
             } catch (error) {
                 console.error('Error with API call:', error);
             }
+
             setNewColumnTitle('');
             setShowAddColumnModal(false);
         } else {
@@ -394,7 +400,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
     };
 
-    const moveColumn = async (fromIndex, toIndex) => { /* --------------------- TODO updates moved placements ---------------------*/
+
+    const moveColumn = async (fromIndex, toIndex) => {                                     /*  TODO reorders columns */
         const columnsArray = Object.keys(allColumns);
         const columnKeys = [...columnsArray];
         const movedColumn = columnKeys.splice(fromIndex, 1);
@@ -417,7 +424,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/auth/columns/reorder', {
+            const response = await fetch(
+                `http://localhost:8080/auth/boards/${board.id}/columns/order`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
