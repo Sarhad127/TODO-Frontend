@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
 import './Navbar.css';
 import UserAvatar from '../UserAvatar';
+import {useNavigate} from "react-router-dom";
 
 const Navbar = () => {
+    const navigate = useNavigate();
     const [isBoardsDropdownOpen, setIsBoardsDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
     const toggleBoardsDropdown = () => setIsBoardsDropdownOpen(!isBoardsDropdownOpen);
     const toggleUserDropdown = () => setIsUserDropdownOpen(!isUserDropdownOpen);
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
+        console.log('token removed');
+        navigate('/auth/login');
+    };
 
     return (
         <nav className="navbar">
@@ -15,13 +24,13 @@ const Navbar = () => {
 
                 <li className="boards-item" onClick={toggleBoardsDropdown}>
                     <button className="navbar-button">
-                        Boards <span className="dropdown-arrow">{isBoardsDropdownOpen ? '▲' : '▼'}</span>
+                        Boards <span className="dropdown-arrow">{isBoardsDropdownOpen}</span>
                     </button>
                     {isBoardsDropdownOpen && (
-                        <ul className="dropdown-menu">
-                            <li className="dropdown-item">Option 1</li>
-                            <li className="dropdown-item">Option 2</li>
-                            <li className="dropdown-item">Option 3</li>
+                        <ul className="dropdown-menu boards-dropdown">
+                            <li className="dropdown-boards">Option 1</li>
+                            <li className="dropdown-boards">Option 2</li>
+                            <li className="dropdown-boards">Option 3</li>
                         </ul>
                     )}
                 </li>
@@ -33,8 +42,8 @@ const Navbar = () => {
                     </button>
                     {isUserDropdownOpen && (
                         <ul className="dropdown-menu user-dropdown">
-                            <li className="dropdown-item">Profile</li>
-                            <li className="dropdown-item">Logout</li>
+                            <li className="dropdown-item" onClick={() => navigate('/profile')}>Profile</li>
+                            <li className="dropdown-item" onClick={handleLogout}>Logout</li>
                         </ul>
                     )}
                 </div>

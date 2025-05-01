@@ -1,7 +1,23 @@
+.sidebar ul li button,
+.sidebar-btn-settings,
+.sidebar-btn-logout,
+.upload-btn,
+.color-swatch,
+.sidebar-icon-pluto h2,
+.sidebar-icon-pluto,
+.tasks-title-first,
+.tasks-title-second,
+.sidebar-btn,
+.dropdown-content button {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 .sidebar {
     width: 260px;
     height: 100%;
-    background-color: rgba(31, 31, 38, 1);
+    background-color: rgb(31, 31, 38);
     color: white;
     display: flex;
     flex-direction: column;
@@ -132,8 +148,8 @@ body, html {
 
 .sidebar-icon-pluto {
     display: flex;
-    align-items: center;
-    font-size: 20px;
+    align-items: end;
+    font-size: 35px;
     font-family: Verdana, sans-serif;
     color: white;
     line-height: 1;
@@ -146,7 +162,8 @@ body, html {
 }
 
 .sidebar-icon-pluto img {
-    width: 30px;
+    padding-right: 10px;
+    width: 40px;
     height: auto;
 }
 

@@ -1,0 +1,72 @@
+.user-profileContainer {
+    width: 400px;
+    margin: 0 0 0 0;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    position: absolute;
+    top: 48%;
+    left: 53%;
+    transform: translate(-50%, -50%);
+}
+
+.user-profileContainer h2 {
+    text-align: center;
+    color: #333;
+}
+
+.username-formGroup {
+    margin-bottom: 20px;
+}
+
+.username-formGroup label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.username-formGroup input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.username-formGroup button {
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(0, 89, 187, 0.87);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.username-formGroup button:hover {
+    background-color: #0056b3;
+}
+
+.username-text {
+    width: 70%;
+    max-width: 400px;
+    margin-top: 10px;
+    box-sizing: border-box;
+}
+
+.username-success {
+    color: green;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.username-error {
+    color: red;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.user-profileContainer hr {
+    margin: 20px 0;
+}
