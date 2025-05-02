@@ -136,7 +136,7 @@ const Navbar = ({ onBoardSelect }) => {
                                 <li className="dropdown-boards">No boards available</li>
                             )}
                             <li className="dropdown-boards-button" onClick={createNewBoard}>
-                                Create New Board
+                                <span className="create-new-text-button">Create New Board</span>
                             </li>
                         </ul>
                     )}

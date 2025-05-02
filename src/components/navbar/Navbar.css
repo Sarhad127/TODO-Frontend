@@ -200,9 +200,11 @@
     border-right: 8px solid transparent;
     border-bottom: 8px solid rgba(47, 47, 47, 0.98);
 }
-
+.create-new-text-button {
+    font-weight: bold;
+}
 .dropdown-boards-button {
-    background-color: rgba(128, 128, 128, 0.32);
+    background-color: rgba(128, 128, 128, 0.14);
 }
 
 .selected-board-title {
