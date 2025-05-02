@@ -33,6 +33,9 @@ const Navbar = ({ onBoardSelect }) => {
 
                 const boardsData = await response.json();
                 setBoards(boardsData);
+                if (!selectedBoardTitle && boardsData.length > 0) {
+                    setSelectedBoardTitle(boardsData[0].title || `Board ${boardsData[0].position}`);
+                }
             } catch (error) {
                 console.error('Error fetching boards:', error);
             }
