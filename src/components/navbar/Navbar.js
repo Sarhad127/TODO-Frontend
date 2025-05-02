@@ -145,10 +145,16 @@ const Navbar = ({ onBoardSelect }) => {
         try {
             const confirmDelete = window.confirm("Are you sure you want to delete this board?");
             if (!confirmDelete) return;
+
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             const board = boards.find(b => b.title === selectedBoardTitle);
+
             if (!token || !board) return;
 
+            if (board.title === "Default Board") {
+                alert("The Default Board cannot be deleted.");
+                return;
+            }
             const response = await fetch(`http://localhost:8080/api/boards/${board.id}`, {
                 method: 'DELETE',
                 headers: {
