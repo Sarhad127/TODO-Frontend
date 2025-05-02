@@ -200,3 +200,14 @@
     border-right: 8px solid transparent;
     border-bottom: 8px solid rgba(47, 47, 47, 0.98);
 }
+
+.dropdown-boards-button {
+    background-color: rgba(128, 128, 128, 0.32);
+}
+
+.selected-board-title {
+    font-weight: bold;
+    color: grey;
+    margin-left: 15px;
+    font-style: italic;
+}

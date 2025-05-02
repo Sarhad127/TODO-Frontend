@@ -9,7 +9,7 @@ const Navbar = ({ onBoardSelect }) => {
     const [isBoardsDropdownOpen, setIsBoardsDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
     const [boards, setBoards] = useState([]);
-
+    const [selectedBoardTitle, setSelectedBoardTitle] = useState('');
     const { userData, updateUserData } = useUser();
 
     useEffect(() => {
@@ -97,9 +97,9 @@ const Navbar = ({ onBoardSelect }) => {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-
             if (response.ok) {
                 const boardData = await response.json();
+                setSelectedBoardTitle(boardData.title);
                 if (onBoardSelect) {
                     onBoardSelect(position);
                 }
@@ -132,12 +132,13 @@ const Navbar = ({ onBoardSelect }) => {
                             ) : (
                                 <li className="dropdown-boards">No boards available</li>
                             )}
-                            <li className="dropdown-boards" onClick={createNewBoard}>
-                                <button>Create New Board</button>
+                            <li className="dropdown-boards-button" onClick={createNewBoard}>
+                                Create New Board
                             </li>
                         </ul>
                     )}
                 </li>
+                {selectedBoardTitle && <span className="selected-board-title">{selectedBoardTitle}</span>}
             </ul>
 
             <div className="navbar-item-avatar" onClick={toggleUserDropdown}>
