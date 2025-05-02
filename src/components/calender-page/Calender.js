@@ -70,7 +70,6 @@ function CalendarPage() {
 
   return (
       <div className="calendar-app">
-        <h1 className="calendar-title">Calendar</h1>
         <div className="calendar-container">
           {renderHeader()}
           {renderDays()}

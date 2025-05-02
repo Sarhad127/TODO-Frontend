@@ -1,17 +1,8 @@
 .calendar-app {
-    margin-left: 278px;
+    margin: 40px 80px 30px 290px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     box-sizing: border-box;
-}
-
-.calendar-title {
-    font-size: 3rem;
-    font-weight: bold;
-    color: snow;
-    text-align: center;
-    font-family: "Book Antiqua", sans-serif;
-    margin: 18px 0 14px;
 }
 
 .calendar-container {
@@ -37,7 +28,8 @@
 }
 
 .calendar-header button {
-    background: #c7c7c7;
+    margin-top: 8px;
+    background: rgba(21, 21, 21, 0.6);
     border: none;
     border-radius: 50%;
     width: 40px;

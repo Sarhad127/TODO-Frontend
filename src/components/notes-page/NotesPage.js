@@ -194,7 +194,6 @@ const NotesPage = () => {
     return (
         <div className="notesPage-app">
             <Sidebar changeBackgroundColor={() => true} />
-            <h1 className="notes-title">Notes</h1>
             <div className="notes-grid">
                 {notes.map((note, index) => (
                     <div
