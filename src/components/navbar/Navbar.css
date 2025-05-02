@@ -209,5 +209,11 @@
     font-weight: bold;
     color: grey;
     margin-left: 15px;
-    font-style: italic;
+    font-style: normal;
+}
+
+.selected-board-title{
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
