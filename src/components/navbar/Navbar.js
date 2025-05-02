@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from '../../context/UserContext';
 import profileIcon from '../../icons/profile-2.png';
 import logoutIcon from '../../icons/logout.png';
+import tasksIcon from '../../icons/tasks.png'
 
 const Navbar = ({ onBoardSelect }) => {
     const navigate = useNavigate();
@@ -68,12 +69,23 @@ const Navbar = ({ onBoardSelect }) => {
                 console.error("No token found");
                 return;
             }
+            const existingBoardNumbers = boards
+                .map(board => {
+                    const match = board.title?.match(/New Board (\d+)/);
+                    return match ? parseInt(match[1]) : 0;
+                })
+                .filter(num => !isNaN(num));
 
+            const highestNumber = existingBoardNumbers.length > 0
+                ? Math.max(...existingBoardNumbers)
+                : 0;
+
+            const newBoardNumber = highestNumber + 1;
             const newBoardPosition = (userData && userData.boardPosition) ? userData.boardPosition + 1 : 1;
 
             const newBoard = {
                 position: newBoardPosition,
-                title: `New Board ${newBoardPosition}`,
+                title: `Board ${newBoardNumber}`,
             };
 
             const response = await fetch('http://localhost:8080/api/boards', {
@@ -188,6 +200,12 @@ const Navbar = ({ onBoardSelect }) => {
                                         className={`dropdown-boards ${board.position === userData.boardPosition ? 'default-board' : ''}`}
                                         onClick={() => handleBoardClick(board.position)}
                                     >
+                                        <img
+                                            src={tasksIcon}
+                                            alt="Board"
+                                            className="board-icon"
+                                            style={{ width: '16px', height: '16px', marginRight: '8px' }}
+                                        />
                                         {board.title || `Board ${board.position}`}
                                     </li>
                                 ))
@@ -195,7 +213,7 @@ const Navbar = ({ onBoardSelect }) => {
                                 <li className="dropdown-boards">No boards available</li>
                             )}
                             <li className="dropdown-boards-button" onClick={createNewBoard}>
-                                <span className="create-new-text-button">New Board</span>
+                                <span className="create-new-text-button">Add Board</span>
                             </li>
                         </ul>
                     )}

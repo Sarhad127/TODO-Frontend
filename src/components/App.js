@@ -32,9 +32,11 @@ function App() {
                                 <Route
                                     path="/notes"
                                     element={
+                                        <PrivateRoute>
                                         <Layout>
                                             <NotesPage />
                                         </Layout>
+                                        </PrivateRoute>
                                     }
                                 />
                                 <Route
