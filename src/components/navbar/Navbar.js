@@ -71,7 +71,7 @@ const Navbar = ({ onBoardSelect }) => {
             }
             const existingBoardNumbers = boards
                 .map(board => {
-                    const match = board.title?.match(/New Board (\d+)/);
+                    const match = board.title?.match(/Board (\d+)/);
                     return match ? parseInt(match[1]) : 0;
                 })
                 .filter(num => !isNaN(num));
@@ -163,10 +163,6 @@ const Navbar = ({ onBoardSelect }) => {
 
             if (!token || !board) return;
 
-            if (board.title === "Default Board") {
-                alert("The Default Board cannot be deleted.");
-                return;
-            }
             const response = await fetch(`http://localhost:8080/api/boards/${board.id}`, {
                 method: 'DELETE',
                 headers: {
