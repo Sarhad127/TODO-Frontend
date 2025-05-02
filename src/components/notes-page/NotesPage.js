@@ -51,13 +51,37 @@ const NotesPage = () => {
         });
     }, [notes]);
 
-    const addNewNote = () => {
-        setNotes([...notes, {
+    const addNewNote = async () => {
+        const newNote = {
             title: 'New Note',
             text: '',
             color: generateNotesColor(),
             date: '',
-        }]);
+        };
+
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) throw new Error('No authentication token found');
+
+            const response = await fetch('http://localhost:8080/api/notes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(newNote),
+            });
+            console.log(newNote);
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Failed to create note');
+            }
+
+            const savedNote = await response.json();
+            setNotes(prevNotes => [...prevNotes, savedNote]);
+        } catch (error) {
+            console.error('Error creating note:', error);
+        }
     };
 
     const deleteNote = (index) => {
