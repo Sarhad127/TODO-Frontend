@@ -141,6 +141,31 @@ const Navbar = ({ onBoardSelect }) => {
         }
     };
 
+    const deleteBoard = async () => {
+        try {
+            const confirmDelete = window.confirm("Are you sure you want to delete this board?");
+            if (!confirmDelete) return;
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            const board = boards.find(b => b.title === selectedBoardTitle);
+            if (!token || !board) return;
+
+            const response = await fetch(`http://localhost:8080/api/boards/${board.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Delete failed');
+
+            updateUserData();
+            setIsSettingsDropdownOpen(false);
+            setSelectedBoardTitle('');
+        } catch (error) {
+            console.error('Error deleting board:', error);
+        }
+    };
+
     return (
         <nav className="navbar">
             <ul className="navbar-buttons">
@@ -164,7 +189,7 @@ const Navbar = ({ onBoardSelect }) => {
                                 <li className="dropdown-boards">No boards available</li>
                             )}
                             <li className="dropdown-boards-button" onClick={createNewBoard}>
-                                <span className="create-new-text-button">Create New Board</span>
+                                <span className="create-new-text-button">New Board</span>
                             </li>
                         </ul>
                     )}
@@ -214,7 +239,9 @@ const Navbar = ({ onBoardSelect }) => {
                                     >
                                         Rename Board
                                     </div>
-                                    <div className="dropdown-item">Delete Board</div>
+                                    <div className="dropdown-item" onClick={deleteBoard}>
+                                        Delete Board
+                                    </div>
                                 </div>
                             )}
                         </div>
