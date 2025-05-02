@@ -14,6 +14,8 @@ const Navbar = ({ onBoardSelect }) => {
     const [selectedBoardTitle, setSelectedBoardTitle] = useState('');
     const { userData, updateUserData } = useUser();
     const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
+    const [isRenaming, setIsRenaming] = useState(false);
+    const [editableTitle, setEditableTitle] = useState('');
 
     useEffect(() => {
         const fetchBoards = async () => {
@@ -115,6 +117,29 @@ const Navbar = ({ onBoardSelect }) => {
         }
     };
 
+    const renameBoard = async (boardId, newTitle) => {
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            const response = await fetch(`http://localhost:8080/api/boards/${boardId}/title`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title: newTitle })
+            });
+
+            if (!response.ok) throw new Error("Rename failed");
+
+            const updatedBoard = await response.json();
+            setSelectedBoardTitle(updatedBoard.title);
+            setIsRenaming(false);
+            setEditableTitle('');
+            updateUserData();
+        } catch (err) {
+            console.error("Rename error:", err);
+        }
+    };
 
     return (
         <nav className="navbar">
@@ -146,7 +171,27 @@ const Navbar = ({ onBoardSelect }) => {
                 </li>
                 {selectedBoardTitle && (
                     <div className="board-settings-wrapper">
-                        <span className="selected-board-title">{selectedBoardTitle}</span>
+                        {isRenaming ? (
+                            <input
+                                type="text"
+                                value={editableTitle}
+                                onChange={(e) => setEditableTitle(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        const board = boards.find(b => b.title === selectedBoardTitle);
+                                        if (board) renameBoard(board.id, editableTitle);
+                                    }
+                                }}
+                                onBlur={() => {
+                                    setIsRenaming(false);
+                                    setEditableTitle('');
+                                }}
+                                autoFocus
+                                className="rename-input"
+                            />
+                        ) : (
+                            <span className="selected-board-title">{selectedBoardTitle}</span>
+                        )}
                         <div className="board-settings-container">
                             <button
                                 className="vertical-dots-button"
@@ -159,7 +204,16 @@ const Navbar = ({ onBoardSelect }) => {
                             </button>
                             {isSettingsDropdownOpen && (
                                 <div className="settings-dropdown">
-                                    <div className="dropdown-item">Rename Board</div>
+                                    <div
+                                        className="dropdown-item"
+                                        onClick={() => {
+                                            setIsRenaming(true);
+                                            setEditableTitle(selectedBoardTitle);
+                                            setIsSettingsDropdownOpen(false);
+                                        }}
+                                    >
+                                        Rename Board
+                                    </div>
                                     <div className="dropdown-item">Delete Board</div>
                                 </div>
                             )}
