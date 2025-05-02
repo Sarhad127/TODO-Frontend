@@ -434,7 +434,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         try {
             const response = await fetch(
                 `http://localhost:8080/auth/boards/${board.id}/columns/order`, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
