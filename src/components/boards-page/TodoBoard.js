@@ -70,7 +70,6 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         const updatedColumns = { ...allColumns };
         const columnTasks = updatedColumns[columnName].tasks;
         delete updatedColumns[columnName];
-        console.log('Attempting to delete column with ID:', columnId);
         const columnKeys = Object.keys(updatedColumns);
         columnKeys.forEach((column, index) => {
             updatedColumns[column].position = index + 1;
