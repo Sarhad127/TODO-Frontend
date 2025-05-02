@@ -13,6 +13,7 @@ const Navbar = ({ onBoardSelect }) => {
     const [boards, setBoards] = useState([]);
     const [selectedBoardTitle, setSelectedBoardTitle] = useState('');
     const { userData, updateUserData } = useUser();
+    const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
 
     useEffect(() => {
         const fetchBoards = async () => {
@@ -143,7 +144,28 @@ const Navbar = ({ onBoardSelect }) => {
                         </ul>
                     )}
                 </li>
-                {selectedBoardTitle && <span className="selected-board-title">{selectedBoardTitle}</span>}
+                {selectedBoardTitle && (
+                    <div className="board-settings-wrapper">
+                        <span className="selected-board-title">{selectedBoardTitle}</span>
+                        <div className="board-settings-container">
+                            <button
+                                className="vertical-dots-button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsSettingsDropdownOpen(!isSettingsDropdownOpen);
+                                }}
+                            >
+                                ⋮
+                            </button>
+                            {isSettingsDropdownOpen && (
+                                <div className="settings-dropdown">
+                                    <div className="dropdown-item">Rename Board</div>
+                                    <div className="dropdown-item">Delete Board</div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
             </ul>
 
             <div className="navbar-item-avatar" onClick={toggleUserDropdown}>

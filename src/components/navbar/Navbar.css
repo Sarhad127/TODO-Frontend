@@ -11,6 +11,7 @@
 }
 
 .dropdown-menu.boards-dropdown,
+.board-settings-wrapper,
 .navbar-button,
 .avatar-button,
 .dropdown-item {
@@ -226,4 +227,57 @@
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
+}
+
+.board-settings-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+}
+
+.vertical-dots-button {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 5px 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(90deg);
+    width: 15px;
+    height: 24px;
+    border-radius: 3px;
+    rotate: 90deg;
+}
+
+.vertical-dots-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.settings-dropdown {
+    position: absolute;
+    left: 0;
+    transform: translateX(10px);
+    background-color: rgba(51, 51, 51, 0.99);
+    border-radius: 4px;
+    padding: 5px 0;
+    margin: 14px 0 0 0;
+    min-width: 180px;
+    z-index: 1001;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.settings-dropdown .dropdown-item {
+    padding: 8px 16px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.settings-dropdown .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
