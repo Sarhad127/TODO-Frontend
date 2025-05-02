@@ -3,6 +3,8 @@ import './Navbar.css';
 import UserAvatar from '../UserAvatar';
 import { useNavigate } from "react-router-dom";
 import { useUser } from '../../context/UserContext';
+import profileIcon from '../../icons/profile-2.png';
+import logoutIcon from '../../icons/logout.png';
 
 const Navbar = ({ onBoardSelect }) => {
     const navigate = useNavigate();
@@ -150,8 +152,14 @@ const Navbar = ({ onBoardSelect }) => {
                 </button>
                 {isUserDropdownOpen && (
                     <ul className="dropdown-menu user-dropdown">
-                        <li className="dropdown-item" onClick={() => navigate('/profile')}>Profile</li>
-                        <li className="dropdown-item" onClick={handleLogout}>Logout</li>
+                        <li className="dropdown-item" onClick={() => navigate('/profile')}>
+                            <img src={profileIcon} alt="Profile" className="dropdown-icon-profile" />
+                            Profile
+                        </li>
+                        <li className="dropdown-item" onClick={handleLogout}>
+                            <img src={logoutIcon} alt="Logout" className="dropdown-icon-profile" />
+                            Logout
+                        </li>
                     </ul>
                 )}
             </div>
