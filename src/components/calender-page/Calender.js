@@ -5,9 +5,16 @@ import './Calendar.css';
 function CalendarPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [notes] = useState({});
+  const [notes, setNotes] = useState({}); // Now editable
 
   const formatDate = (date) => date.toISOString().split('T')[0];
+
+  const handleNoteChange = (dayKey, value) => {
+    setNotes(prevNotes => ({
+      ...prevNotes,
+      [dayKey]: value
+    }));
+  };
 
   const renderHeader = () => (
       <div className="calendar-header">
@@ -44,7 +51,7 @@ function CalendarPage() {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         const dayKey = formatDate(day);
-        const noteData = notes[dayKey];
+        const noteValue = notes[dayKey] || '';
         const formattedDate = format(day, 'd');
         const isToday = isSameDay(day, new Date());
         const isSelected = isSameDay(day, selectedDate);
@@ -56,13 +63,18 @@ function CalendarPage() {
                 className={`calendar-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isOutsideMonth ? 'outside' : ''}`}
                 onClick={() => setSelectedDate(day)}
             >
-              <div>{formattedDate}</div>
-              {noteData && <div className="note-preview">{noteData.title}</div>}
+              <div className="day-number">{formattedDate}</div>
+              <textarea
+                  value={noteValue}
+                  onChange={(e) => handleNoteChange(dayKey, e.target.value)}
+                  rows={3}
+                  className="note-preview"
+              />
             </div>
         );
         day = addDays(day, 1);
       }
-      rows.push(<div className="calendar-row" key={day}>{days}</div>);
+      rows.push(<div className="calendar-row" key={day.toString()}>{days}</div>);
       days = [];
     }
     return <div className="calendar-body">{rows}</div>;

@@ -6,7 +6,7 @@
 }
 
 .calendar-container {
-    background: white;
+    background: rgba(255, 255, 255, 0.93);
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: calc(100% - 40px);
@@ -29,7 +29,6 @@
 
 .calendar-header button {
     margin-top: 8px;
-    background: rgba(21, 21, 21, 0.6);
     border: none;
     border-radius: 50%;
     width: 40px;
@@ -37,6 +36,8 @@
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.2s;
+    background-color: transparent;
+    color: black;
 }
 
 .calendar-header button:hover {
@@ -49,12 +50,31 @@
 }
 
 .calendar-day-name {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.82);
+}
+
+.calendar-day-name {
     flex: 1;
     text-align: center;
     font-weight: 600;
-    color: #7f8c8d;
+    color: #ffffff;
     padding: 8px 0;
     font-size: 1rem;
+}
+
+.day-number {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: rgba(0, 0, 0, 0.76);
+}
+
+.today {
+    border: 2px solid rgba(0, 0, 0, 0.22);
+    background-color: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .calendar-body {
@@ -69,7 +89,7 @@
 
 .calendar-cell {
     flex: 1;
-    min-height: 120px;
+    max-height: 130px;
     padding: 8px;
     border-radius: 6px;
     margin: 0 4px;
@@ -117,14 +137,23 @@
 }
 
 .note-preview {
-    font-size: 0.8rem;
-    background: #e8f5e9;
-    padding: 3px 6px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    background-color: transparent;
+    padding: 3px 1px;
     border-radius: 3px;
     margin-top: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-y: scroll;
+    white-space: normal;
+    max-height: 3.2em;
+    line-height: 1.6em;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.note-preview::-webkit-scrollbar {
+    display: none;
 }
 
 @media (max-width: 1200px) {
