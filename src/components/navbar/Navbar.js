@@ -84,14 +84,14 @@ const Navbar = ({ onBoardSelect }) => {
                 },
                 body: JSON.stringify(newBoard),
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to create a new board');
-            }
-
             const createdBoard = await response.json();
             console.log('Created new board:', createdBoard);
             updateUserData();
+            setSelectedBoardTitle(createdBoard.title || `Board ${createdBoard.position}`);
+            if (onBoardSelect) {
+                onBoardSelect(createdBoard.position);
+            }
+            setIsBoardsDropdownOpen(false);
         } catch (error) {
             console.error("Error creating board:", error);
         }
