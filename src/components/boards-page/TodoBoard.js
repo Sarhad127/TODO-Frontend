@@ -7,7 +7,7 @@ import { AddColumnModal } from './AddColumnModal';
 import { EditModal } from './EditTodoModal';
 import { useUser } from '../../context/UserContext';
 
-const TodoBoard = ({ backgroundColor, backgroundImage }) => {
+const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
     const [allColumns, setAllColumns] = useState({});
     const [selectedTodo, setSelectedTodo] = useState(null);
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
@@ -18,15 +18,9 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
     const { userData } = useUser();
 
     useEffect(() => {
-        if (userData) {
-            const { boardId, columns = [], tasks = [] } = userData;
-
-            if (boardId) {
-                setBoard({ id: boardId });
-            }
-
+        const initializeBoard = (data) => {
             const formattedColumns = {};
-            columns.forEach(column => {
+            data.columns.forEach(column => {
                 formattedColumns[`column${column.id}`] = {
                     id: column.id,
                     title: column.title,
@@ -36,15 +30,15 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                 };
             });
 
-            tasks.forEach(task => {
-                const columnKey = `column${task.columnId}`;
-                if (formattedColumns[columnKey]) {
-                    formattedColumns[columnKey].tasks.push({
+            data.columns.forEach(column => {
+                const columnKey = `column${column.id}`;
+                if (column.tasks && column.tasks.length > 0) {
+                    formattedColumns[columnKey].tasks = column.tasks.map(task => ({
                         id: task.id,
                         text: task.text,
                         color: task.color,
                         position: task.position
-                    });
+                    }));
                 }
             });
 
@@ -53,9 +47,23 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
             });
 
             setAllColumns(formattedColumns);
-        }
-    }, [userData]);
+            setBoard({ id: data.id, position: data.position });
+        };
 
+        if (boardData) {
+            initializeBoard(boardData);
+        } else if (userData) {
+            const { boardId, columns = [], tasks = [] } = userData;
+            initializeBoard({
+                id: boardId,
+                position: userData.boardPosition,
+                columns: columns.map(col => ({
+                    ...col,
+                    tasks: tasks.filter(task => task.columnId === col.id)
+                }))
+            });
+        }
+    }, [userData, boardData]);
 
     const removeColumn = async (columnName) => {                      /* TODO removes tasks and columns */
         const columnId = columnName.replace('column', '');

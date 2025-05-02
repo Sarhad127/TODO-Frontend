@@ -4,7 +4,7 @@ import UserAvatar from '../UserAvatar';
 import { useNavigate } from "react-router-dom";
 import { useUser } from '../../context/UserContext';
 
-const Navbar = () => {
+const Navbar = ({ onBoardSelect }) => {
     const navigate = useNavigate();
     const [isBoardsDropdownOpen, setIsBoardsDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -89,6 +89,27 @@ const Navbar = () => {
         }
     };
 
+    const handleBoardClick = async (position) => {
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            const response = await fetch(`http://localhost:8080/api/boards/${position}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                const boardData = await response.json();
+                if (onBoardSelect) {
+                    onBoardSelect(position);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching board:', error);
+        }
+    };
+
+
     return (
         <nav className="navbar">
             <ul className="navbar-buttons">
@@ -103,6 +124,7 @@ const Navbar = () => {
                                     <li
                                         key={board.id}
                                         className={`dropdown-boards ${board.position === userData.boardPosition ? 'default-board' : ''}`}
+                                        onClick={() => handleBoardClick(board.position)}
                                     >
                                         {board.title || `Board ${board.position}`}
                                     </li>
