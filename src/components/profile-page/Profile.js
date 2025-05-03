@@ -11,6 +11,7 @@ const Profile = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
     const [decodedToken, setDecodedToken] = useState(null);
+    const [deletePassword, setDeletePassword] = useState('');
 
     useEffect(() => {
         if (token) {
@@ -102,6 +103,35 @@ const Profile = () => {
         }
     };
 
+    const handleAccountDelete = async () => {
+        setError('');
+        setMessage('');
+
+        const confirmDelete = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
+        if (!confirmDelete) return;
+
+        try {
+            const response = await fetch('http://localhost:8080/user/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                setMessage('Account deleted successfully.');
+                localStorage.removeItem('token');
+                sessionStorage.removeItem('token');
+                window.location.href = '/auth/login';
+            } else {
+                const data = await response.json();
+                setError(data.message || 'Failed to delete account.');
+            }
+        } catch (err) {
+            setError('Network error.');
+        }
+    };
+
     return (
         <div className="user-profileContainer">
             <h2>User Profile</h2>
@@ -146,6 +176,20 @@ const Profile = () => {
                 />
 
                 <button onClick={handlePasswordUpdate}>Change Password</button>
+                <hr />
+
+                <div className="username-formGroup">
+                    <input
+                        type="password"
+                        value={deletePassword}
+                        onChange={(e) => setDeletePassword(e.target.value)}
+                        placeholder="Enter your password"
+                    />
+                    <button onClick={handleAccountDelete} style={{ backgroundColor: 'red', color: 'white' }}>
+                        Delete Account
+                    </button>
+                </div>
+
             </div>
         </div>
     );
