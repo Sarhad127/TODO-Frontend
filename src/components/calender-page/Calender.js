@@ -1,19 +1,93 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, addMonths, subMonths, isSameMonth, isSameDay } from 'date-fns';
 import './Calendar.css';
 
 function CalendarPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [notes, setNotes] = useState({}); // Now editable
+  const [notes, setNotes] = useState({});
+  const [lastEditedDay, setLastEditedDay] = useState(null);
+  const textareaRefs = useRef({});
 
   const formatDate = (date) => date.toISOString().split('T')[0];
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) return;
+
+        const response = await fetch('http://localhost:8080/api/calendar', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch calendar notes');
+        }
+
+        const data = await response.json();
+        const notesMap = {};
+        data.forEach(note => {
+          const dateKey = formatDate(new Date(note.date));
+          notesMap[dateKey] = note.content;
+        });
+        setNotes(notesMap);
+      } catch (error) {
+        console.error('Error fetching calendar notes:', error);
+      }
+    };
+
+    fetchNotes();
+  }, []);
+
+  useEffect(() => {
+    if (lastEditedDay && notes[lastEditedDay] !== undefined) {
+      saveNote(lastEditedDay);
+    }
+  }, [lastEditedDay, notes]);
 
   const handleNoteChange = (dayKey, value) => {
     setNotes(prevNotes => ({
       ...prevNotes,
       [dayKey]: value
     }));
+  };
+
+  const saveNote = async (dayKey) => {
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (!token) return;
+
+      const noteContent = notes[dayKey];
+      const noteDTO = {
+        date: dayKey,
+        content: noteContent || ''
+      };
+
+      const response = await fetch('http://localhost:8080/api/calendar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(noteDTO),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save calendar note');
+      }
+
+      const savedNote = await response.json();
+      console.log('Note saved:', savedNote);
+    } catch (error) {
+      console.error('Error saving calendar note:', error);
+    }
+  };
+
+  const handleTextareaBlur = (dayKey) => {
+    setLastEditedDay(dayKey);
   };
 
   const renderHeader = () => (
@@ -65,8 +139,10 @@ function CalendarPage() {
             >
               <div className="day-number">{formattedDate}</div>
               <textarea
+                  ref={el => textareaRefs.current[dayKey] = el}
                   value={noteValue}
                   onChange={(e) => handleNoteChange(dayKey, e.target.value)}
+                  onBlur={() => handleTextareaBlur(dayKey)}
                   rows={3}
                   className="note-preview"
                   spellCheck="false"
