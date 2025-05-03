@@ -14,6 +14,7 @@
 .board-settings-wrapper,
 .navbar-button,
 .avatar-button,
+.friends-icon,
 .dropdown-item {
     user-select: none;
     -webkit-user-select: none;
@@ -294,4 +295,19 @@
     padding: 4px;
     border: 1px solid rgba(204, 204, 204, 0);
     border-radius: 4px;
+}
+
+.friends-icon {
+    background-color: transparent;
+    margin-right: 20px;
+    width: 24px;
+    height: 24px;
+    margin-bottom: 3px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.friends-icon:hover {
+    transform: scale(1.1);
 }

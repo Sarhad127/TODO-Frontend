@@ -6,6 +6,7 @@ import { useUser } from '../../context/UserContext';
 import profileIcon from '../../icons/profile-2.png';
 import logoutIcon from '../../icons/logout.png';
 import tasksIcon from '../../icons/tasks.png'
+import friendsIcon from '../../icons/friends.png'
 
 const Navbar = ({ onBoardSelect }) => {
     const navigate = useNavigate();
@@ -268,7 +269,7 @@ const Navbar = ({ onBoardSelect }) => {
                     </div>
                 )}
             </ul>
-
+            <img src={friendsIcon} alt="Friends Icon" className="friends-icon" />
             <div className="navbar-item-avatar" onClick={toggleUserDropdown}>
                 <button className="avatar-button">
                     <UserAvatar />
