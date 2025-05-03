@@ -311,3 +311,66 @@
 .friends-icon:hover {
     transform: scale(1.1);
 }
+.friends-dropdown-wrapper {
+    position: relative;
+}
+
+.friends-dropdown {
+    display: none;
+    position: absolute;
+    left: -500%;
+    z-index: 1000;
+}
+
+.friends-dropdown-wrapper .friends-dropdown {
+    display: block;
+    margin-top: 11px;
+    background-color: rgba(80, 80, 80, 0.7);
+}
+.friends-dropdown-wrapper .friends-dropdown .dropdown-item-friends {
+    font-weight: normal;
+    font-style: normal;
+    margin: 4px 0 4px 0;
+    padding: 6px;
+}
+
+.dropdown-item-friends .email-input {
+    padding: 5px;
+    margin: 2px 0 2px 2px;
+    width: 220px;
+}
+
+.email-input-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.email-input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.email-submit-button {
+    width: 30px;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin-left: 5px;
+    cursor: pointer;
+}
+.email-submit-button:hover {
+    width: 30px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border: none;
+    padding: 0;
+    margin-left: 5px;
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.submit-icon {
+    width: 20px;
+    height: 20px;
+}

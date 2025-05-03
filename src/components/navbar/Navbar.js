@@ -7,6 +7,7 @@ import profileIcon from '../../icons/profile-2.png';
 import logoutIcon from '../../icons/logout.png';
 import tasksIcon from '../../icons/tasks.png'
 import friendsIcon from '../../icons/friends.png'
+import friendsSubmit from '../../icons/friend-submit.png'
 
 const Navbar = ({ onBoardSelect }) => {
     const navigate = useNavigate();
@@ -18,6 +19,9 @@ const Navbar = ({ onBoardSelect }) => {
     const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
     const [isRenaming, setIsRenaming] = useState(false);
     const [editableTitle, setEditableTitle] = useState('');
+    const [isFriendsDropdownOpen, setIsFriendsDropdownOpen] = useState(false);
+    const [friendEmail, setFriendEmail] = useState('');
+    const toggleFriendsDropdown = () => setIsFriendsDropdownOpen(!isFriendsDropdownOpen);
 
     useEffect(() => {
         const fetchBoards = async () => {
@@ -181,6 +185,13 @@ const Navbar = ({ onBoardSelect }) => {
         }
     };
 
+    const handleAddFriend = () => {
+        console.log('Adding friend with email:', friendEmail);
+        // add backend API logic here to add the friend to the board.
+        // Reset the email input after adding the friend
+        setFriendEmail('');
+    };
+
     return (
         <nav className="navbar">
             <ul className="navbar-buttons">
@@ -269,7 +280,36 @@ const Navbar = ({ onBoardSelect }) => {
                     </div>
                 )}
             </ul>
-            <img src={friendsIcon} alt="Friends Icon" className="friends-icon" />
+
+            <div className="friends-dropdown-wrapper">
+                <img
+                    src={friendsIcon}
+                    alt="Friends Icon"
+                    className="friends-icon"
+                    onClick={toggleFriendsDropdown}
+                />
+                {isFriendsDropdownOpen && (
+                    <ul className="dropdown-menu friends-dropdown">
+                        <li className="dropdown-item-friends">
+                            <div className="email-input-wrapper">
+                                <input
+                                    type="email"
+                                    className="email-input"
+                                    placeholder="Add email to given board"
+                                />
+                                <button className="email-submit-button">
+                                    <img
+                                        src={friendsSubmit}
+                                        alt="Submit"
+                                        className="submit-icon"
+                                    />
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                )}
+            </div>
+
             <div className="navbar-item-avatar" onClick={toggleUserDropdown}>
                 <button className="avatar-button">
                     <UserAvatar />
