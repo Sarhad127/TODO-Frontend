@@ -185,11 +185,42 @@ const Navbar = ({ onBoardSelect }) => {
         }
     };
 
-    const handleAddFriend = () => {
+    const handleAddFriend = async () => {
         console.log('Adding friend with email:', friendEmail);
-        // add backend API logic here to add the friend to the board.
-        // Reset the email input after adding the friend
-        setFriendEmail('');
+
+        const selectedBoard = boards.find(board => board.title === selectedBoardTitle);
+        const boardId = selectedBoard?.id;
+
+        if (!boardId) {
+            alert('No board selected or board ID not found.');
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            const response = await fetch('http://localhost:8080/api/invitations/invite', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    boardId: boardId,
+                    inviteeEmail: friendEmail
+                })
+            });
+
+            if (response.ok) {
+                alert('Invitation sent!');
+                setFriendEmail('');
+            } else {
+                const errorData = await response.json();
+                alert('Failed to send invitation: ' + (errorData.message || response.status));
+            }
+        } catch (error) {
+            console.error('Error sending invitation:', error);
+            alert('Something went wrong.');
+        }
     };
 
     return (
@@ -296,13 +327,11 @@ const Navbar = ({ onBoardSelect }) => {
                                     type="email"
                                     className="email-input"
                                     placeholder="Add email to given board"
+                                    value={friendEmail}
+                                    onChange={(e) => setFriendEmail(e.target.value)}
                                 />
-                                <button className="email-submit-button">
-                                    <img
-                                        src={friendsSubmit}
-                                        alt="Submit"
-                                        className="submit-icon"
-                                    />
+                                <button className="email-submit-button" onClick={handleAddFriend}>
+                                    <img src={friendsSubmit} alt="Submit" className="submit-icon" />
                                 </button>
                             </div>
                         </li>
