@@ -139,8 +139,9 @@
 }
 
 .note-preview {
-    font-size: 15px;
+    font-size: 13px;
     font-weight: bold;
+    font-style: italic;
     text-align: center;
     background-color: transparent;
     padding: 3px 1px;

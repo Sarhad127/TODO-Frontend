@@ -250,6 +250,7 @@ const NotesPage = () => {
                             value={note.text || ''}
                             onChange={(e) => handleTextChange(index, e.target.value)}
                             placeholder="Start typing your note..."
+                            spellCheck="false"
                         />
                         <button onClick={() => saveNote(index)} className="save-text-btn">Save</button>
                     </div>

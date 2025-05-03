@@ -69,6 +69,7 @@ function CalendarPage() {
                   onChange={(e) => handleNoteChange(dayKey, e.target.value)}
                   rows={3}
                   className="note-preview"
+                  spellCheck="false"
               />
             </div>
         );
