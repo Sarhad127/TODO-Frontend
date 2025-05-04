@@ -117,20 +117,51 @@ const Navbar = ({ onBoardSelect }) => {
     const handleBoardClick = async (position) => {
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-            const response = await fetch(`http://localhost:8080/api/boards/${position}`, {
+            if (!token) {
+                console.error("No authentication token found");
+                return;
+            }
+            console.log(`Fetching board at position ${position}...`);
+            const boardResponse = await fetch(`http://localhost:8080/api/boards/${position}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            if (response.ok) {
-                const boardData = await response.json();
-                setSelectedBoardTitle(boardData.title);
-                if (onBoardSelect) {
-                    onBoardSelect(position);
-                }
+
+            if (!boardResponse.ok) {
+                console.error(`Board fetch failed with status: ${boardResponse.status}`);
+                const errorData = await boardResponse.text();
+                console.error('Error details:', errorData);
+                return;
+            }
+
+            const boardData = await boardResponse.json();
+            console.log('Board data:', boardData);
+            setSelectedBoardTitle(boardData.title);
+            console.log(`Fetching users for board ID ${boardData.id}...`);
+            const usersResponse = await fetch(`http://localhost:8080/api/boards/${boardData.id}/users`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            if (usersResponse.status === 204) {
+                console.log("This board has no other users (204 No Content)");
+            } else if (!usersResponse.ok) {
+                console.error(`Users fetch failed with status: ${usersResponse.status}`);
+                const errorData = await usersResponse.text();
+                console.error('Error details:', errorData);
+            } else {
+                const usersData = await usersResponse.json();
+                console.log('Users on this board:', usersData);
+            }
+            if (onBoardSelect) {
+                onBoardSelect(position);
             }
         } catch (error) {
-            console.error('Error fetching board:', error);
+            console.error('Error in handleBoardClick:', error);
+            if (error.response) {
+                console.error('Response error:', await error.response.text());
+            }
         }
     };
 
