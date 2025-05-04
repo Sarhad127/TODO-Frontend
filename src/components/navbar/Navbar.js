@@ -165,7 +165,10 @@ const Navbar = ({ onBoardSelect }) => {
 
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             const board = boards.find(b => b.title === selectedBoardTitle);
-
+            if (board && board.position === 1) {
+                alert("You cannot delete the board at position 1.");
+                return;
+            }
             if (!token || !board) return;
 
             const response = await fetch(`http://localhost:8080/api/boards/${board.id}`, {
