@@ -19,7 +19,7 @@ const InvitationAcceptPage = () => {
 
                 if (!token) {
                     sessionStorage.setItem('invitationBoardId', boardId);
-                    navigate('/auth/login');
+                    navigate('/auth/login?redirect=accept-invitation');
                     return;
                 }
 

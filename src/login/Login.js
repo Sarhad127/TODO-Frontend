@@ -50,9 +50,10 @@ const Login = () => {
                 }
 
                 await updateUserData();
-                const invitationBoardId = localStorage.getItem('invitationBoardId');
+                const invitationBoardId = localStorage.getItem('invitationBoardId') || sessionStorage.getItem('invitationBoardId');
                 if (invitationBoardId) {
                     localStorage.removeItem('invitationBoardId');
+                    sessionStorage.removeItem('invitationBoardId');
                     navigate(`/accept-invitation?boardId=${invitationBoardId}`);
                 } else if (responseData.error === "UNVERIFIED_USER") {
                     navigate(`/auth/verify-email?email=${encodeURIComponent(email)}`);
