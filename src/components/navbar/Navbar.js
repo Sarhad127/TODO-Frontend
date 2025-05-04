@@ -190,7 +190,6 @@ const Navbar = ({ onBoardSelect }) => {
 
         const selectedBoard = boards.find(board => board.title === selectedBoardTitle);
         const boardId = selectedBoard?.id;
-
         if (!boardId) {
             alert('No board selected or board ID not found.');
             return;

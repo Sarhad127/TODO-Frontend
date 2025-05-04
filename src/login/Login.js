@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './styles/Login.module.css';
 import plutoIcon from '../icons/pluto-icon.png';
 import googleIcon from '../icons/google-icon.png';
@@ -14,7 +14,15 @@ const Login = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { updateUserData } = useUser();
+
+    useEffect(() => {
+        const invitationBoardId = localStorage.getItem('invitationBoardId');
+        if (invitationBoardId) {
+            setErrorMessage(`You have a pending invitation. Please login to accept it.`);
+        }
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -42,7 +50,15 @@ const Login = () => {
                 }
 
                 await updateUserData();
-                navigate('/home');
+                const invitationBoardId = localStorage.getItem('invitationBoardId');
+                if (invitationBoardId) {
+                    localStorage.removeItem('invitationBoardId');
+                    navigate(`/accept-invitation?boardId=${invitationBoardId}`);
+                } else if (responseData.error === "UNVERIFIED_USER") {
+                    navigate(`/auth/verify-email?email=${encodeURIComponent(email)}`);
+                } else {
+                    navigate('/home');
+                }
             } else {
                 if (responseData.error === "UNVERIFIED_USER") {
                     navigate(`/auth/verify-email?email=${encodeURIComponent(email)}`);
@@ -59,10 +75,13 @@ const Login = () => {
     };
 
     const handleOAuthLogin = (provider) => {
-        const currentPath = window.location.pathname;
-        localStorage.setItem('preAuthPath', currentPath);
-
-        const redirectUrl = `http://localhost:8080/oauth2/authorization/${provider}?redirect_uri=http://localhost:3000/oauth2/redirect`;
+        const invitationBoardId =
+            localStorage.getItem('invitationBoardId') ||
+            sessionStorage.getItem('invitationBoardId');
+        let redirectUrl = `http://localhost:8080/oauth2/authorization/${provider}?redirect_uri=http://localhost:3000/oauth2/redirect`;
+        if (invitationBoardId) {
+            redirectUrl += `&state=invite_${invitationBoardId}`;
+        }
         window.location.href = redirectUrl;
     };
 
@@ -121,7 +140,12 @@ const Login = () => {
                 >
                     {isLoading ? 'Logging in...' : 'Login'}
                 </button>
-                {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
+                {errorMessage && (
+                    <div className={errorMessage.includes('pending invitation') ?
+                        styles.infoMessage : styles.errorMessage}>
+                        {errorMessage}
+                    </div>
+                )}
             </form>
 
             <div className={styles.link}>

@@ -20,6 +20,7 @@ import './boards-page/boards-styles/TodoItem.css';
 import './styles/Sidebar.css';
 import ProfilePage from './profile-page/Profile';
 import { UserProvider } from '../context/UserContext';
+import InvitationAcceptPage from "./InvitationAcceptPage";
 
 function App() {
     return (
@@ -84,6 +85,10 @@ function App() {
                                 <Route
                                     path="/oauth2/redirect"
                                     element={<OAuth2RedirectHandler />}
+                                />
+                                <Route
+                                    path="/accept-invitation"
+                                    element={<InvitationAcceptPage />}
                                 />
                             </Routes>
                         </DndProvider>
