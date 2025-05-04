@@ -174,14 +174,28 @@ const Navbar = ({ onBoardSelect }) => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
             if (!response.ok) throw new Error('Delete failed');
-
-            updateUserData();
+            const boardsResponse = await fetch('http://localhost:8080/api/boards', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            if (!boardsResponse.ok) throw new Error('Failed to fetch updated boards');
+            const updatedBoards = await boardsResponse.json();
+            setBoards(updatedBoards);
+            if (updatedBoards.length > 0) {
+                setSelectedBoardTitle(updatedBoards[0].title || `Board ${updatedBoards[0].position}`);
+                if (onBoardSelect) {
+                    onBoardSelect(updatedBoards[0].position);
+                }
+            } else {
+                setSelectedBoardTitle('');
+            }
             setIsSettingsDropdownOpen(false);
-            setSelectedBoardTitle('');
+            updateUserData();
         } catch (error) {
             console.error('Error deleting board:', error);
+            alert('Failed to delete board: ' + error.message);
         }
     };
 
