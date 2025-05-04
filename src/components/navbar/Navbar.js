@@ -242,7 +242,10 @@ const Navbar = ({ onBoardSelect }) => {
             alert('No board selected or board ID not found.');
             return;
         }
-
+        if (selectedBoard.position === 1) {
+            alert('You cannot invite users to the first board.');
+            return;
+        }
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             const response = await fetch('http://localhost:8080/api/invitations/invite', {
