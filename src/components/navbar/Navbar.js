@@ -281,6 +281,37 @@ const Navbar = ({ onBoardSelect }) => {
         }
     };
 
+    const leaveGroup = async () => {
+        if (!currentBoardId) {
+            alert("No board selected.");
+            return;
+        }
+
+        const confirmLeave = window.confirm("Are you sure you want to leave this group?");
+        if (!confirmLeave) return;
+
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            const response = await fetch(`http://localhost:8080/api/boards/${currentBoardId}/leave`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                updateUserData();
+                window.location.reload();
+            } else {
+                const error = await response.text();
+                alert("Failed to leave group: " + error);
+            }
+        } catch (err) {
+            console.error("Error leaving group:", err);
+            alert("Something went wrong.");
+        }
+    };
+
     return (
         <nav className="navbar">
             <ul className="navbar-buttons">
@@ -384,7 +415,17 @@ const Navbar = ({ onBoardSelect }) => {
                     )}
                 </div>
             </ul>
-
+            <div className="testing-icon-removal">
+            {boardUsers.length > 0 && currentBoardId && (
+                <img
+                    src={logoutIcon}
+                    alt="Leave Group"
+                    title="Leave Group"
+                    className="leave-group-icon"
+                    onClick={leaveGroup}
+                />
+            )}
+            </div>
             <div className="friends-dropdown-wrapper">
                 <img
                     src={friendsIcon}
