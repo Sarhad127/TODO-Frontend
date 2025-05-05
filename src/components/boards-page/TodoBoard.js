@@ -568,6 +568,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                             index={index}
                             moveColumn={moveColumn}
                             isNewColumn={allColumns[column].isNew}
+                            currentBoardId={board?.id}
                         />
                     ))}
                     <div

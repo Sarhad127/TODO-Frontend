@@ -6,7 +6,6 @@ import {FaTrash} from "react-icons/fa";
 
 const ItemType = 'TODO';
 const ColumnType = 'COLUMN';
-
 function TodoColumn({
                         title,
                         columnName,
@@ -17,7 +16,8 @@ function TodoColumn({
                         changeColumnTitle,
                         removeColumn,
                         index,
-                        moveColumn
+                        moveColumn,
+                        currentBoardId
                     }) {
 
     const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -46,7 +46,7 @@ function TodoColumn({
         }
 
         try {
-            const boardId = userData?.boardId;
+            const boardId = currentBoardId;
             if (!boardId) {
                 console.error('Board ID not found in user data');
                 return;

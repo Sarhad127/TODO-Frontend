@@ -22,6 +22,7 @@ const Navbar = ({ onBoardSelect }) => {
     const [isFriendsDropdownOpen, setIsFriendsDropdownOpen] = useState(false);
     const [friendEmail, setFriendEmail] = useState('');
     const toggleFriendsDropdown = () => setIsFriendsDropdownOpen(!isFriendsDropdownOpen);
+    const [currentBoardId, setCurrentBoardId] = useState(null);
 
     useEffect(() => {
         const fetchBoards = async () => {
@@ -136,6 +137,7 @@ const Navbar = ({ onBoardSelect }) => {
             }
 
             const boardData = await boardResponse.json();
+            setCurrentBoardId(boardData.id);
             console.log('Board data:', boardData);
             setSelectedBoardTitle(boardData.title);
             console.log(`Fetching users for board ID ${boardData.id}...`);
