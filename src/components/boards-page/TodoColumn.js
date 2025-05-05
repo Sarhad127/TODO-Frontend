@@ -200,16 +200,48 @@ function TodoColumn({
         }),
     });
 
-    const openNewTodoModal = (column) => {
-        setSelectedTodo({
-            text: '',
-            color: '#ffffff',
+    const openNewTodoModal = async (column) => {
+        const newTask = {
+            text: "New Task",
+            color: "#ffffff",
             column,
             columnId: allColumns[column].id,
-            isNew: true,
-        });
-    };
+            position: allColumns[column].tasks.length + 1
+        };
 
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) throw new Error('No authentication token found');
+
+            const response = await fetch('http://localhost:8080/tasks/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    text: newTask.text,
+                    color: newTask.color,
+                    columnId: newTask.columnId,
+                    position: newTask.position
+                })
+            });
+
+            if (!response.ok) throw new Error('Failed to create task');
+
+            const createdTask = await response.json();
+
+            const updatedColumns = { ...allColumns };
+            updatedColumns[column].tasks.push({
+                ...newTask,
+                id: createdTask.id
+            });
+            setAllColumns(updatedColumns);
+
+        } catch (error) {
+            console.error('Error creating task:', error);
+        }
+    };
 
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef(null);
@@ -275,7 +307,10 @@ function TodoColumn({
                 ))}
             </div>
 
-            <button className="add-todo-btn" onClick={() => openNewTodoModal(columnName)}>
+            <button
+                className="add-todo-btn"
+                onClick={() => openNewTodoModal(columnName)}
+            >
                 <span>+</span>
             </button>
         </div>
