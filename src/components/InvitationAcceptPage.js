@@ -7,7 +7,7 @@ const InvitationAcceptPage = () => {
     const boardId = searchParams.get('boardId');
     const token = searchParams.get('token');
     const navigate = useNavigate();
-    const { userData } = useUser();
+    const { userData, setUserData } = useUser();
     const [message, setMessage] = useState('Processing invitation...');
     const [isLoading, setIsLoading] = useState(true);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -32,6 +32,26 @@ const InvitationAcceptPage = () => {
 
                 if (!response.ok) throw new Error('Failed to accept invitation');
 
+                const updatedBoardsResponse = await fetch('http://localhost:8080/api/boards', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!updatedBoardsResponse.ok) throw new Error('Failed to fetch boards');
+
+                const updatedBoards = await updatedBoardsResponse.json();
+
+                const newBoard = updatedBoards.find(board => board.id === boardId);
+                const existingBoards = updatedBoards.filter(board => board.id !== boardId);
+                existingBoards.push(newBoard);
+
+                setUserData(prevData => ({
+                    ...prevData,
+                    boards: existingBoards,
+                }));
+
                 setMessage('Invitation accepted! Redirecting to board...');
                 setIsSuccess(true);
 
@@ -44,7 +64,7 @@ const InvitationAcceptPage = () => {
         };
 
         acceptInvitation();
-    }, [boardId, token, navigate, userData]);
+    }, [boardId, token, navigate, userData, setUserData]);
 
     return (
         <div className="invitation-container">
