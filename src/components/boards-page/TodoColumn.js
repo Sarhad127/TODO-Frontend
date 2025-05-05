@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import TodoItem from './TodoItem';
+import {useUser} from "../../context/UserContext";
 
 const ItemType = 'TODO';
 const ColumnType = 'COLUMN';
@@ -17,6 +18,66 @@ function TodoColumn({
                         index,
                         moveColumn
                     }) {
+
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [editedTitle, setEditedTitle] = useState(title);
+    const { userData } = useUser();
+
+    const handleTitleSave = async () => {
+        setIsEditingTitle(false);
+        const trimmedTitle = editedTitle.trim();
+        if (!trimmedTitle || trimmedTitle === title) return;
+
+        const columnData = allColumns[columnName];
+        const updatedColumns = {
+            ...allColumns,
+            [columnName]: {
+                ...columnData,
+                title: trimmedTitle,
+            },
+        };
+        setAllColumns(updatedColumns);
+
+        let token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) {
+            console.error('No authentication token found');
+            return;
+        }
+
+        try {
+            const boardId = userData?.boardId;
+            if (!boardId) {
+                console.error('Board ID not found in user data');
+                return;
+            }
+
+            const response = await fetch(
+                `http://localhost:8080/auth/boards/${boardId}/columns/${columnData.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        title: trimmedTitle,
+                        titleColor: columnData.titleColor,
+                    }),
+                }
+            );
+
+            if (response.ok) {
+                console.log('Column title updated successfully');
+            } else {
+                console.error('Failed to update column title on backend');
+                setAllColumns(allColumns);
+            }
+        } catch (error) {
+            console.error('Error updating column title:', error);
+            setAllColumns(allColumns);
+        }
+    };
+
     const [, dropTodo] = useDrop({
         accept: ItemType,
         drop: (item) => {
@@ -174,9 +235,21 @@ function TodoColumn({
             style={{ opacity: isDragging ? 0.5 : 1 }}
         >
             <div className="column-header">
-                <h2 onClick={() => changeColumnTitle(columnName)}>
-                    <span className="title">{title}</span>
-                </h2>
+                {isEditingTitle ? (
+                    <input
+                        type="text"
+                        value={editedTitle}
+                        onChange={(e) => setEditedTitle(e.target.value)}
+                        onBlur={handleTitleSave}
+                        onKeyDown={(e) => e.key === 'Enter' && handleTitleSave()}
+                        autoFocus
+                        className="edit-title-input"
+                    />
+                ) : (
+                    <h2 onClick={() => setIsEditingTitle(true)}>
+                        <span className="title">{title}</span>
+                    </h2>
+                )}
 
                 <div className="column-settings-wrapper" ref={dropdownRef}>
                     <button className="column-settings-btn" onClick={toggleDropdown}>
