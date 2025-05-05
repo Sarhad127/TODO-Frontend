@@ -113,3 +113,46 @@
     background-color: transparent;
     transform: scale(1.1);
 }
+
+.color-grid-container {
+    margin: 15px 0;
+}
+
+.color-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 10px 0;
+}
+
+.color-row {
+    display: flex;
+    gap: 2px;
+}
+
+.color-cell {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    transition: transform 0.1s;
+}
+
+.color-cell:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    z-index: 1;
+}
+
+.selected-color-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.color-preview {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ddd;
+}

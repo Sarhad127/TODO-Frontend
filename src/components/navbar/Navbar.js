@@ -23,6 +23,7 @@ const Navbar = ({ onBoardSelect }) => {
     const [friendEmail, setFriendEmail] = useState('');
     const toggleFriendsDropdown = () => setIsFriendsDropdownOpen(!isFriendsDropdownOpen);
     const [currentBoardId, setCurrentBoardId] = useState(null);
+    const [boardUsers, setBoardUsers] = useState([]);
 
     useEffect(() => {
         const fetchBoards = async () => {
@@ -140,12 +141,16 @@ const Navbar = ({ onBoardSelect }) => {
             setCurrentBoardId(boardData.id);
             console.log('Board data:', boardData);
             setSelectedBoardTitle(boardData.title);
+
+            setBoardUsers([]);
+
             console.log(`Fetching users for board ID ${boardData.id}...`);
             const usersResponse = await fetch(`http://localhost:8080/api/boards/${boardData.id}/users`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
+
             if (usersResponse.status === 204) {
                 console.log("This board has no other users (204 No Content)");
             } else if (!usersResponse.ok) {
@@ -154,6 +159,7 @@ const Navbar = ({ onBoardSelect }) => {
                 console.error('Error details:', errorData);
             } else {
                 const usersData = await usersResponse.json();
+                setBoardUsers(usersData);
                 console.log('Users on this board:', usersData);
             }
             if (onBoardSelect) {
@@ -362,6 +368,17 @@ const Navbar = ({ onBoardSelect }) => {
                         </div>
                     </div>
                 )}
+                <div className="board-members-display">
+                    {boardUsers.length > 0 && (
+                        <div className="user-list">
+                            {boardUsers.map((username, index) => (
+                                <span key={index} className="user-icon">
+                        {username[0].toUpperCase()}
+                    </span>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </ul>
 
             <div className="friends-dropdown-wrapper">
