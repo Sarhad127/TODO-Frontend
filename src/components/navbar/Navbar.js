@@ -372,9 +372,13 @@ const Navbar = ({ onBoardSelect }) => {
                     {boardUsers.length > 0 && (
                         <div className="user-list">
                             {boardUsers.map((username, index) => (
-                                <span key={index} className="user-icon">
-                        {username[0].toUpperCase()}
-                    </span>
+                                <span
+                                    key={index}
+                                    className="user-icon"
+                                    data-tooltip={username}
+                                >
+            {username[0].toUpperCase()}
+        </span>
                             ))}
                         </div>
                     )}

@@ -401,6 +401,21 @@
     color: white;
     font-size: 12px;
     font-weight: bold;
+    position: relative;
+}
+
+.user-icon:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 50px;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 13px;
+    border-radius: 5px;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translateY(-50%);
+    z-index: 10;
 }
 
 .user-icon:hover {
