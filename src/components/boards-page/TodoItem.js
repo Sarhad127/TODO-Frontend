@@ -41,7 +41,7 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
             style={{
                 backgroundColor: todo.color,
                 opacity: isDragging ? 0.5 : 1,
-                cursor: 'move',
+                cursor: 'pointer',
                 transition: 'transform 0.2s ease',
                 padding: '8px',
                 zIndex: isDragging ? 9999 : 1,
@@ -49,9 +49,9 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
             onClick={() => openEditModal(index, column)}
         >
             <strong>{todo.text}</strong>
-            {/*<div style={{ fontSize: '0.75rem', marginTop: '4px', color: '#333' }}>*/}
-            {/*    ID: {todo.id} | Column ID: {todo.columnId} | Position: {todo.position}*/}
-            {/*</div>*/}
+            <div style={{ fontSize: '0.75rem', marginTop: '4px', color: '#333' }}>
+                ID: {todo.id} | Column ID: {todo.columnId} | Position: {todo.position}
+            </div>
         </div>
     );
 }
