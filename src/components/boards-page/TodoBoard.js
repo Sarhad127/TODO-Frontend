@@ -13,9 +13,77 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
     const [board, setBoard] = useState(null);
-
+    const [newColumnCounter, setNewColumnCounter] = useState(0);
 
     const { userData } = useUser();
+
+    const handleAddColumn = async () => {
+        const titleToUse = newColumnTitle.trim() || 'Column';
+
+        const newColumn = {
+            title: titleToUse,
+            titleColor: '#000000',
+            tasks: [],
+        };
+
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) {
+            console.error('No authentication token found');
+            return;
+        }
+
+        const boardId = board?.id;
+        if (!boardId) {
+            console.error('Board ID is missing');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/auth/boards/${boardId}/columns`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(newColumn),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const backendId = data.id;
+                const newColumnKey = `column${backendId}`;
+
+                setAllColumns(prev => ({
+                    ...prev,
+                    [newColumnKey]: {
+                        ...newColumn,
+                        id: backendId,
+                    },
+                }));
+
+                console.log('Column added successfully');
+                setTimeout(() => {
+                    const titleElement = document.querySelector(`.column-${backendId} .column-title`);
+                    if (titleElement) {
+                        titleElement.focus();
+                        const range = document.createRange();
+                        range.selectNodeContents(titleElement);
+                        const selection = window.getSelection();
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    }
+                }, 50);
+            } else {
+                console.error('Error adding column to backend:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error with API call:', error);
+        }
+
+        setNewColumnTitle('');
+        setShowAddColumnModal(false);
+    };
+
 
     useEffect(() => {
         const initializeBoard = (data) => {
@@ -468,7 +536,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                 <div className="columns">
                     {Object.keys(allColumns).map((column, index) => (
                         <TodoColumn
-                            key={column}
+                            key={allColumns[column].id}
+                            columnId={allColumns[column].id}
                             title={allColumns[column].title}
                             columnName={column}
                             allColumns={allColumns}
@@ -479,11 +548,12 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                             removeColumn={removeColumn}
                             index={index}
                             moveColumn={moveColumn}
+                            isNewColumn={allColumns[column].isNew}
                         />
                     ))}
                     <div
                         className="todo-column transparent"
-                        onClick={() => setShowAddColumnModal(true)}
+                        onClick={handleAddColumn}
                     >
                         <FaPlus size={20} />
                     </div>
