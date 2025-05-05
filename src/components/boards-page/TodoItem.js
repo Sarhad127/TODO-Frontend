@@ -45,7 +45,7 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
                 transition: 'transform 0.2s ease',
                 padding: '8px',
                 position: 'relative',
-                zIndex: isDragging ? 9999 : 1,
+                zIndex: isDragging ? 10 : 1,
             }}
             onClick={() => openEditModal(index, column)}
         >

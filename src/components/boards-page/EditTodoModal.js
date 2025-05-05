@@ -45,7 +45,7 @@ export function EditModal({
                 />
 
                 <div className="tag-section">
-                    <h4>Tag (max 5 chars)</h4>
+                    <h4>Tag (max 30 chars)</h4>
                     <input
                         type="text"
                         value={selectedTodo.tag?.text || ''}
