@@ -16,6 +16,57 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
 
     const { userData } = useUser();
 
+    useEffect(() => {
+        const initializeBoard = (data) => {
+            const formattedColumns = {};
+            data.columns.forEach(column => {
+                formattedColumns[`column${column.id}`] = {
+                    id: column.id,
+                    title: column.title,
+                    titleColor: column.titleColor,
+                    tasks: [],
+                    position: column.placement
+                };
+            });
+
+            data.columns.forEach(column => {
+                const columnKey = `column${column.id}`;
+                if (column.tasks && column.tasks.length > 0) {
+                    formattedColumns[columnKey].tasks = column.tasks.map(task => ({
+                        id: task.id,
+                        text: task.text,
+                        color: task.color,
+                        position: task.position,
+                        tag: {
+                            text: task.tagText || '',
+                            color: task.tagColor || '#ffffff'
+                        }
+                    }));
+                }
+            });
+            Object.keys(formattedColumns).forEach(columnKey => {
+                formattedColumns[columnKey].tasks.sort((a, b) => a.position - b.position);
+            });
+
+            setAllColumns(formattedColumns);
+            setBoard({ id: data.id, position: data.position });
+        };
+
+        if (boardData) {
+            initializeBoard(boardData);
+        } else if (userData) {
+            const { boardId, columns = [], tasks = [] } = userData;
+            initializeBoard({
+                id: boardId,
+                position: userData.boardPosition,
+                columns: columns.map(col => ({
+                    ...col,
+                    tasks: tasks.filter(task => task.columnId === col.id)
+                }))
+            });
+        }
+    }, [userData, boardData]);
+
     const handleAddColumn = async () => {
         const titleToUse = newColumnTitle.trim() || 'Column';
 
@@ -82,55 +133,6 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         setNewColumnTitle('');
         setShowAddColumnModal(false);
     };
-
-
-    useEffect(() => {
-        const initializeBoard = (data) => {
-            const formattedColumns = {};
-            data.columns.forEach(column => {
-                formattedColumns[`column${column.id}`] = {
-                    id: column.id,
-                    title: column.title,
-                    titleColor: column.titleColor,
-                    tasks: [],
-                    position: column.placement
-                };
-            });
-
-            data.columns.forEach(column => {
-                const columnKey = `column${column.id}`;
-                if (column.tasks && column.tasks.length > 0) {
-                    formattedColumns[columnKey].tasks = column.tasks.map(task => ({
-                        id: task.id,
-                        text: task.text,
-                        color: task.color,
-                        position: task.position
-                    }));
-                }
-            });
-
-            Object.keys(formattedColumns).forEach(columnKey => {
-                formattedColumns[columnKey].tasks.sort((a, b) => a.position - b.position);
-            });
-
-            setAllColumns(formattedColumns);
-            setBoard({ id: data.id, position: data.position });
-        };
-
-        if (boardData) {
-            initializeBoard(boardData);
-        } else if (userData) {
-            const { boardId, columns = [], tasks = [] } = userData;
-            initializeBoard({
-                id: boardId,
-                position: userData.boardPosition,
-                columns: columns.map(col => ({
-                    ...col,
-                    tasks: tasks.filter(task => task.columnId === col.id)
-                }))
-            });
-        }
-    }, [userData, boardData]);
 
     const removeColumn = async (columnName) => {                      /* TODO removes tasks and columns */
         const isConfirmed = window.confirm('Are you sure you want to delete this column? This will also delete all associated tasks.');
@@ -241,12 +243,20 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     text: taskData.text,
                     color: taskData.color,
                     columnId: taskData.columnId,
+                    tagText: taskData.tag ? taskData.tag.text : '',
+                    tagColor: taskData.tag ? taskData.tag.color : '#ffffff',
                 }),
             });
 
             if (response.ok) {
-                console.log('Task updated successfully');
-                return await response.json();
+                const updatedTask = await response.json();
+                return {
+                    ...updatedTask,
+                    tag: {
+                        text: updatedTask.tagText || '',
+                        color: updatedTask.tagColor || '#ffffff'
+                    }
+                };
             } else {
                 console.error('Failed to update task on backend');
             }
@@ -301,7 +311,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                 console.error('Error updating column:', error);
             }
 
-        } else if (isNew) { /* TODO handles new todo task */
+        } else if (isNew) {                                                            /* TODO handles new todo task */
             if (!selectedTodo.text.trim()) {
                 alert("Todo text cannot be empty!");
                 return;
@@ -321,8 +331,9 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     text: selectedTodo.text,
                     color: selectedTodo.color,
                     columnId: columnData.id,
+                    tag: selectedTodo.tag || { text: '', color: '#ffffff' },
                 };
-
+                console.log('Sending the following task data to the backend:', taskData);
                 const response = await fetch('http://localhost:8080/tasks/create', {
                     method: 'POST',
                     headers: {
@@ -346,6 +357,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                                 color: newTask.color,
                                 position: newTask.position,
                                 columnId: newTask.columnId,
+                                tagText: newTask.tag ? newTask.tag.text : '',
+                                tagColor: newTask.tag ? newTask.tag.color : '#ffffff',
                             }],
                         },
                     });

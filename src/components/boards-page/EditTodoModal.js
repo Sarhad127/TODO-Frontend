@@ -11,7 +11,7 @@ export function EditModal({
     if (!selectedTodo) return null;
 
     const handleTagTextChange = (e) => {
-        const text = e.target.value.slice(0, 5);
+        const text = e.target.value.slice(0, 30);
         setSelectedTodo({
             ...selectedTodo,
             tag: {
@@ -50,8 +50,8 @@ export function EditModal({
                         type="text"
                         value={selectedTodo.tag?.text || ''}
                         onChange={handleTagTextChange}
-                        maxLength={5}
-                        placeholder="Tag (5 chars)"
+                        maxLength={30}
+                        placeholder="Tag (30 chars)"
                     />
                     <input
                         type="color"
