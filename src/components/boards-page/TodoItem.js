@@ -44,15 +44,40 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
                 cursor: 'pointer',
                 transition: 'transform 0.2s ease',
                 padding: '8px',
+                position: 'relative',
                 zIndex: isDragging ? 9999 : 1,
             }}
             onClick={() => openEditModal(index, column)}
         >
+            {todo.tag?.color && (
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        right: 0,
+                        width: '10%',
+                        height: '10px',
+                        backgroundColor: todo.tag.color,
+                        borderTopLeftRadius: '2px',
+                        borderTopRightRadius: '2px',
+                        transform: 'translateY(-50%)',
+                    }}
+                />
+            )}
+
             <strong>{todo.text}</strong>
-            <div style={{ fontSize: '0.75rem', marginTop: '4px', color: '#333' }}>
-                ID: {todo.id} | Column ID: {todo.columnId} | Position: {todo.position}
-            </div>
+
+            {todo.tag?.text && (
+                <div style={{ fontSize: '10px', marginTop: '4px', color: '#666' }}>
+                    {todo.tag.text}
+                </div>
+            )}
+
+            {/*<div style={{ fontSize: '0.75rem', marginTop: '4px', color: '#333' }}>*/}
+            {/*    ID: {todo.id} | Column ID: {todo.columnId} | Position: {todo.position}*/}
+            {/*</div>*/}
         </div>
+
     );
 }
 

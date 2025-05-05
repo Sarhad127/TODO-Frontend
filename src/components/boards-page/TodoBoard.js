@@ -13,7 +13,6 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
     const [board, setBoard] = useState(null);
-    const [newColumnCounter, setNewColumnCounter] = useState(0);
 
     const { userData } = useUser();
 
@@ -362,7 +361,10 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             const updatedTaskFromBackend = await updateTask(updatedTask);
             if (updatedTaskFromBackend) {
                 const updatedColumn = [...columnData.tasks];
-                updatedColumn[index] = updatedTaskFromBackend;
+                updatedColumn[index] = {
+                    ...updatedTaskFromBackend,
+                    tag: selectedTodo.tag || { text: '', color: '#ffffff' },
+                };
                 setAllColumns({
                     ...allColumns,
                     [column]: { ...columnData, tasks: updatedColumn },

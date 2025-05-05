@@ -10,19 +10,21 @@ export function EditModal({
                               }) {
     if (!selectedTodo) return null;
 
-    const isNewTodo = selectedTodo.isNew;
-    const isTitleChange = selectedTodo.isTitleChange;
-
-    const modalTitle = isNewTodo
-        ? 'Add New To-Do'
-        : isTitleChange
-            ? 'Change Column Title'
-            : 'Edit To-Do';
+    const handleTagTextChange = (e) => {
+        const text = e.target.value.slice(0, 5);
+        setSelectedTodo({
+            ...selectedTodo,
+            tag: {
+                ...selectedTodo.tag,
+                text
+            }
+        });
+    };
 
     return (
         <div className="modal-overlay">
             <div className="modal">
-                <h2>{modalTitle}</h2>
+                <h3>Edit Card</h3>
                 <input
                     type="text"
                     value={selectedTodo.text}
@@ -30,11 +32,7 @@ export function EditModal({
                         ...selectedTodo,
                         text: e.target.value
                     })}
-                    placeholder={
-                        isTitleChange
-                            ? "Enter new column title"
-                            : "Enter Todo text"
-                    }
+                    placeholder="Enter Todo text"
                     autoFocus
                 />
                 <input
@@ -45,18 +43,34 @@ export function EditModal({
                         color: e.target.value
                     })}
                 />
+
+                <div className="tag-section">
+                    <h4>Tag (max 5 chars)</h4>
+                    <input
+                        type="text"
+                        value={selectedTodo.tag?.text || ''}
+                        onChange={handleTagTextChange}
+                        maxLength={5}
+                        placeholder="Tag (5 chars)"
+                    />
+                    <input
+                        type="color"
+                        value={selectedTodo.tag?.color || '#ffffff'}
+                        onChange={(e) => setSelectedTodo({
+                            ...selectedTodo,
+                            tag: {
+                                ...selectedTodo.tag,
+                                color: e.target.value
+                            }
+                        })}
+                    />
+                </div>
+
                 <div className="modal-buttons">
-                    <button onClick={saveChanges}>
-                        {isNewTodo ? 'Add' : 'Save'}
+                    <button onClick={saveChanges}>Save</button>
+                    <button className="delete-btn" onClick={() => deleteTodo(selectedTodo)}>
+                        <FaTrash /> Delete
                     </button>
-                    {!isTitleChange && !isNewTodo && (
-                        <button
-                            className="delete-btn"
-                            onClick={() => deleteTodo(selectedTodo)}
-                        >
-                            <FaTrash /> Delete
-                        </button>
-                    )}
                     <button className="cancel-btn" onClick={cancelAddTodo}>
                         Cancel
                     </button>
