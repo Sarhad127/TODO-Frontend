@@ -134,6 +134,10 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
     }, [userData, boardData]);
 
     const removeColumn = async (columnName) => {                      /* TODO removes tasks and columns */
+        const isConfirmed = window.confirm('Are you sure you want to delete this column? This will also delete all associated tasks.');
+        if (!isConfirmed) {
+            return;
+        }
         const columnId = columnName.replace('column', '');
         const updatedColumns = { ...allColumns };
         const columnTasks = updatedColumns[columnName].tasks;

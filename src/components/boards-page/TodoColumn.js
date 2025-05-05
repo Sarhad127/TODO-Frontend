@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import TodoItem from './TodoItem';
 import {useUser} from "../../context/UserContext";
+import {FaTrash} from "react-icons/fa";
 
 const ItemType = 'TODO';
 const ColumnType = 'COLUMN';
@@ -252,15 +253,12 @@ function TodoColumn({
                 )}
 
                 <div className="column-settings-wrapper" ref={dropdownRef}>
-                    <button className="column-settings-btn" onClick={toggleDropdown}>
-                        <span>⋯</span>
+                    <button
+                        className="delete-column-btn"
+                        onClick={() => removeColumn(columnName)}
+                    >
+                        <FaTrash size={12} />
                     </button>
-                    {showDropdown && (
-                        <div className="column-settings-dropdown-menu">
-                            <button onClick={() => changeColumnTitle(columnName)}>Edit Title</button>
-                            <button onClick={() => removeColumn(columnName)}>Delete Column</button>
-                        </div>
-                    )}
                 </div>
             </div>
 
