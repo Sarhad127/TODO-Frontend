@@ -495,7 +495,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
     };
 
 
-    const moveColumn = async (fromIndex, toIndex) => {                                     /*  TODO reorders columns */
+    const moveColumn = async (fromIndex, toIndex) => {                  /* TODO reorders columns */
+
         const columnsArray = Object.keys(allColumns);
         const columnKeys = [...columnsArray];
         const movedColumn = columnKeys.splice(fromIndex, 1);
@@ -508,30 +509,30 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
 
         setAllColumns(reorderedColumns);
 
-        let token = localStorage.getItem('token');
-        if (!token) {
-            token = sessionStorage.getItem('token');
-        }
+        let token = localStorage.getItem('token') || sessionStorage.getItem('token');
         if (!token) {
             console.error('No authentication token found');
             return;
         }
-
         try {
+
+            const reorderedColumnData = columnKeys.map((key, index) => ({
+                id: allColumns[key].id,
+                title: allColumns[key].title,
+                placement: index + 1,
+                titleColor: allColumns[key].titleColor || null,
+            }));
+
             const response = await fetch(
                 `http://localhost:8080/auth/boards/${board.id}/columns/order`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify(
-                    columnKeys.map((key, index) => ({
-                        title: allColumns[key].title,
-                        placement: index + 1,
-                    }))
-                ),
-            });
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(reorderedColumnData),
+                });
+
             if (response.ok) {
                 console.log('Columns reordered successfully');
             } else {
