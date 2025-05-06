@@ -114,10 +114,6 @@
     transform: scale(1.1);
 }
 
-.color-grid-container {
-    margin: 15px 0;
-}
-
 .color-grid {
     display: flex;
     flex-direction: column;
@@ -134,13 +130,14 @@
     width: 30px;
     height: 30px;
     cursor: pointer;
-    border: 1px solid #ddd;
-    transition: transform 0.1s;
+    border: 1px solid transparent;
+    transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .color-cell:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    transform: scale(1.15);
+    border-color: #555;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
     z-index: 1;
 }
 
