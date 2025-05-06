@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
 import plutoIcon from '../icons/Pluto.png';
 import boardsIcon from '../icons/boards.png';
@@ -6,6 +6,18 @@ import notesIcon from '../icons/notes.png';
 import calenderIcon from '../icons/calender.png';
 
 function Sidebar() {
+
+    useEffect(() => {
+        const type = localStorage.getItem('backgroundType');
+        const value = localStorage.getItem('backgroundValue');
+
+        if (type === 'color' && value) {
+            document.body.style.background = `linear-gradient(to bottom, ${value}, #420b70)`;
+        } else if (type === 'image' && value) {
+            document.body.style.background = `url(${value}) center/cover no-repeat`;
+        }
+    }, []);
+
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const predefinedColors = [
@@ -22,6 +34,8 @@ function Sidebar() {
 
     const applyColor = (color) => {
         document.body.style.background = `linear-gradient(to bottom, ${color}, #420b70)`;
+        localStorage.setItem('backgroundType', 'color');
+        localStorage.setItem('backgroundValue', color);
         setIsDropdownOpen(false);
     };
 

@@ -80,6 +80,7 @@ const Login = () => {
             localStorage.getItem('invitationBoardId') ||
             sessionStorage.getItem('invitationBoardId');
         let redirectUrl = `http://localhost:8080/oauth2/authorization/${provider}?redirect_uri=http://localhost:3000/oauth2/redirect`;
+        localStorage.setItem('rememberMe', rememberMe);
         if (invitationBoardId) {
             redirectUrl += `&state=invite_${invitationBoardId}`;
         }
