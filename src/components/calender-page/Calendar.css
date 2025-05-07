@@ -1,21 +1,12 @@
 .calendar-app {
-    margin-left: 278px;
+    margin: 30px 80px 30px 290px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     box-sizing: border-box;
 }
 
-.calendar-title {
-    font-size: 3rem;
-    font-weight: bold;
-    color: snow;
-    text-align: center;
-    font-family: "Book Antiqua", sans-serif;
-    margin: 18px 0 14px;
-}
-
 .calendar-container {
-    background: white;
+    background: rgba(255, 255, 255, 0.93);
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: calc(100% - 40px);
@@ -37,7 +28,7 @@
 }
 
 .calendar-header button {
-    background: #c7c7c7;
+    margin-top: 8px;
     border: none;
     border-radius: 50%;
     width: 40px;
@@ -45,6 +36,8 @@
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.2s;
+    background-color: transparent;
+    color: black;
 }
 
 .calendar-header button:hover {
@@ -57,12 +50,47 @@
 }
 
 .calendar-day-name {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.82);
+}
+
+.calendar-day-name {
     flex: 1;
     text-align: center;
     font-weight: 600;
-    color: #7f8c8d;
+    color: #ffffff;
     padding: 8px 0;
     font-size: 1rem;
+}
+
+.day-number {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: rgba(0, 0, 0, 0.76);
+}
+
+.today {
+    border: 2px solid rgba(0, 0, 0, 0.22);
+    background-color: #d3d3d3;
+    border-radius: 6px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.calendar-cell.today > div:first-child {
+    background-color: transparent;
+    color: black;
+}
+
+.calendar-cell.selected {
+    background-color: #d3d3d3;
+    border-color: #bdbdbd;
+    color: black;
+}
+
+.calendar-cell.selected > div:first-child {
+    font-weight: bold;
+    color: #000000;
 }
 
 .calendar-body {
@@ -77,19 +105,21 @@
 
 .calendar-cell {
     flex: 1;
-    min-height: 120px;
+    max-height: 130px;
     padding: 8px;
     border-radius: 6px;
     margin: 0 4px;
     cursor: pointer;
     transition: all 0.2s;
-    border: 1px solid #eee;
+    border: 1px solid rgba(171, 171, 171, 0.15);
     display: flex;
     flex-direction: column;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
 
 .calendar-cell:hover {
-    background-color: #f8f9fa;
+    background-color: rgba(211, 211, 211, 0.49);
 }
 
 .calendar-cell > div:first-child {
@@ -104,35 +134,30 @@
     margin-bottom: 8px;
 }
 
-.calendar-cell.today > div:first-child {
-    background-color: #3498db;
-    color: white;
-}
-
-.calendar-cell.selected {
-    background-color: #e3f2fd;
-    border-color: #bbdefb;
-}
-
-.calendar-cell.selected > div:first-child {
-    font-weight: bold;
-    color: #1976d2;
-}
-
 .calendar-cell.outside {
     color: #bdc3c7;
-    background-color: #f9f9f9;
+    border: 1px solid rgba(171, 171, 171, 0.15);
 }
 
 .note-preview {
-    font-size: 0.8rem;
-    background: #e8f5e9;
-    padding: 3px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    font-style: italic;
+    text-align: center;
+    background-color: transparent;
+    padding: 3px 1px;
     border-radius: 3px;
     margin-top: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-y: scroll;
+    white-space: normal;
+    max-height: 3.2em;
+    line-height: 1.6em;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.note-preview::-webkit-scrollbar {
+    display: none;
 }
 
 @media (max-width: 1200px) {

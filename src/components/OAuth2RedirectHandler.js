@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 
 const OAuth2RedirectHandler = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { updateUserData } = useUser();
 
     useEffect(() => {
@@ -18,22 +19,35 @@ const OAuth2RedirectHandler = () => {
 
                 await updateUserData();
 
+                const invitationBoardId = localStorage.getItem('invitationBoardId');
+                if (invitationBoardId) {
+                    localStorage.removeItem('invitationBoardId');
+                    navigate(`/accept-invitation?boardId=${invitationBoardId}`, { replace: true });
+                    return;
+                }
+                const params = new URLSearchParams(location.search);
+                const state = params.get('state');
+                if (state && state.startsWith('invite_')) {
+                    const boardId = state.split('_')[1];
+                    navigate(`/accept-invitation?boardId=${boardId}`, { replace: true });
+                    return;
+                }
                 const preAuthPath = localStorage.getItem('preAuthPath') || '/home';
                 localStorage.removeItem('preAuthPath');
                 navigate(preAuthPath, { replace: true });
             } catch (error) {
                 console.error('OAuth processing error:', error);
-                navigate('/login');
+                navigate('/auth/login');
             }
         };
 
-        const params = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams(location.search);
         const token = params.get('token');
         const error = params.get('error');
 
         if (error) {
             console.error('OAuth error:', error);
-            navigate('/login');
+            navigate('/auth/login');
             return;
         }
 
@@ -44,14 +58,17 @@ const OAuth2RedirectHandler = () => {
             if (storedToken) {
                 handleOAuthSuccess(storedToken);
             } else {
-                navigate('/login');
+                navigate('/auth/login');
             }
         }
-    }, [navigate, updateUserData]);
+    }, [navigate, updateUserData, location]);
 
-    return <div className="oauth-redirect-handler">
-        <p>Logging you in...</p>
-    </div>;
+    return (
+        <div className="oauth-redirect-handler">
+            <p>Logging you in...</p>
+            <div className="loading-spinner"></div>
+        </div>
+    );
 };
 
 export default OAuth2RedirectHandler;

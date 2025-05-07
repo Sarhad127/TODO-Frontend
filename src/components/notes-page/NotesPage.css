@@ -8,7 +8,7 @@
     position: relative;
     padding: 15px;
     margin: 10px;
-    border-radius: 8px;
+    border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     max-width: 350px;
     height: 350px;
@@ -208,21 +208,13 @@ textarea:focus {
     font-size: 18px;
     line-height: 1.6;
     font-family: "Segoe Print", "Calibri Light", serif;
-    border-radius: 8px;
+    border-radius: 8px 8px 0 0;
     outline: none;
     margin-top: 10px;
 }
 
 .note textarea:focus {
     box-shadow: 0 0 0 2px #ffe599, 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.notes-title {
-    font-size: 3rem;
-    font-weight: bold;
-    margin: 20px 25px 10px;
-    color: snow;
-    font-family: "Book Antiqua", sans-serif;
 }
 
 .dropdown-menu-notes {
@@ -265,3 +257,14 @@ textarea:focus {
     outline: none;
     border-bottom: 1px solid rgba(0,0,0,0.3);
 }
+
+.save-text-btn {
+    width: 346px;
+    border-radius: 0 0 8px 8px;
+    background-color: rgba(68, 68, 68, 0.22);
+}
+.save-text-btn:hover {
+    width: 346px;
+    background-color: rgba(68, 68, 68, 0.64);
+}
+

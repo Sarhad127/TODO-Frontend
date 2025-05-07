@@ -7,21 +7,19 @@ import { AddColumnModal } from './AddColumnModal';
 import { EditModal } from './EditTodoModal';
 import { useUser } from '../../context/UserContext';
 
-const TodoBoard = ({ backgroundColor, backgroundImage }) => {
+const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
     const [allColumns, setAllColumns] = useState({});
     const [selectedTodo, setSelectedTodo] = useState(null);
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
-
+    const [board, setBoard] = useState(null);
 
     const { userData } = useUser();
 
     useEffect(() => {
-        if (userData) {
-            const { columns = [], tasks = [] } = userData;
-
+        const initializeBoard = (data) => {
             const formattedColumns = {};
-            columns.forEach(column => {
+            data.columns.forEach(column => {
                 formattedColumns[`column${column.id}`] = {
                     id: column.id,
                     title: column.title,
@@ -31,32 +29,120 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                 };
             });
 
-            tasks.forEach(task => {
-                const columnKey = `column${task.columnId}`;
-                if (formattedColumns[columnKey]) {
-                    formattedColumns[columnKey].tasks.push({
+            data.columns.forEach(column => {
+                const columnKey = `column${column.id}`;
+                if (column.tasks && column.tasks.length > 0) {
+                    formattedColumns[columnKey].tasks = column.tasks.map(task => ({
                         id: task.id,
                         text: task.text,
                         color: task.color,
-                        position: task.position
-                    });
+                        position: task.position,
+                        tag: {
+                            text: task.tagText || '',
+                            color: task.tagColor || '#ffffff'
+                        }
+                    }));
                 }
             });
-
             Object.keys(formattedColumns).forEach(columnKey => {
                 formattedColumns[columnKey].tasks.sort((a, b) => a.position - b.position);
             });
 
             setAllColumns(formattedColumns);
-        }
-    }, [userData]);
+            setBoard({ id: data.id, position: data.position });
+        };
 
-    const removeColumn = async (columnName) => { /* --------------------- TODO removes columns ---------------------*/
+        if (boardData) {
+            initializeBoard(boardData);
+        } else if (userData) {
+            const { boardId, columns = [], tasks = [] } = userData;
+            initializeBoard({
+                id: boardId,
+                position: userData.boardPosition,
+                columns: columns.map(col => ({
+                    ...col,
+                    tasks: tasks.filter(task => task.columnId === col.id)
+                }))
+            });
+        }
+    }, [userData, boardData]);
+
+    const handleAddColumn = async () => {
+        const titleToUse = newColumnTitle.trim() || 'Column';
+
+        const newColumn = {
+            title: titleToUse,
+            titleColor: '#000000',
+            tasks: [],
+        };
+
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) {
+            console.error('No authentication token found');
+            return;
+        }
+
+        const boardId = board?.id;
+        if (!boardId) {
+            console.error('Board ID is missing');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/auth/boards/${boardId}/columns`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(newColumn),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const backendId = data.id;
+                const newColumnKey = `column${backendId}`;
+
+                setAllColumns(prev => ({
+                    ...prev,
+                    [newColumnKey]: {
+                        ...newColumn,
+                        id: backendId,
+                    },
+                }));
+
+                console.log('Column added successfully');
+                setTimeout(() => {
+                    const titleElement = document.querySelector(`.column-${backendId} .column-title`);
+                    if (titleElement) {
+                        titleElement.focus();
+                        const range = document.createRange();
+                        range.selectNodeContents(titleElement);
+                        const selection = window.getSelection();
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    }
+                }, 50);
+            } else {
+                console.error('Error adding column to backend:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error with API call:', error);
+        }
+
+        setNewColumnTitle('');
+        setShowAddColumnModal(false);
+    };
+
+    const removeColumn = async (columnName) => {                      /* TODO removes tasks and columns */
+        const isConfirmed = window.confirm('Are you sure you want to delete this column? This will also delete all associated tasks.');
+        if (!isConfirmed) {
+            return;
+        }
         const columnId = columnName.replace('column', '');
         const updatedColumns = { ...allColumns };
         const columnTasks = updatedColumns[columnName].tasks;
         delete updatedColumns[columnName];
-
         const columnKeys = Object.keys(updatedColumns);
         columnKeys.forEach((column, index) => {
             updatedColumns[column].position = index + 1;
@@ -90,7 +176,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                     }
                 })
             );
-            const columnResponse = await fetch(`http://localhost:8080/auth/columns/delete/${columnId}`, {
+            const columnResponse = await fetch(`http://localhost:8080/auth/boards/${board.id}/columns/${columnId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -109,7 +195,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
     };
 
-    const updateColumnPositions = async (updatedColumns) => { /* TODO updates column position*/
+    const updateColumnPositions = async (updatedColumns) => {                         /* TODO updates column position*/
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) throw new Error('No authentication token found');
@@ -137,7 +223,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         setSelectedTodo({ ...allColumns[column].tasks[index], index, column });
     };
 
-    const updateTask = async (taskData) => { /* TODO update a task */
+    const updateTask = async (taskData) => {                                                   /* TODO updates tasks */
         let token = localStorage.getItem('token');
         if (!token) {
             token = sessionStorage.getItem('token');
@@ -157,12 +243,20 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                     text: taskData.text,
                     color: taskData.color,
                     columnId: taskData.columnId,
+                    tagText: taskData.tag ? taskData.tag.text : '',
+                    tagColor: taskData.tag ? taskData.tag.color : '#ffffff',
                 }),
             });
 
             if (response.ok) {
-                console.log('Task updated successfully');
-                return await response.json();
+                const updatedTask = await response.json();
+                return {
+                    ...updatedTask,
+                    tag: {
+                        text: updatedTask.tagText || '',
+                        color: updatedTask.tagColor || '#ffffff'
+                    }
+                };
             } else {
                 console.error('Failed to update task on backend');
             }
@@ -171,7 +265,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
     };
 
-    const saveChanges = async () => { /* TODO saves changes made to columns*/
+    const saveChanges = async () => {                                                        /* TODO updates columns */
         const { column, index, isNew, isTitleChange } = selectedTodo;
         const columnData = allColumns[column];
 
@@ -195,7 +289,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
             }
 
             try {
-                const response = await fetch(`http://localhost:8080/auth/columns/${columnData.id}`, {
+                const response = await fetch(
+                    `http://localhost:8080/auth/boards/${board.id}/columns/${columnData.id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -216,7 +311,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                 console.error('Error updating column:', error);
             }
 
-        } else if (isNew) { /* TODO handles new todo task */
+        } else if (isNew) {                                                            /* TODO handles new todo task */
             if (!selectedTodo.text.trim()) {
                 alert("Todo text cannot be empty!");
                 return;
@@ -236,8 +331,9 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                     text: selectedTodo.text,
                     color: selectedTodo.color,
                     columnId: columnData.id,
+                    tag: selectedTodo.tag || { text: '', color: '#ffffff' },
                 };
-
+                console.log('Sending the following task data to the backend:', taskData);
                 const response = await fetch('http://localhost:8080/tasks/create', {
                     method: 'POST',
                     headers: {
@@ -261,6 +357,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                                 color: newTask.color,
                                 position: newTask.position,
                                 columnId: newTask.columnId,
+                                tagText: newTask.tag ? newTask.tag.text : '',
+                                tagColor: newTask.tag ? newTask.tag.color : '#ffffff',
                             }],
                         },
                     });
@@ -276,7 +374,10 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
             const updatedTaskFromBackend = await updateTask(updatedTask);
             if (updatedTaskFromBackend) {
                 const updatedColumn = [...columnData.tasks];
-                updatedColumn[index] = updatedTaskFromBackend;
+                updatedColumn[index] = {
+                    ...updatedTaskFromBackend,
+                    tag: selectedTodo.tag || { text: '', color: '#ffffff' },
+                };
                 setAllColumns({
                     ...allColumns,
                     [column]: { ...columnData, tasks: updatedColumn },
@@ -288,7 +389,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         setSelectedTodo(null);
     };
 
-    const deleteTodo = async (todoToDelete) => {
+    const deleteTodo = async (todoToDelete) => {                                                /* TODO removes task */
         const { column, index, id } = todoToDelete;
         const updatedColumn = allColumns[column].tasks.filter((_, i) => i !== index);
 
@@ -337,56 +438,55 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         });
     };
 
-    const addNewColumn = async () => {  /* --------------------- TODO saves new column to database ---------------------*/
+    const addNewColumn = async () => {                                              /* TODO creates new column*/
         if (newColumnTitle.trim()) {
-            const newColumnKey = `column${Object.keys(allColumns).length + 1}`;
             const newColumn = {
                 title: newColumnTitle,
                 titleColor: '#000000',
                 tasks: [],
             };
-            setAllColumns({
-                ...allColumns,
-                [newColumnKey]: newColumn,
-            });
-            let token = localStorage.getItem('token');
-            if (!token) {
-                token = sessionStorage.getItem('token');
-            }
+
+            let token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) {
                 console.error('No authentication token found');
                 return;
             }
+
+            const boardId = board?.id;
+            if (!boardId) {
+                console.error('Board ID is missing');
+                return;
+            }
+
             try {
-                const response = await fetch('http://localhost:8080/auth/columns', {
+                const response = await fetch(`http://localhost:8080/auth/boards/${board.id}/columns`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
                     },
-                    body: JSON.stringify({
-                        title: newColumnTitle,
-                        titleColor: '#000000',
-                        tasks: [],}),
+                    body: JSON.stringify(newColumn),
                 });
 
                 if (response.ok) {
                     const data = await response.json();
                     const backendId = data.id;
-                    setAllColumns({
-                        ...allColumns,
-                        [`column${backendId}`]: {
+                    const newColumnKey = `column${backendId}`;
+                    setAllColumns((prev) => ({
+                        ...prev,
+                        [newColumnKey]: {
                             ...newColumn,
                             id: backendId,
                         },
-                    });
+                    }));
                     console.log('Column added successfully');
                 } else {
-                    console.error('Error adding column to backend');
+                    console.error('Error adding column to backend:', await response.text());
                 }
             } catch (error) {
                 console.error('Error with API call:', error);
             }
+
             setNewColumnTitle('');
             setShowAddColumnModal(false);
         } else {
@@ -394,7 +494,9 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
         }
     };
 
-    const moveColumn = async (fromIndex, toIndex) => { /* --------------------- TODO updates moved placements ---------------------*/
+
+    const moveColumn = async (fromIndex, toIndex) => {                  /* TODO reorders columns */
+
         const columnsArray = Object.keys(allColumns);
         const columnKeys = [...columnsArray];
         const movedColumn = columnKeys.splice(fromIndex, 1);
@@ -407,29 +509,30 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
 
         setAllColumns(reorderedColumns);
 
-        let token = localStorage.getItem('token');
-        if (!token) {
-            token = sessionStorage.getItem('token');
-        }
+        let token = localStorage.getItem('token') || sessionStorage.getItem('token');
         if (!token) {
             console.error('No authentication token found');
             return;
         }
-
         try {
-            const response = await fetch('http://localhost:8080/auth/columns/reorder', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify(
-                    columnKeys.map((key, index) => ({
-                        title: allColumns[key].title,
-                        placement: index + 1,
-                    }))
-                ),
-            });
+
+            const reorderedColumnData = columnKeys.map((key, index) => ({
+                id: allColumns[key].id,
+                title: allColumns[key].title,
+                placement: index + 1,
+                titleColor: allColumns[key].titleColor || null,
+            }));
+
+            const response = await fetch(
+                `http://localhost:8080/auth/boards/${board.id}/columns/order`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(reorderedColumnData),
+                });
+
             if (response.ok) {
                 console.log('Columns reordered successfully');
             } else {
@@ -453,7 +556,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                 <div className="columns">
                     {Object.keys(allColumns).map((column, index) => (
                         <TodoColumn
-                            key={column}
+                            key={allColumns[column].id}
+                            columnId={allColumns[column].id}
                             title={allColumns[column].title}
                             columnName={column}
                             allColumns={allColumns}
@@ -464,11 +568,13 @@ const TodoBoard = ({ backgroundColor, backgroundImage }) => {
                             removeColumn={removeColumn}
                             index={index}
                             moveColumn={moveColumn}
+                            isNewColumn={allColumns[column].isNew}
+                            currentBoardId={board?.id}
                         />
                     ))}
                     <div
                         className="todo-column transparent"
-                        onClick={() => setShowAddColumnModal(true)}
+                        onClick={handleAddColumn}
                     >
                         <FaPlus size={20} />
                     </div>

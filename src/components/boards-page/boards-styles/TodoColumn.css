@@ -11,7 +11,7 @@
     flex: 0 0 260px;
     min-width: 200px;
     padding: 10px;
-    min-height: 100px;
+    min-height: 120px;
     background-color: rgba(255, 255, 255, 0.89);
     border-radius: 3px;
     position: relative;
@@ -90,4 +90,66 @@
 
 .column-settings-dropdown-menu button:hover {
     background-color: rgb(208, 208, 208);
+}
+
+.edit-title-input {
+    width: 80%;
+    height: 20px;
+    border-radius: 1px;
+    padding: 4px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.delete-column-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #232323;
+}
+
+.delete-column-btn:hover {
+    opacity: 0.9;
+    background-color: transparent;
+    transform: scale(1.1);
+}
+
+.color-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 10px 0;
+}
+
+.color-row {
+    display: flex;
+    gap: 2px;
+}
+
+.color-cell {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.color-cell:hover {
+    transform: scale(1.15);
+    border-color: #555;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+
+.selected-color-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.color-preview {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ddd;
 }

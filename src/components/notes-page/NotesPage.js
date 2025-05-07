@@ -1,23 +1,51 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../Sidebar';
 import './NotesPage.css';
-
 import colorIcon from '../../icons/color-icon.png';
 import trashIcon from '../../icons/trash-icon.png';
 import dateIcon from '../../icons/date-icon.png';
 
 const generateNotesColor = () => {
-    const r = Math.floor(Math.random() * 100 + 100);
-    const g = Math.floor(Math.random() * 100 + 100);
-    const b = Math.floor(Math.random() * 120 + 100);
-    return `rgb(${r}, ${g}, ${b})`;
+    const r = Math.floor(Math.random() * 100 + 100).toString(16).padStart(2, '0');
+    const g = Math.floor(Math.random() * 100 + 100).toString(16).padStart(2, '0');
+    const b = Math.floor(Math.random() * 120 + 100).toString(16).padStart(2, '0');
+    return `#${r}${g}${b}`;
 };
 
 const NotesPage = () => {
     const [notes, setNotes] = useState([]);
     const [openDropdown, setOpenDropdown] = useState(null);
+    const [loading, setLoading] = useState(true);
     const textareaRefs = useRef([]);
     const dropdownRefs = useRef([]);
+
+    useEffect(() => {
+        const fetchNotes = async () => {
+            try {
+                const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                if (!token) throw new Error('No authentication token found');
+
+                const response = await fetch('http://localhost:8080/api/notes', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch notes');
+                }
+
+                const data = await response.json();
+                setNotes(data);
+            } catch (error) {
+                console.error('Error fetching notes:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchNotes();
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -34,15 +62,6 @@ const NotesPage = () => {
     }, []);
 
     useEffect(() => {
-        const savedNotes = localStorage.getItem('notes');
-        if (savedNotes) setNotes(JSON.parse(savedNotes));
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem('notes', JSON.stringify(notes));
-    }, [notes]);
-
-    useEffect(() => {
         textareaRefs.current.forEach((textarea) => {
             if (textarea) {
                 textarea.style.height = "auto";
@@ -51,30 +70,114 @@ const NotesPage = () => {
         });
     }, [notes]);
 
-    const addNewNote = () => {
-        setNotes([...notes, {
+    const saveNote = async (index) => {
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) throw new Error('No authentication token found');
+
+            const noteToUpdate = notes[index];
+            const updatedNote = { ...noteToUpdate };
+
+            const response = await fetch(`http://localhost:8080/api/notes/${noteToUpdate.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(updatedNote),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update note');
+            }
+
+            const savedNote = await response.json();
+            setNotes(prevNotes => {
+                const newNotes = [...prevNotes];
+                newNotes[index] = savedNote;
+                return newNotes;
+            });
+        } catch (error) {
+            console.error('Error updating note:', error);
+        }
+    };
+
+    const addNewNote = async () => {
+        const newNote = {
             title: 'New Note',
             text: '',
             color: generateNotesColor(),
-            date: '',
-        }]);
+            date: new Date().toISOString().split('T')[0],
+        };
+
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) throw new Error('No authentication token found');
+
+            const response = await fetch('http://localhost:8080/api/notes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(newNote),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create note');
+            }
+
+            const savedNote = await response.json();
+            setNotes(prevNotes => [...prevNotes, savedNote]);
+        } catch (error) {
+            console.error('Error creating note:', error);
+        }
     };
 
-    const deleteNote = (index) => {
+    const deleteNote = async (index) => {
+        try {
+            const noteToDelete = notes[index];
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) throw new Error('No authentication token found');
+
+            const response = await fetch(`http://localhost:8080/api/notes/${noteToDelete.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete note');
+            }
+
+            setNotes(prevNotes => prevNotes.filter((_, i) => i !== index));
+            setOpenDropdown(null);
+        } catch (error) {
+            console.error('Error deleting note:', error);
+        }
+    };
+
+    const handleTitleChange = (index, value) => {
         const updatedNotes = [...notes];
-        updatedNotes.splice(index, 1);
+        updatedNotes[index].title = value;
         setNotes(updatedNotes);
-        setOpenDropdown(null);
     };
 
-    const changeNoteColor = (index, color) => {
+    const handleTextChange = (index, value) => {
+        const updatedNotes = [...notes];
+        updatedNotes[index].text = value;
+        setNotes(updatedNotes);
+    };
+
+    const handleColorChange = (index, color) => {
         const updatedNotes = [...notes];
         updatedNotes[index].color = color;
         setNotes(updatedNotes);
         setOpenDropdown(null);
     };
 
-    const changeNoteDate = (index, date) => {
+    const handleDateChange = (index, date) => {
         const updatedNotes = [...notes];
         updatedNotes[index].date = date;
         setNotes(updatedNotes);
@@ -84,27 +187,25 @@ const NotesPage = () => {
         setOpenDropdown(openDropdown === index ? null : index);
     };
 
+    if (loading) {
+        return <div className="notesPage-app">Loading notes...</div>;
+    }
+
     return (
         <div className="notesPage-app">
             <Sidebar changeBackgroundColor={() => true} />
-
-            <h1 className="notes-title">Notes</h1>
             <div className="notes-grid">
                 {notes.map((note, index) => (
                     <div
-                        key={index}
+                        key={note.id || index}
                         className="note"
                         style={{ backgroundColor: note.color }}
                     >
                         <div className="note-header">
                             <input
                                 className="title-input"
-                                value={note.title}
-                                onChange={(e) => {
-                                    const updatedNotes = [...notes];
-                                    updatedNotes[index].title = e.target.value;
-                                    setNotes(updatedNotes);
-                                }}
+                                value={note.title || ''}
+                                onChange={(e) => handleTitleChange(index, e.target.value)}
                                 placeholder="Note"
                             />
                             <div className="note-actions" ref={el => dropdownRefs.current[index] = el}>
@@ -121,8 +222,8 @@ const NotesPage = () => {
                                             Color
                                             <input
                                                 type="color"
-                                                value={note.color}
-                                                onChange={(e) => changeNoteColor(index, e.target.value)}
+                                                value={note.color || '#ffffff'}
+                                                onChange={(e) => handleColorChange(index, e.target.value)}
                                                 className="hidden-color-input"
                                             />
                                         </label>
@@ -135,8 +236,8 @@ const NotesPage = () => {
                                             Date
                                             <input
                                                 type="date"
-                                                value={note.date}
-                                                onChange={(e) => changeNoteDate(index, e.target.value)}
+                                                value={note.date || ''}
+                                                onChange={(e) => handleDateChange(index, e.target.value)}
                                                 className="date-input"
                                             />
                                         </label>
@@ -146,16 +247,12 @@ const NotesPage = () => {
                         </div>
                         <textarea
                             ref={(el) => (textareaRefs.current[index] = el)}
-                            value={note.text}
-                            onChange={(e) => {
-                                const updatedNotes = [...notes];
-                                updatedNotes[index].text = e.target.value;
-                                setNotes(updatedNotes);
-                                e.target.style.height = "auto";
-                                e.target.style.height = `${e.target.scrollHeight}px`;
-                            }}
+                            value={note.text || ''}
+                            onChange={(e) => handleTextChange(index, e.target.value)}
                             placeholder="Start typing your note..."
+                            spellCheck="false"
                         />
+                        <button onClick={() => saveNote(index)} className="save-text-btn">Save</button>
                     </div>
                 ))}
 
@@ -163,7 +260,6 @@ const NotesPage = () => {
                     +
                 </button>
             </div>
-
         </div>
     );
 };

@@ -23,7 +23,7 @@
 .username-formGroup label {
     display: block;
     margin-bottom: 5px;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .username-formGroup input {
@@ -69,4 +69,30 @@
 
 .user-profileContainer hr {
     margin: 20px 0;
+}
+
+.account-deletion-section h3 {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.warning-message {
+    color: red;
+    font-size: 15px;
+}
+
+.delete-account-button {
+    background-color: rgba(210, 0, 0, 0.77);
+}
+
+.delete-account-button:hover {
+    background-color: rgba(210, 0, 0, 0.69);
+}
+
+.verification-code-group input {
+    width: 150px;
+    margin: 0 0 10px 0;
+    border: 1px solid #ccc;
+    height: 23px;
+
 }
