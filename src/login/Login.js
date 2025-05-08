@@ -32,7 +32,7 @@ const Login = () => {
         const loginData = { email, password };
 
         try {
-            const response = await fetch('https://email-verification-production.up.railway.app//auth/login', {
+            const response = await fetch('https://email-verification-production.up.railway.app/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(loginData),
