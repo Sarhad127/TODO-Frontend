@@ -79,7 +79,7 @@ const Login = () => {
         const invitationBoardId =
             localStorage.getItem('invitationBoardId') ||
             sessionStorage.getItem('invitationBoardId');
-        let redirectUrl = `https://email-verification.railway.app/oauth2/authorization/${provider}?redirect_uri=https://todo-frontend-production-8fe7.up.railway.app/oauth2/redirect`;
+        let redirectUrl = `https://email-verification-production.up.railway.app/oauth2/authorization/${provider}?redirect_uri=https://todo-frontend-production-8fe7.up.railway.app/oauth2/redirect`;
         localStorage.setItem('rememberMe', rememberMe);
         if (invitationBoardId) {
             redirectUrl += `&state=invite_${invitationBoardId}`;
