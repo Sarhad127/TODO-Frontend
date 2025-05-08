@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
     const handleBoardSelect = async (position) => {
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-            const response = await fetch(`http://localhost:8080/api/boards/${position}`, {
+            const response = await fetch(`email-verification-production.up.railway.app/api/boards/${position}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },

@@ -17,7 +17,7 @@ export const UserProvider = ({ children }) => {
 
     const fetchUserData = useCallback(async (token) => {
         try {
-            const response = await fetch('http://localhost:8080/api/userdata', {
+            const response = await fetch('email-verification-production.up.railway.app/api/userdata', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
