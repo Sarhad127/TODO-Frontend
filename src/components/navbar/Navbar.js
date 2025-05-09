@@ -26,6 +26,10 @@ const Navbar = ({ onBoardSelect }) => {
     const [boardUsers, setBoardUsers] = useState([]);
 
     useEffect(() => {
+        console.log("Current board updated:", currentBoardId, selectedBoardTitle);
+    }, [currentBoardId, selectedBoardTitle]);
+
+    useEffect(() => {
         const fetchBoards = async () => {
             try {
                 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
