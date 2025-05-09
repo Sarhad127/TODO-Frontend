@@ -53,7 +53,7 @@ function TodoColumn({
             }
 
             const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/auth/boards/${boardId}/columns/${columnData.id}`,
+                `https://email-verification-production.up.railway.app/auth/boards/${boardId}/columns/${columnData.id}`,
                 {
                     method: 'PUT',
                     headers: {
