@@ -54,8 +54,18 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
 
         if (boardData) {
             initializeBoard(boardData);
+        } else if (userData) {
+            const { boardId, columns = [], tasks = [] } = userData;
+            initializeBoard({
+                id: boardId,
+                position: userData.boardPosition,
+                columns: columns.map(col => ({
+                    ...col,
+                    tasks: tasks.filter(task => task.columnId === col.id)
+                }))
+            });
         }
-    }, [boardData]);
+    }, [userData, boardData]);
 
     const handleAddColumn = async () => {
         const titleToUse = newColumnTitle.trim() || 'Column';
