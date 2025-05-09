@@ -21,7 +21,7 @@ const Register = () => {
         const registerData = { email, username, password };
 
         try {
-            const response = await fetch('http://localhost:8080/auth/signup', {
+            const response = await fetch('https://email-verification-production.up.railway.app/auth/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(registerData),

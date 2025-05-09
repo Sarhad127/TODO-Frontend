@@ -22,8 +22,7 @@ const InvitationAcceptPage = () => {
                     navigate('/auth/login?redirect=accept-invitation');
                     return;
                 }
-
-                const response = await fetch(`http://localhost:8080/api/invitations/accept?boardId=${boardId}`, {
+                const response = await fetch(`https://email-verification-production.up.railway.app/api/invitations/accept?boardId=${boardId}`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -32,7 +31,7 @@ const InvitationAcceptPage = () => {
 
                 if (!response.ok) throw new Error('Failed to accept invitation');
 
-                const updatedBoardsResponse = await fetch('http://localhost:8080/api/boards', {
+                const updatedBoardsResponse = await fetch('https://email-verification-production.up.railway.app/api/boards', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -51,7 +50,6 @@ const InvitationAcceptPage = () => {
                     ...prevData,
                     boards: existingBoards,
                 }));
-
                 setMessage('Invitation accepted! Redirecting to board...');
                 setIsSuccess(true);
 
