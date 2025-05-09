@@ -16,13 +16,21 @@ const InvitationAcceptPage = () => {
         const acceptInvitation = async () => {
             try {
                 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                const invitationBoardId = sessionStorage.getItem('invitationBoardId') || localStorage.getItem('invitationBoardId');
 
                 if (!token) {
                     sessionStorage.setItem('invitationBoardId', boardId);
+                    localStorage.setItem('invitationBoardId', boardId);
+
                     navigate('/auth/login?redirect=accept-invitation');
                     return;
                 }
-
+                if (invitationBoardId && invitationBoardId !== boardId) {
+                    sessionStorage.removeItem('invitationBoardId');
+                    localStorage.removeItem('invitationBoardId');
+                    navigate(`/accept-invitation?boardId=${invitationBoardId}`, { replace: true });
+                    return;
+                }
                 const response = await fetch(`https://email-verification-production.up.railway.app/api/invitations/accept?boardId=${boardId}`, {
                     method: 'POST',
                     headers: {
@@ -51,7 +59,8 @@ const InvitationAcceptPage = () => {
                     ...prevData,
                     boards: existingBoards,
                 }));
-
+                sessionStorage.removeItem('invitationBoardId');
+                localStorage.removeItem('invitationBoardId');
                 setMessage('Invitation accepted! Redirecting to board...');
                 setIsSuccess(true);
 
