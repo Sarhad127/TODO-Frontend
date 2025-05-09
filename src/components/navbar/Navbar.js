@@ -26,10 +26,6 @@ const Navbar = ({ onBoardSelect }) => {
     const [boardUsers, setBoardUsers] = useState([]);
 
     useEffect(() => {
-        console.log("Current board updated:", currentBoardId, selectedBoardTitle);
-    }, [currentBoardId, selectedBoardTitle]);
-
-    useEffect(() => {
         const fetchBoards = async () => {
             try {
                 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -129,7 +125,6 @@ const Navbar = ({ onBoardSelect }) => {
             }
             console.log(`Fetching board at position ${position}...`);
             const boardResponse = await fetch(`https://email-verification-production.up.railway.app/api/boards/${position}`, {
-                method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -151,7 +146,6 @@ const Navbar = ({ onBoardSelect }) => {
 
             console.log(`Fetching users for board ID ${boardData.id}...`);
             const usersResponse = await fetch(`https://email-verification-production.up.railway.app/api/boards/${boardData.id}/users`, {
-                method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
