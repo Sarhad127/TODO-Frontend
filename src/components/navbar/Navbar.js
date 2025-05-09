@@ -125,6 +125,7 @@ const Navbar = ({ onBoardSelect }) => {
             }
             console.log(`Fetching board at position ${position}...`);
             const boardResponse = await fetch(`https://email-verification-production.up.railway.app/api/boards/${position}`, {
+                method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -146,6 +147,7 @@ const Navbar = ({ onBoardSelect }) => {
 
             console.log(`Fetching users for board ID ${boardData.id}...`);
             const usersResponse = await fetch(`https://email-verification-production.up.railway.app/api/boards/${boardData.id}/users`, {
+                method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
