@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -23,7 +23,6 @@ import { UserProvider } from '../context/UserContext';
 import InvitationAcceptPage from "./InvitationAcceptPage";
 
 function App() {
-    const [selectedBoardData, setSelectedBoardData] = useState(null);
     return (
         <UserProvider>
             <BrowserRouter>
@@ -56,7 +55,7 @@ function App() {
                                     element={
                                         <PrivateRoute>
                                             <Layout>
-                                                <TodoBoard boardData={selectedBoardData} />
+                                                <TodoBoard />
                                             </Layout>
                                         </PrivateRoute>
                                     }
