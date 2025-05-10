@@ -4,12 +4,29 @@ import './SchedulePage.css';
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const hours = Array.from({ length: 9 }, (_, i) => 8 + i);
 
+function darkenColor(color, amount = 20) {
+    const num = parseInt(color.replace('#', ''), 16);
+    let r = (num >> 16) - amount;
+    let g = ((num >> 8) & 0x00FF) - amount;
+    let b = (num & 0x0000FF) - amount;
+    r = r < 0 ? 0 : r;
+    g = g < 0 ? 0 : g;
+    b = b < 0 ? 0 : b;
+    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+}
+
 function SchedulePage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedDay, setSelectedDay] = useState('');
     const [selectedHour, setSelectedHour] = useState(null);
     const [blocks, setBlocks] = useState([]);
-    const [formData, setFormData] = useState({ start: '', end: '', label: '', title: '' });
+    const [formData, setFormData] = useState({
+        start: '',
+        end: '',
+        label: '',
+        title: '',
+        color: '#4CAF50'
+    });
     const [editingIndex, setEditingIndex] = useState(null);
 
     useEffect(() => {
@@ -108,7 +125,11 @@ function SchedulePage() {
                         <div
                             key={i}
                             className="block"
-                            style={pos}
+                            style={{
+                                ...pos,
+                                backgroundColor: block.color || '#4CAF50',
+                                borderLeft: `4px solid ${darkenColor(block.color || '#4CAF50')}`
+                            }}
                         >
                             <div className="block-content">
                                 <strong>{block.title}</strong>
@@ -135,6 +156,12 @@ function SchedulePage() {
                                     required
                                 />
                             </div>
+                            <label>Color</label>
+                            <input
+                                type="color"
+                                value={formData.color}
+                                onChange={e => setFormData({...formData, color: e.target.value})}
+                            />
                             <div className="form-group">
                                 <label>Time</label>
                                 <div className="time-inputs">
