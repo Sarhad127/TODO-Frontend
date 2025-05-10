@@ -43,13 +43,18 @@ function SchedulePage() {
     const openModal = (day, hour, index = null) => {
         setEditingIndex(index);
         if (index !== null) {
-            setFormData(blocks[index]);
+            setFormData({
+                ...blocks[index],
+                start: blocks[index].start.toString(),
+                end: blocks[index].end.toString()
+            });
         } else {
             setFormData({
                 start: hour.toString(),
                 end: (hour + 1).toString(),
                 label: '',
-                title: ''
+                title: '',
+                color: '#4CAF50'
             });
         }
         setSelectedDay(day);
@@ -130,6 +135,10 @@ function SchedulePage() {
                                 backgroundColor: block.color || '#4CAF50',
                                 borderLeft: `4px solid ${darkenColor(block.color || '#4CAF50')}`
                             }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openModal(block.day, parseInt(block.start), i);
+                            }}
                         >
                             <div className="block-content">
                                 <strong>{block.title}</strong>
@@ -204,6 +213,18 @@ function SchedulePage() {
                                 </button>
                             </div>
                         </form>
+                        {editingIndex !== null && (
+                            <button
+                                type="button"
+                                className="delete-day"
+                                onClick={() => {
+                                    setBlocks(prev => prev.filter((_, i) => i !== editingIndex));
+                                    setModalOpen(false);
+                                }}
+                            >
+                                Delete
+                            </button>
+                        )}
                     </div>
                 </div>
             )}
