@@ -18,17 +18,34 @@ function SchedulePage() {
     });
     const [editingIndex, setEditingIndex] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
+    const [currentBlockId, setCurrentBlockId] = useState(null);
 
     useEffect(() => {
-        const saved = localStorage.getItem('scheduleBlocks');
-        if (saved) setBlocks(JSON.parse(saved));
+        const fetchScheduleBlocks = async () => {
+            try {
+                const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                if (!token) return;
+
+                const response = await fetch('http://localhost:8080/api/schedule-blocks', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch schedule blocks');
+                }
+
+                const data = await response.json();
+                setBlocks(data);
+            } catch (error) {
+                console.error('Error fetching schedule blocks:', error);
+            }
+        };
+
+        fetchScheduleBlocks();
     }, []);
 
-    useEffect(() => {
-        if (blocks.length > 0) {
-            localStorage.setItem('scheduleBlocks', JSON.stringify(blocks));
-        }
-    }, [blocks]);
 
     const openModal = (day, hour, index = null) => {
         setEditingIndex(index);
@@ -63,7 +80,7 @@ function SchedulePage() {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const start = parseInt(formData.start);
         const end = parseInt(formData.end);
@@ -78,17 +95,89 @@ function SchedulePage() {
             return;
         }
 
-        const newBlock = { ...formData, day: selectedDay };
-        if (editingIndex !== null) {
-            setBlocks(prev => prev.map((b, i) => i === editingIndex ? newBlock : b));
-        } else {
-            setBlocks(prev => [...prev, newBlock]);
-        }
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) {
+                throw new Error('No authentication token found');
+            }
 
-        setErrorMessage('');
-        setModalOpen(false);
+            const scheduleBlockDto = {
+                day: selectedDay,
+                startHour: start,
+                endHour: end,
+                title: formData.title,
+                label: formData.label,
+                color: formData.color
+            };
+
+            let response;
+            if (editingIndex !== null) {
+                response = await fetch(`http://localhost:8080/api/schedule-blocks/${currentBlockId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(scheduleBlockDto),
+                });
+            } else {
+                response = await fetch('http://localhost:8080/api/schedule-blocks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(scheduleBlockDto),
+                });
+            }
+
+            if (!response.ok) {
+                throw new Error(editingIndex !== null ? 'Failed to update block' : 'Failed to create block');
+            }
+
+            const updatedBlock = await response.json();
+
+            if (editingIndex !== null) {
+                setBlocks(prev => prev.map(block =>
+                    block.id === currentBlockId ? updatedBlock : block
+                ));
+            } else {
+                setBlocks(prev => [...prev, updatedBlock]);
+            }
+
+            setErrorMessage('');
+            setModalOpen(false);
+        } catch (error) {
+            console.error('Error saving schedule block:', error);
+            setErrorMessage(error.message || 'An error occurred while saving');
+        }
     };
 
+    const handleDelete = async () => {
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) {
+                throw new Error('No authentication token found');
+            }
+
+            const response = await fetch(`http://localhost:8080/api/schedule-blocks/${currentBlockId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete block');
+            }
+
+            setBlocks(prev => prev.filter(block => block.id !== currentBlockId));
+            setModalOpen(false);
+        } catch (error) {
+            console.error('Error deleting schedule block:', error);
+            setErrorMessage(error.message || 'An error occurred while deleting');
+        }
+    };
 
     const getGridPosition = (day, startHour, endHour) => {
         const col = days.indexOf(day) + 2;
@@ -228,10 +317,7 @@ function SchedulePage() {
                             <button
                                 type="button"
                                 className="delete-day"
-                                onClick={() => {
-                                    setBlocks(prev => prev.filter((_, i) => i !== editingIndex));
-                                    setModalOpen(false);
-                                }}
+                                onClick={handleDelete}
                             >
                                 Delete
                             </button>
