@@ -24,8 +24,6 @@ const Navbar = ({ onBoardSelect }) => {
     const toggleFriendsDropdown = () => setIsFriendsDropdownOpen(!isFriendsDropdownOpen);
     const [currentBoardId, setCurrentBoardId] = useState(null);
     const [boardUsers, setBoardUsers] = useState([]);
-    const [allColumns, setAllColumns] = useState({});
-    const [board, setBoard] = useState(null);
 
     useEffect(() => {
         const fetchBoards = async () => {
@@ -118,41 +116,6 @@ const Navbar = ({ onBoardSelect }) => {
         }
     };
 
-    const initializeBoard = (data) => {
-        const formattedColumns = {};
-        data.columns.forEach(column => {
-            formattedColumns[`column${column.id}`] = {
-                id: column.id,
-                title: column.title,
-                titleColor: column.titleColor,
-                tasks: [],
-                position: column.placement
-            };
-        });
-
-        data.columns.forEach(column => {
-            const columnKey = `column${column.id}`;
-            if (column.tasks && column.tasks.length > 0) {
-                formattedColumns[columnKey].tasks = column.tasks.map(task => ({
-                    id: task.id,
-                    text: task.text,
-                    color: task.color,
-                    position: task.position,
-                    tag: {
-                        text: task.tagText || '',
-                        color: task.tagColor || '#ffffff'
-                    }
-                }));
-            }
-        });
-        Object.keys(formattedColumns).forEach(columnKey => {
-            formattedColumns[columnKey].tasks.sort((a, b) => a.position - b.position);
-        });
-        console.log("used initializeBoard in navbar")
-        setAllColumns(formattedColumns);
-        setBoard({ id: data.id, position: data.position });
-    };
-
     const handleBoardClick = async (position) => {
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -178,7 +141,7 @@ const Navbar = ({ onBoardSelect }) => {
             setCurrentBoardId(boardData.id);
             console.log('Board data:', boardData);
             setSelectedBoardTitle(boardData.title);
-            initializeBoard(boardData);
+
             setBoardUsers([]);
 
             console.log(`Fetching users for board ID ${boardData.id}...`);
