@@ -53,7 +53,7 @@ const Profile = () => {
             return;
         }
         try {
-            const response = await fetch('https://email-verification-production.up.railway.app/user/update-username', {
+            const response = await fetch('http://localhost:8080/user/update-username', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ const Profile = () => {
             return;
         }
         try {
-            const response = await fetch('https://email-verification-production.up.railway.app/user/change-password', {
+            const response = await fetch('http://localhost:8080/user/change-password', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ const Profile = () => {
         setError('');
         setMessage('');
         try {
-            const response = await fetch('https://email-verification-production.up.railway.app/user/request-account-deletion', {
+            const response = await fetch('http://localhost:8080/user/request-account-deletion', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -158,7 +158,7 @@ const Profile = () => {
             return;
         }
         try {
-            const response = await fetch('https://email-verification-production.up.railway.app/user/confirm-account-deletion', {
+            const response = await fetch('http://localhost:8080/user/confirm-account-deletion', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
