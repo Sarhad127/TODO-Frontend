@@ -4,17 +4,6 @@ import './SchedulePage.css';
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const hours = Array.from({ length: 9 }, (_, i) => 8 + i);
 
-function darkenColor(color, amount = 20) {
-    const num = parseInt(color.replace('#', ''), 16);
-    let r = (num >> 16) - amount;
-    let g = ((num >> 8) & 0x00FF) - amount;
-    let b = (num & 0x0000FF) - amount;
-    r = r < 0 ? 0 : r;
-    g = g < 0 ? 0 : g;
-    b = b < 0 ? 0 : b;
-    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-}
-
 function SchedulePage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedDay, setSelectedDay] = useState('');
@@ -25,9 +14,10 @@ function SchedulePage() {
         end: '',
         label: '',
         title: '',
-        color: '#e8e8e8'
+        color: '#f3f3f3'
     });
     const [editingIndex, setEditingIndex] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         const saved = localStorage.getItem('scheduleBlocks');
@@ -54,7 +44,7 @@ function SchedulePage() {
                 end: (hour + 1).toString(),
                 label: '',
                 title: '',
-                color: '#e8e8e8'
+                color: '#f3f3f3'
             });
         }
         setSelectedDay(day);
@@ -62,26 +52,48 @@ function SchedulePage() {
         setModalOpen(true);
     };
 
+    const isOverlapping = (newStart, newEnd, day, indexToIgnore = null) => {
+        return blocks.some((block, i) => {
+            if (block.day !== day || i === indexToIgnore) return false;
+            const existingStart = parseInt(block.start);
+            const existingEnd = parseInt(block.end);
+            return (
+                (newStart < existingEnd && newEnd > existingStart)
+            );
+        });
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (parseInt(formData.end) <= parseInt(formData.start)) {
-            alert("End time must be after start time");
+        const start = parseInt(formData.start);
+        const end = parseInt(formData.end);
+
+        if (end <= start) {
+            setErrorMessage("End time must be after start time.");
             return;
         }
-        if (editingIndex !== null) {
-            setBlocks(prev => prev.map((b, i) =>
-                i === editingIndex ? { ...formData, day: selectedDay } : b
-            ));
-        } else {
-            setBlocks(prev => [...prev, { ...formData, day: selectedDay }]);
+
+        if (isOverlapping(start, end, selectedDay, editingIndex)) {
+            setErrorMessage("Time block overlaps with an existing block.");
+            return;
         }
+
+        const newBlock = { ...formData, day: selectedDay };
+        if (editingIndex !== null) {
+            setBlocks(prev => prev.map((b, i) => i === editingIndex ? newBlock : b));
+        } else {
+            setBlocks(prev => [...prev, newBlock]);
+        }
+
+        setErrorMessage('');
         setModalOpen(false);
     };
+
 
     const getGridPosition = (day, startHour, endHour) => {
         const col = days.indexOf(day) + 2;
         const rowStart = hours.indexOf(parseInt(startHour)) + 2;
-        const rowEnd = hours.indexOf(parseInt(endHour)) + 3;
+        const rowEnd = hours.indexOf(parseInt(endHour)) + 2;
         return { gridColumn: col, gridRow: `${rowStart} / ${rowEnd}` };
     };
 
@@ -132,7 +144,7 @@ function SchedulePage() {
                             className="block"
                             style={{
                                 ...pos,
-                                backgroundColor: block.color || '#e8e8e8'
+                                backgroundColor: block.color || '#f3f3f3'
                             }}
                             onClick={(e) => {
                                 e.stopPropagation();
