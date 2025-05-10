@@ -25,7 +25,7 @@ function SchedulePage() {
         end: '',
         label: '',
         title: '',
-        color: '#4CAF50'
+        color: '#e8e8e8'
     });
     const [editingIndex, setEditingIndex] = useState(null);
 
@@ -54,7 +54,7 @@ function SchedulePage() {
                 end: (hour + 1).toString(),
                 label: '',
                 title: '',
-                color: '#4CAF50'
+                color: '#e8e8e8'
             });
         }
         setSelectedDay(day);
@@ -132,8 +132,7 @@ function SchedulePage() {
                             className="block"
                             style={{
                                 ...pos,
-                                backgroundColor: block.color || '#4CAF50',
-                                borderLeft: `4px solid ${darkenColor(block.color || '#4CAF50')}`
+                                backgroundColor: block.color || '#e8e8e8'
                             }}
                             onClick={(e) => {
                                 e.stopPropagation();
