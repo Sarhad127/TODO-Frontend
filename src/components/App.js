@@ -21,6 +21,7 @@ import './styles/Sidebar.css';
 import ProfilePage from './profile-page/Profile';
 import { UserProvider } from '../context/UserContext';
 import InvitationAcceptPage from "./InvitationAcceptPage";
+import SchedulePage from "./schedule/Schedule";
 
 function App() {
     return (
@@ -66,6 +67,16 @@ function App() {
                                         <PrivateRoute>
                                             <Layout>
                                                 <CalendarPage />
+                                            </Layout>
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/schedule"
+                                    element={
+                                        <PrivateRoute>
+                                            <Layout>
+                                                <SchedulePage />
                                             </Layout>
                                         </PrivateRoute>
                                     }

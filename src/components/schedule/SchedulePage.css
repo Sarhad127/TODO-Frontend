@@ -1,0 +1,52 @@
+.schedule-container {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.schedule-container {
+    margin: 30px 0 30px 290px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    box-sizing: border-box;
+    cursor: cell;
+}
+
+.schedule-grid {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 200px);
+    grid-template-rows: 60px repeat(9, 100px);
+    background-color: transparent;
+}
+
+.corner-cell {
+    background-color: #f9f9f9;
+}
+
+.day-header {
+    background-color: #f9f9f9;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1px;
+}
+
+.hour-label {
+    background-color: #f9f9f9;
+    text-align: center;
+    display: flex;
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1px;
+}
+
+.schedule-cell {
+    background-color: #fff;
+    height: 98px;
+    border: 1px solid #e0e0e0;
+}
+.schedule-cell:hover {
+    background-color: whitesmoke;
+}
