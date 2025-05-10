@@ -19,6 +19,10 @@ function SchedulePage() {
     const [editingIndex, setEditingIndex] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [currentBlockId, setCurrentBlockId] = useState(null);
+    const normalizeDayName = (backendDay) => {
+        return backendDay.charAt(0) + backendDay.slice(1).toLowerCase();
+    };
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         const fetchScheduleBlocks = async () => {
@@ -38,6 +42,7 @@ function SchedulePage() {
 
                 const data = await response.json();
                 setBlocks(data);
+                console.log(data)
             } catch (error) {
                 console.error('Error fetching schedule blocks:', error);
             }
@@ -47,14 +52,18 @@ function SchedulePage() {
     }, []);
 
 
-    const openModal = (day, hour, index = null) => {
-        setEditingIndex(index);
-        if (index !== null) {
+    const openModal = (day, hour, block = null) => {
+        setIsEditing(block !== null);
+
+        if (block) {
             setFormData({
-                ...blocks[index],
-                start: blocks[index].start.toString(),
-                end: blocks[index].end.toString()
+                start: block.startHour.toString(),
+                end: block.endHour.toString(),
+                label: block.label,
+                title: block.title,
+                color: block.color || '#f3f3f3'
             });
+            setCurrentBlockId(block.id);
         } else {
             setFormData({
                 start: hour.toString(),
@@ -63,20 +72,21 @@ function SchedulePage() {
                 title: '',
                 color: '#f3f3f3'
             });
+            setCurrentBlockId(null);
         }
+
         setSelectedDay(day);
         setSelectedHour(hour);
         setModalOpen(true);
     };
 
-    const isOverlapping = (newStart, newEnd, day, indexToIgnore = null) => {
-        return blocks.some((block, i) => {
-            if (block.day !== day || i === indexToIgnore) return false;
-            const existingStart = parseInt(block.start);
-            const existingEnd = parseInt(block.end);
-            return (
-                (newStart < existingEnd && newEnd > existingStart)
-            );
+    const isOverlapping = (newStart, newEnd, day, blockIdToIgnore = null) => {
+        return blocks.some((block) => {
+            const blockDay = normalizeDayName(block.day);
+            if (blockDay !== day || block.id === blockIdToIgnore) return false;
+            const existingStart = block.startHour;
+            const existingEnd = block.endHour;
+            return (newStart < existingEnd && newEnd > existingStart);
         });
     };
 
@@ -90,19 +100,17 @@ function SchedulePage() {
             return;
         }
 
-        if (isOverlapping(start, end, selectedDay, editingIndex)) {
+        if (isOverlapping(start, end, selectedDay, currentBlockId)) {
             setErrorMessage("Time block overlaps with an existing block.");
             return;
         }
 
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-            if (!token) {
-                throw new Error('No authentication token found');
-            }
+            if (!token) throw new Error('No authentication token found');
 
             const scheduleBlockDto = {
-                day: selectedDay,
+                day: selectedDay.toUpperCase(),
                 startHour: start,
                 endHour: end,
                 title: formData.title,
@@ -110,40 +118,29 @@ function SchedulePage() {
                 color: formData.color
             };
 
-            let response;
-            if (editingIndex !== null) {
-                response = await fetch(`http://localhost:8080/api/schedule-blocks/${currentBlockId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(scheduleBlockDto),
-                });
-            } else {
-                response = await fetch('http://localhost:8080/api/schedule-blocks', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(scheduleBlockDto),
-                });
-            }
+            const url = isEditing
+                ? `http://localhost:8080/api/schedule-blocks/${currentBlockId}`
+                : 'http://localhost:8080/api/schedule-blocks';
 
-            if (!response.ok) {
-                throw new Error(editingIndex !== null ? 'Failed to update block' : 'Failed to create block');
-            }
+            const method = isEditing ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(scheduleBlockDto),
+            });
+
+            if (!response.ok) throw new Error(isEditing ? 'Failed to update block' : 'Failed to create block');
 
             const updatedBlock = await response.json();
 
-            if (editingIndex !== null) {
-                setBlocks(prev => prev.map(block =>
-                    block.id === currentBlockId ? updatedBlock : block
-                ));
-            } else {
-                setBlocks(prev => [...prev, updatedBlock]);
-            }
+            setBlocks(prev => isEditing
+                ? prev.map(block => block.id === currentBlockId ? updatedBlock : block)
+                : [...prev, updatedBlock]
+            );
 
             setErrorMessage('');
             setModalOpen(false);
@@ -225,11 +222,13 @@ function SchedulePage() {
                     ))
                 ))}
 
-                {blocks.map((block, i) => {
-                    const pos = getGridPosition(block.day, block.start, block.end);
+                {blocks.map((block) => {
+                    const dayName = normalizeDayName(block.day);
+                    const pos = getGridPosition(dayName, block.startHour, block.endHour);
+
                     return (
                         <div
-                            key={i}
+                            key={block.id}
                             className="block"
                             style={{
                                 ...pos,
@@ -237,13 +236,16 @@ function SchedulePage() {
                             }}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                openModal(block.day, parseInt(block.start), i);
+                                setCurrentBlockId(block.id);
+                                openModal(dayName, block.startHour, block);
                             }}
                         >
                             <div className="block-content">
                                 <strong>{block.title}</strong>
-                                <div>{block.label}</div>
-                                <div className="time-text">{block.start}:00 - {block.end}:00</div>
+                                {block.label && <div>{block.label}</div>}
+                                <div className="time-text">
+                                    {block.startHour}:00 - {block.endHour}:00
+                                </div>
                             </div>
                         </div>
                     );
@@ -251,7 +253,10 @@ function SchedulePage() {
             </div>
 
             {modalOpen && (
-                <div className="modal-backdrop" onClick={() => setModalOpen(false)}>
+                <div className="modal-backdrop" onClick={() => {
+                    setModalOpen(false);
+                    setErrorMessage('');
+                }}>
                     <div className="modal" onClick={e => e.stopPropagation()}>
                         <h2>{editingIndex !== null ? 'Edit' : 'Add New'} Schedule Block</h2>
                         <form onSubmit={handleSubmit}>
@@ -313,7 +318,7 @@ function SchedulePage() {
                                 </button>
                             </div>
                         </form>
-                        {editingIndex !== null && (
+                        {isEditing && (
                             <button
                                 type="button"
                                 className="delete-day"
