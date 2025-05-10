@@ -6,6 +6,7 @@ import TodoColumn from './TodoColumn';
 import { AddColumnModal } from './AddColumnModal';
 import { EditModal } from './EditTodoModal';
 import { useUser } from '../../context/UserContext';
+import { useParams } from 'react-router-dom';
 
 const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
     const [allColumns, setAllColumns] = useState({});
@@ -13,8 +14,9 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
     const [board, setBoard] = useState(null);
-
+    const { id } = useParams();
     const { userData } = useUser();
+
 
     useEffect(() => {
         const initializeBoard = (data) => {
@@ -54,6 +56,35 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
 
         if (boardData) {
             initializeBoard(boardData);
+        } else if (id) {
+            // If boardData is not provided, fetch board data based on the ID from the URL
+            const fetchBoardData = async () => {
+                const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                if (!token) {
+                    console.error('No authentication token found');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`http://localhost:8080/api/boards/${id}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                        },
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        initializeBoard(data);
+                    } else {
+                        console.error('Error fetching board data:', await response.text());
+                    }
+                } catch (error) {
+                    console.error('Error with API call:', error);
+                }
+            };
+
+            fetchBoardData();
         } else if (userData) {
             const { boardId, columns = [], tasks = [] } = userData;
             initializeBoard({
@@ -65,7 +96,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                 }))
             });
         }
-    }, [userData, boardData]);
+    }, [id, userData, boardData]);
+
 
     const handleAddColumn = async () => {
         const titleToUse = newColumnTitle.trim() || 'Column';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Navbar.css';
 import UserAvatar from '../UserAvatar';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from '../../context/UserContext';
 import profileIcon from '../../icons/profile-2.png';
 import logoutIcon from '../../icons/logout.png';
@@ -9,8 +9,9 @@ import tasksIcon from '../../icons/tasks.png'
 import friendsIcon from '../../icons/friends.png'
 import friendsSubmit from '../../icons/friend-submit.png'
 
-const Navbar = ({ onBoardSelect }) => {
+const Navbar = () => {
     const navigate = useNavigate();
+    const { id: boardIdFromUrl } = useParams();
     const [isBoardsDropdownOpen, setIsBoardsDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
     const [boards, setBoards] = useState([]);
@@ -46,8 +47,18 @@ const Navbar = ({ onBoardSelect }) => {
 
                 const boardsData = await response.json();
                 setBoards(boardsData);
-                if (!selectedBoardTitle && boardsData.length > 0) {
-                    setSelectedBoardTitle(boardsData[0].title || `Board ${boardsData[0].position}`);
+
+                // If there's a boardId in the URL, find and select that board
+                if (boardIdFromUrl) {
+                    const selectedBoard = boardsData.find(board => board.id === parseInt(boardIdFromUrl));
+                    if (selectedBoard) {
+                        setSelectedBoardTitle(selectedBoard.title || `Board ${selectedBoard.position}`);
+                        setCurrentBoardId(selectedBoard.id);
+                        fetchBoardUsers(selectedBoard.id);
+                    }
+                } else if (boardsData.length > 0) {
+                    // If no boardId in URL but there are boards, navigate to the first one
+                    navigate(`/home/boards/${boardsData[0].id}`);
                 }
             } catch (error) {
                 console.error('Error fetching boards:', error);
@@ -57,7 +68,29 @@ const Navbar = ({ onBoardSelect }) => {
         if (userData) {
             fetchBoards();
         }
-    }, [userData]);
+    }, [userData, boardIdFromUrl]);
+
+    const fetchBoardUsers = async (boardId) => {
+        try {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) return;
+
+            const usersResponse = await fetch(`http://localhost:8080/api/boards/${boardId}/users`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (usersResponse.status === 204) {
+                setBoardUsers([]);
+            } else if (usersResponse.ok) {
+                const usersData = await usersResponse.json();
+                setBoardUsers(usersData);
+            }
+        } catch (error) {
+            console.error('Error fetching board users:', error);
+        }
+    };
 
     const toggleBoardsDropdown = () => setIsBoardsDropdownOpen(!isBoardsDropdownOpen);
     const toggleUserDropdown = () => setIsUserDropdownOpen(!isUserDropdownOpen);
@@ -106,71 +139,16 @@ const Navbar = ({ onBoardSelect }) => {
             const createdBoard = await response.json();
             console.log('Created new board:', createdBoard);
             updateUserData();
-            setSelectedBoardTitle(createdBoard.title || `Board ${createdBoard.position}`);
-            if (onBoardSelect) {
-                onBoardSelect(createdBoard.position);
-            }
+            navigate(`/home/boards/${createdBoard.id}`);
             setIsBoardsDropdownOpen(false);
         } catch (error) {
             console.error("Error creating board:", error);
         }
     };
 
-    const handleBoardClick = async (position) => {
-        try {
-            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-            if (!token) {
-                console.error("No authentication token found");
-                return;
-            }
-            console.log(`Fetching board at position ${position}...`);
-            const boardResponse = await fetch(`http://localhost:8080/api/boards/${position}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-
-            if (!boardResponse.ok) {
-                console.error(`Board fetch failed with status: ${boardResponse.status}`);
-                const errorData = await boardResponse.text();
-                console.error('Error details:', errorData);
-                return;
-            }
-
-            const boardData = await boardResponse.json();
-            setCurrentBoardId(boardData.id);
-            console.log('Board data:', boardData);
-            setSelectedBoardTitle(boardData.title);
-
-            setBoardUsers([]);
-
-            console.log(`Fetching users for board ID ${boardData.id}...`);
-            const usersResponse = await fetch(`http://localhost:8080/api/boards/${boardData.id}/users`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-
-            if (usersResponse.status === 204) {
-                console.log("This board has no other users (204 No Content)");
-            } else if (!usersResponse.ok) {
-                console.error(`Users fetch failed with status: ${usersResponse.status}`);
-                const errorData = await usersResponse.text();
-                console.error('Error details:', errorData);
-            } else {
-                const usersData = await usersResponse.json();
-                setBoardUsers(usersData);
-                console.log('Users on this board:', usersData);
-            }
-            if (onBoardSelect) {
-                onBoardSelect(position);
-            }
-        } catch (error) {
-            console.error('Error in handleBoardClick:', error);
-            if (error.response) {
-                console.error('Response error:', await error.response.text());
-            }
-        }
+    const handleBoardClick = (boardId) => {
+        navigate(`/home/boards/${boardId}`);
+        setIsBoardsDropdownOpen(false);
     };
 
     const renameBoard = async (boardId, newTitle) => {
@@ -203,7 +181,7 @@ const Navbar = ({ onBoardSelect }) => {
             if (!confirmDelete) return;
 
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-            const board = boards.find(b => b.title === selectedBoardTitle);
+            const board = boards.find(b => b.id === currentBoardId);
             if (board && board.position === 1) {
                 alert("You cannot delete the board at position 1.");
                 return;
@@ -217,24 +195,18 @@ const Navbar = ({ onBoardSelect }) => {
                 }
             });
             if (!response.ok) throw new Error('Delete failed');
-            const boardsResponse = await fetch('http://localhost:8080/api/boards', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            if (!boardsResponse.ok) throw new Error('Failed to fetch updated boards');
-            const updatedBoards = await boardsResponse.json();
-            setBoards(updatedBoards);
-            if (updatedBoards.length > 0) {
-                setSelectedBoardTitle(updatedBoards[0].title || `Board ${updatedBoards[0].position}`);
-                if (onBoardSelect) {
-                    onBoardSelect(updatedBoards[0].position);
-                }
+
+            // After deletion, navigate to another board
+            const remainingBoards = boards.filter(b => b.id !== board.id);
+            if (remainingBoards.length > 0) {
+                navigate(`/home/boards/${remainingBoards[0].id}`);
             } else {
-                setSelectedBoardTitle('');
+                // If no boards left, create a new one automatically
+                createNewBoard();
             }
-            setIsSettingsDropdownOpen(false);
+
             updateUserData();
+            setIsSettingsDropdownOpen(false);
         } catch (error) {
             console.error('Error deleting board:', error);
             alert('Failed to delete board: ' + error.message);
@@ -244,16 +216,17 @@ const Navbar = ({ onBoardSelect }) => {
     const handleAddFriend = async () => {
         console.log('Adding friend with email:', friendEmail);
 
-        const selectedBoard = boards.find(board => board.title === selectedBoardTitle);
-        const boardId = selectedBoard?.id;
-        if (!boardId) {
+        if (!currentBoardId) {
             alert('No board selected or board ID not found.');
             return;
         }
-        if (selectedBoard.position === 1) {
+
+        const selectedBoard = boards.find(board => board.id === currentBoardId);
+        if (selectedBoard && selectedBoard.position === 1) {
             alert('You cannot invite users to the first board.');
             return;
         }
+
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             const response = await fetch('http://localhost:8080/api/invitations/invite', {
@@ -263,7 +236,7 @@ const Navbar = ({ onBoardSelect }) => {
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    boardId: boardId,
+                    boardId: currentBoardId,
                     inviteeEmail: friendEmail
                 })
             });
@@ -300,8 +273,15 @@ const Navbar = ({ onBoardSelect }) => {
             });
 
             if (response.ok) {
+                // After leaving, navigate to another board
+                const remainingBoards = boards.filter(b => b.id !== currentBoardId);
+                if (remainingBoards.length > 0) {
+                    navigate(`/home/boards/${remainingBoards[0].id}`);
+                } else {
+                    // If no boards left, create a new one automatically
+                    createNewBoard();
+                }
                 updateUserData();
-                window.location.reload();
             } else {
                 const error = await response.text();
                 alert("Failed to leave group: " + error);
@@ -325,8 +305,8 @@ const Navbar = ({ onBoardSelect }) => {
                                 boards.map((board) => (
                                     <li
                                         key={board.id}
-                                        className={`dropdown-boards ${board.position === userData.boardPosition ? 'default-board' : ''}`}
-                                        onClick={() => handleBoardClick(board.position)}
+                                        className={`dropdown-boards ${board.id === currentBoardId ? 'default-board' : ''}`}
+                                        onClick={() => handleBoardClick(board.id)}
                                     >
                                         <img
                                             src={tasksIcon}
@@ -355,8 +335,7 @@ const Navbar = ({ onBoardSelect }) => {
                                 onChange={(e) => setEditableTitle(e.target.value)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
-                                        const board = boards.find(b => b.title === selectedBoardTitle);
-                                        if (board) renameBoard(board.id, editableTitle);
+                                        renameBoard(currentBoardId, editableTitle);
                                     }
                                 }}
                                 onBlur={() => {
@@ -408,23 +387,23 @@ const Navbar = ({ onBoardSelect }) => {
                                     className="user-icon"
                                     data-tooltip={username}
                                 >
-            {username[0].toUpperCase()}
-        </span>
+                                    {username[0].toUpperCase()}
+                                </span>
                             ))}
                         </div>
                     )}
                 </div>
             </ul>
             <div className="testing-icon-removal">
-            {boardUsers.length > 0 && currentBoardId && (
-                <img
-                    src={logoutIcon}
-                    alt="Leave Group"
-                    title="Leave Group"
-                    className="leave-group-icon"
-                    onClick={leaveGroup}
-                />
-            )}
+                {boardUsers.length > 0 && currentBoardId && (
+                    <img
+                        src={logoutIcon}
+                        alt="Leave Group"
+                        title="Leave Group"
+                        className="leave-group-icon"
+                        onClick={leaveGroup}
+                    />
+                )}
             </div>
             <div className="friends-dropdown-wrapper">
                 <img
