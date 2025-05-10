@@ -34,7 +34,7 @@ const Navbar = ({ onBoardSelect }) => {
                     return;
                 }
 
-                const response = await fetch('https://email-verification-production.up.railway.app/api/boards', {
+                const response = await fetch('http://localhost:8080/api/boards', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },
@@ -95,7 +95,7 @@ const Navbar = ({ onBoardSelect }) => {
                 title: `Board ${newBoardNumber}`,
             };
 
-            const response = await fetch('https://email-verification-production.up.railway.app/api/boards', {
+            const response = await fetch('http://localhost:8080/api/boards', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -124,7 +124,7 @@ const Navbar = ({ onBoardSelect }) => {
                 return;
             }
             console.log(`Fetching board at position ${position}...`);
-            const boardResponse = await fetch(`https://email-verification-production.up.railway.app/api/boards/${position}`, {
+            const boardResponse = await fetch(`http://localhost:8080/api/boards/${position}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -145,7 +145,7 @@ const Navbar = ({ onBoardSelect }) => {
             setBoardUsers([]);
 
             console.log(`Fetching users for board ID ${boardData.id}...`);
-            const usersResponse = await fetch(`https://email-verification-production.up.railway.app/api/boards/${boardData.id}/users`, {
+            const usersResponse = await fetch(`http://localhost:8080/api/boards/${boardData.id}/users`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -176,7 +176,7 @@ const Navbar = ({ onBoardSelect }) => {
     const renameBoard = async (boardId, newTitle) => {
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-            const response = await fetch(`https://email-verification-production.up.railway.app/api/boards/${boardId}/title`, {
+            const response = await fetch(`http://localhost:8080/api/boards/${boardId}/title`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -210,14 +210,14 @@ const Navbar = ({ onBoardSelect }) => {
             }
             if (!token || !board) return;
 
-            const response = await fetch(`https://email-verification-production.up.railway.app/api/boards/${board.id}`, {
+            const response = await fetch(`http://localhost:8080/api/boards/${board.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
             if (!response.ok) throw new Error('Delete failed');
-            const boardsResponse = await fetch('https://email-verification-production.up.railway.app/api/boards', {
+            const boardsResponse = await fetch('http://localhost:8080/api/boards', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -256,7 +256,7 @@ const Navbar = ({ onBoardSelect }) => {
         }
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-            const response = await fetch('https://email-verification-production.up.railway.app/api/invitations/invite', {
+            const response = await fetch('http://localhost:8080/api/invitations/invite', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -292,7 +292,7 @@ const Navbar = ({ onBoardSelect }) => {
 
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-            const response = await fetch(`https://email-verification-production.up.railway.app/api/boards/${currentBoardId}/leave`, {
+            const response = await fetch(`http://localhost:8080/api/boards/${currentBoardId}/leave`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
