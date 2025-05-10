@@ -179,6 +179,11 @@ const Navbar = ({ onBoardSelect }) => {
             } else {
                 console.warn("onBoardSelect callback is not defined");
             }
+            console.log("Updating userData with new board position:", position);
+            updateUserData((prev) => ({
+                ...prev,
+                boardPosition: position
+            }));
 
             console.log("==== handleBoardClick completed successfully ====");
         } catch (error) {
