@@ -9,7 +9,7 @@ function SchedulePage() {
     const [selectedDay, setSelectedDay] = useState('');
     const [selectedHour, setSelectedHour] = useState(null);
     const [blocks, setBlocks] = useState([]);
-    const [formData, setFormData] = useState({ start: '', end: '', label: '' });
+    const [formData, setFormData] = useState({ start: '', end: '', label: '', title: '' });
     const [editingIndex, setEditingIndex] = useState(null);
 
     useEffect(() => {
@@ -31,7 +31,8 @@ function SchedulePage() {
             setFormData({
                 start: hour.toString(),
                 end: (hour + 1).toString(),
-                label: ''
+                label: '',
+                title: ''
             });
         }
         setSelectedDay(day);
@@ -110,8 +111,9 @@ function SchedulePage() {
                             style={pos}
                         >
                             <div className="block-content">
-                                <strong>{block.label}</strong>
-                                <div>{block.start}:00 - {block.end}:00</div>
+                                <strong>{block.title}</strong>
+                                <div>{block.label}</div>
+                                <div className="time-text">{block.start}:00 - {block.end}:00</div>
                             </div>
                         </div>
                     );
@@ -121,40 +123,49 @@ function SchedulePage() {
             {modalOpen && (
                 <div className="modal-backdrop" onClick={() => setModalOpen(false)}>
                     <div className="modal" onClick={e => e.stopPropagation()}>
-                        <h3>{editingIndex !== null ? 'Edit' : 'Add New'} Event</h3>
+                        <h2>{editingIndex !== null ? 'Edit' : 'Add New'} Schedule Block</h2>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
-                                <label>Start Time</label>
-                                <select
-                                    value={formData.start}
-                                    onChange={e => setFormData({...formData, start: e.target.value})}
+                                <label>Title</label>
+                                <input
+                                    type="text"
+                                    value={formData.title}
+                                    onChange={e => setFormData({...formData, title: e.target.value})}
+                                    placeholder="Enter title"
                                     required
-                                >
-                                    {hours.map(h => (
-                                        <option key={`start-${h}`} value={h}>{h}:00</option>
-                                    ))}
-                                </select>
+                                />
                             </div>
                             <div className="form-group">
-                                <label>End Time</label>
-                                <select
-                                    value={formData.end}
-                                    onChange={e => setFormData({...formData, end: e.target.value})}
-                                    required
-                                >
-                                    {hours.map(h => (
-                                        h > parseInt(formData.start) && <option key={`end-${h}`} value={h}>{h}:00</option>
-                                    ))}
-                                </select>
+                                <label>Time</label>
+                                <div className="time-inputs">
+                                    <select
+                                        value={formData.start}
+                                        onChange={e => setFormData({...formData, start: e.target.value})}
+                                        required
+                                    >
+                                        {hours.map(h => (
+                                            <option key={`start-${h}`} value={h}>{h}:00</option>
+                                        ))}
+                                    </select>
+                                    <span> to </span>
+                                    <select
+                                        value={formData.end}
+                                        onChange={e => setFormData({...formData, end: e.target.value})}
+                                        required
+                                    >
+                                        {hours.map(h => (
+                                            h > parseInt(formData.start) && <option key={`end-${h}`} value={h}>{h}:00</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                             <div className="form-group">
-                                <label>Event Name</label>
+                                <label>Description</label>
                                 <input
                                     type="text"
                                     value={formData.label}
                                     onChange={e => setFormData({...formData, label: e.target.value})}
-                                    placeholder="Enter event name"
-                                    required
+                                    placeholder="Enter description"
                                 />
                             </div>
                             <div className="modal-actions">
@@ -162,7 +173,7 @@ function SchedulePage() {
                                     Cancel
                                 </button>
                                 <button type="submit" className="primary">
-                                    {editingIndex !== null ? 'Update' : 'Save'} Event
+                                    {editingIndex !== null ? 'Update' : 'Save'}
                                 </button>
                             </div>
                         </form>
