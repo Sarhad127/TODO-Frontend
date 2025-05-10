@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import 'react-calendar/dist/Calendar.css';
@@ -52,14 +52,6 @@ function App() {
                                 />
                                 <Route
                                     path="/home"
-                                    element={
-                                        <PrivateRoute>
-                                            <Navigate to="/home/boards/1" replace />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/home/boards/:id"
                                     element={
                                         <PrivateRoute>
                                             <Layout>
