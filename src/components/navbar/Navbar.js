@@ -117,15 +117,12 @@ const Navbar = ({ onBoardSelect }) => {
     };
 
     const handleBoardClick = async (position) => {
-        console.log("==== handleBoardClick triggered ====");
-        console.log("Clicked board position:", position);
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) {
                 console.error("No authentication token found");
                 return;
             }
-
             console.log(`Fetching board at position ${position}...`);
             const boardResponse = await fetch(`https://email-verification-production.up.railway.app/api/boards/${position}`, {
                 headers: {
@@ -141,15 +138,10 @@ const Navbar = ({ onBoardSelect }) => {
             }
 
             const boardData = await boardResponse.json();
-            console.log('Board data received:', boardData);
-
-            console.log(`Setting current board ID to: ${boardData.id}`);
             setCurrentBoardId(boardData.id);
-
-            console.log(`Setting selected board title to: ${boardData.title}`);
+            console.log('Board data:', boardData);
             setSelectedBoardTitle(boardData.title);
 
-            console.log("Resetting board users to an empty list");
             setBoardUsers([]);
 
             console.log(`Fetching users for board ID ${boardData.id}...`);
@@ -167,34 +159,16 @@ const Navbar = ({ onBoardSelect }) => {
                 console.error('Error details:', errorData);
             } else {
                 const usersData = await usersResponse.json();
-                console.log('Users data received:', usersData);
-
-                console.log("Updating UI with board users");
                 setBoardUsers(usersData);
+                console.log('Users on this board:', usersData);
             }
-
             if (onBoardSelect) {
-                console.log(`onBoardSelect callback exists, invoking with position: ${position}`);
                 onBoardSelect(position);
-            } else {
-                console.warn("onBoardSelect callback is not defined");
             }
-            console.log("Updating userData with new board position:", position);
-            updateUserData((prev) => ({
-                ...prev,
-                boardPosition: position
-            }));
-
-            console.log("==== handleBoardClick completed successfully ====");
         } catch (error) {
             console.error('Error in handleBoardClick:', error);
             if (error.response) {
-                try {
-                    const errorText = await error.response.text();
-                    console.error('Response error details:', errorText);
-                } catch (innerError) {
-                    console.error('Failed to parse error response:', innerError);
-                }
+                console.error('Response error:', await error.response.text());
             }
         }
     };
