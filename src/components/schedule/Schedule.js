@@ -330,10 +330,6 @@ function SchedulePage() {
                                 <button type="submit" className="save-btn-schedule">
                                     {editingIndex !== null ? 'Update' : 'Save'}
                                 </button>
-                                <button type="button" className="cancel-btn-schedule"
-                                        onClick={() => setModalOpen(false)}>
-                                    Cancel
-                                </button>
                                 {isEditing && (
                                     <button
                                         type="button"
@@ -343,6 +339,10 @@ function SchedulePage() {
                                         Delete
                                     </button>
                                 )}
+                                <button type="button" className="cancel-btn-schedule"
+                                        onClick={() => setModalOpen(false)}>
+                                    Cancel
+                                </button>
                             </div>
                         </form>
                     </div>
