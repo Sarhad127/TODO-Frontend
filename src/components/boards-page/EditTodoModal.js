@@ -33,7 +33,7 @@ export function EditModal({
     ];
 
     const colorGrid = [
-        '#f3f3f3',
+        null,
         '#7a77be',
         '#c75dea',
         '#dc6b6b',
