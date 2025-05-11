@@ -4,6 +4,18 @@ import './SchedulePage.css';
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const hours = Array.from({ length: 9 }, (_, i) => 8 + i);
 
+const COLOR_OPTIONS = [
+    '#f3f3f3',
+    '#7a77be',
+    '#c75dea',
+    '#dc6b6b',
+    '#97cc83',
+    '#e3d974',
+    '#48cc91',
+    '#a8a8a8',
+    '#d24949'
+];
+
 function SchedulePage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedDay, setSelectedDay] = useState('');
@@ -14,7 +26,7 @@ function SchedulePage() {
         end: '',
         label: '',
         title: '',
-        color: '#f3f3f3'
+        color: COLOR_OPTIONS[0]
     });
     const [editingIndex, setEditingIndex] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
@@ -251,7 +263,6 @@ function SchedulePage() {
                     );
                 })}
             </div>
-
             {modalOpen && (
                 <div className="modal-backdrop" onClick={() => {
                     setModalOpen(false);
@@ -270,12 +281,19 @@ function SchedulePage() {
                                     required
                                 />
                             </div>
-                            <label>Color</label>
-                            <input
-                                type="color"
-                                value={formData.color}
-                                onChange={e => setFormData({...formData, color: e.target.value})}
-                            />
+                            <div className="form-group">
+                                <label>Color</label>
+                                <div className="color-options">
+                                    {COLOR_OPTIONS.map((color, index) => (
+                                        <div
+                                            key={index}
+                                            className={`color-option ${formData.color === color ? 'selected' : ''}`}
+                                            style={{ backgroundColor: color }}
+                                            onClick={() => setFormData({...formData, color})}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                             <div className="form-group">
                                 <label>Time</label>
                                 <div className="time-inputs">
