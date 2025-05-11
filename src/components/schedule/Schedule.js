@@ -282,7 +282,6 @@ function SchedulePage() {
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Color</label>
                                 <div className="color-options">
                                     {COLOR_OPTIONS.map((color, index) => (
                                         <div

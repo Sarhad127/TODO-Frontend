@@ -114,7 +114,7 @@
     padding: 8px;
     border-radius: 6px;
     margin: 0 4px;
-    cursor: pointer;
+    cursor: cell;
     transition: all 0.2s;
     border: 1px solid rgba(171, 171, 171, 0.15);
     display: flex;
@@ -124,10 +124,12 @@
 }
 
 .calendar-cell:hover {
+    cursor: cell;
     background-color: rgba(211, 211, 211, 0.49);
 }
 
 .calendar-cell > div:first-child {
+    cursor: cell;
     align-self: flex-end;
     padding: 4px 8px;
     border-radius: 50%;
@@ -139,12 +141,13 @@
 }
 
 .calendar-cell.outside {
+    cursor: cell;
     color: #bdc3c7;
     border: 1px solid rgba(171, 171, 171, 0.15);
 }
 
 .note-preview {
-    cursor: pointer;
+    cursor: cell;
     font-size: 12px;
     font-weight: bold;
     font-style: italic;

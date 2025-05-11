@@ -138,3 +138,25 @@
     margin-top: 15px;
     margin-bottom: 12px;
 }
+
+.color-options {
+    display: flex;
+    flex-wrap: initial;
+    gap: 2px;
+    margin-top: 10px;
+}
+
+.color-option {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    margin: 2px;
+    transition: border 0.2s ease;
+}
+
+.color-option.selected {
+    border: 2px solid #000;
+}
