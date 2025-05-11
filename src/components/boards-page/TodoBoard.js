@@ -39,7 +39,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                         position: task.position,
                         tag: {
                             text: task.tagText || '',
-                            color: task.tagColor || '#ffffff'
+                            color: task.tagColor || null
                         }
                     }));
                 }
@@ -244,7 +244,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     color: taskData.color,
                     columnId: taskData.columnId,
                     tagText: taskData.tag ? taskData.tag.text : '',
-                    tagColor: taskData.tag ? taskData.tag.color : '#ffffff',
+                    tagColor: taskData.tag ? taskData.tag.color : null,
                 }),
             });
 
@@ -254,7 +254,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     ...updatedTask,
                     tag: {
                         text: updatedTask.tagText || '',
-                        color: updatedTask.tagColor || '#ffffff'
+                        color: updatedTask.tagColor || null
                     }
                 };
             } else {
@@ -331,7 +331,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     text: selectedTodo.text,
                     color: selectedTodo.color,
                     columnId: columnData.id,
-                    tag: selectedTodo.tag || { text: '', color: '#ffffff' },
+                    tag: selectedTodo.tag || '',
+                    tagColor: null
                 };
                 console.log('Sending the following task data to the backend:', taskData);
                 const response = await fetch('http://localhost:8080/tasks/create', {
@@ -357,8 +358,10 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                                 color: newTask.color,
                                 position: newTask.position,
                                 columnId: newTask.columnId,
-                                tagText: newTask.tag ? newTask.tag.text : '',
-                                tagColor: newTask.tag ? newTask.tag.color : '#ffffff',
+                                tag: {
+                                    text: newTask.tagText || '',
+                                    color: null
+                                }
                             }],
                         },
                     });
@@ -376,7 +379,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                 const updatedColumn = [...columnData.tasks];
                 updatedColumn[index] = {
                     ...updatedTaskFromBackend,
-                    tag: selectedTodo.tag || { text: '', color: '#ffffff' },
+                    tag: selectedTodo.tag || { text: '', color: null },
                 };
                 setAllColumns({
                     ...allColumns,

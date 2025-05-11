@@ -99,19 +99,20 @@ export function EditModal({
                             {colorGrid.map((color, index) => (
                                 <div
                                     key={index}
-                                    className={`color-option ${selectedTodo.tag?.color === color ? 'selected' : ''}`}
-                                    style={{ backgroundColor: color }}
-                                    onClick={() =>
-                                        setSelectedTodo({
-                                            ...selectedTodo,
-                                            tag: {
-                                                ...selectedTodo.tag,
-                                                color
-                                            }
-                                        })
-                                    }
-                                    title={color}
-                                />
+                                    className={`color-option ${selectedTodo.tag?.color === color ? 'selected' : ''} ${
+                                        color === null ? 'null-option' : ''
+                                    }`}
+                                    style={{
+                                        backgroundColor: color || 'transparent',
+                                        border: color === null ? '2px dashed #ccc' : 'none'
+                                    }}
+                                    onClick={() => handleColorSelect(color)}
+                                    title={color === null ? "No tag color" : color}
+                                >
+                                    {color === null && (
+                                        <span className="null-label">×</span>
+                                    )}
+                                </div>
                             ))}
                         </div>
                     </div>
