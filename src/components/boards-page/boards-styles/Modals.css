@@ -105,6 +105,12 @@
     transition: border-color 0.2s;
 }
 
+.new-task-input:focus {
+    outline: none;
+    border-color: #626262;
+    box-shadow: 0 0 0 2px rgba(201, 201, 201, 0.2);
+}
+
 .tag-section input {
     width: 94%;
     padding: 10px 12px;

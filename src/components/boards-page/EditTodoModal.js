@@ -20,6 +20,18 @@ export function EditModal({
         });
     };
 
+    const COLOR_OPTIONS = [
+        '#f3f3f3',
+        '#7a77be',
+        '#c75dea',
+        '#dc6b6b',
+        '#97cc83',
+        '#e3d974',
+        '#48cc91',
+        '#a8a8a8',
+        '#d24949'
+    ];
+
     const colorGrid = [
         '#FF5733', '#FFC300', '#33FF57', '#33C1FF', '#FF33A8', '#9D33FF',
         '#FF6F61', '#6B5B95', '#88B04B', '#F7CAC9', '#92A8D1', '#955251',
@@ -52,14 +64,32 @@ export function EditModal({
                     autoFocus
                     className="new-task-input"
                 />
-                <input
-                    type="color"
-                    value={selectedTodo.color}
-                    onChange={(e) => setSelectedTodo({
-                        ...selectedTodo,
-                        color: e.target.value
-                    })}
-                />
+                <div className="color-options">
+                    {COLOR_OPTIONS.map((color, index) => (
+                        <div
+                            key={index}
+                            className={`color-option ${selectedTodo.color === color ? 'selected' : ''}`}
+                            style={{
+                                backgroundColor: color,
+                                width: '24px',
+                                height: '24px',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                border: selectedTodo.color === color ? '2px solid #000' : '1px solid #ccc',
+                                boxSizing: 'border-box',
+                                margin: '4px'
+                            }}
+                            onClick={() =>
+                                setSelectedTodo({
+                                    ...selectedTodo,
+                                    color
+                                })
+                            }
+                        />
+                    ))}
+                </div>
+
+
 
                 <div className="tag-section">
                     <h4>Tag (max 30 chars)</h4>
