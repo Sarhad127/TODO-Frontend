@@ -1,5 +1,4 @@
 import React from 'react';
-import { FaTrash } from 'react-icons/fa';
 
 export function EditModal({
                               selectedTodo,
@@ -51,6 +50,7 @@ export function EditModal({
                     })}
                     placeholder="Enter Todo text"
                     autoFocus
+                    className="new-task-input"
                 />
                 <input
                     type="color"
@@ -84,30 +84,12 @@ export function EditModal({
                             ))}
                         </div>
                     </div>
-                    <div className="selected-color-preview">
-                        Selected:
-                        <div
-                            className="color-preview"
-                            style={{ backgroundColor: selectedTodo.tag?.color || '#ffffff' }}
-                        />
-                        <input
-                            type="color"
-                            value={selectedTodo.tag?.color || '#ffffff'}
-                            onChange={(e) => setSelectedTodo({
-                                ...selectedTodo,
-                                tag: {
-                                    ...selectedTodo.tag,
-                                    color: e.target.value
-                                }
-                            })}
-                        />
-                    </div>
                 </div>
 
                 <div className="modal-buttons">
-                    <button onClick={saveChanges}>Save</button>
+                    <button className="save-btn" onClick={saveChanges}>Save</button>
                     <button className="delete-btn" onClick={() => deleteTodo(selectedTodo)}>
-                        <FaTrash /> Delete
+                        Delete
                     </button>
                     <button className="cancel-btn" onClick={cancelAddTodo}>
                         Cancel
