@@ -1,3 +1,11 @@
+h3,
+h4,
+.color-option,
+.color-option.selected{
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
 
 .modal-overlay {
     position: fixed;

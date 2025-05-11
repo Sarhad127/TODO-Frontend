@@ -1,3 +1,7 @@
+.modal {
+    cursor: initial;
+}
+
 .schedule-container {
     user-select: none;
     -webkit-user-select: none;
