@@ -6,13 +6,13 @@
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
-    margin: 30px 170px 30px 290px;
+    margin: 0 170px 30px 290px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     box-sizing: border-box;
     position: fixed;
     cursor: cell;
-    background-color: #f9f9f9;
+    background-color: transparent;
 }
 
 .schedule-grid-wrapper {
@@ -30,15 +30,14 @@
 }
 
 .corner-cell {
-    background-color: #f9f9f9;
-    border: 1px solid #e0e0e0;
+    background-color: #d3d3d3;
     position: sticky;
     left: 0;
     z-index: 3;
 }
 
 .day-header {
-    background-color: #f9f9f9;
+    background-color: #d3d3d3;
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -55,7 +54,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
     position: sticky;
     left: 0;
     z-index: 3;
@@ -68,7 +67,6 @@
     border-right: 1px solid #e0e0e0;
     border-bottom: 1px solid #e0e0e0;
     box-sizing: border-box;
-    margin-top: 2px;
 }
 
 .schedule-cell:hover {
@@ -277,4 +275,55 @@ input[type="color"] {
 .color-option.selected {
     border: 2px solid #333;
     box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+}
+
+.button-container {
+    height: 20px;
+    display: flex;
+    gap: 10px;
+    margin: 10px 0 20px 10px;
+    justify-content: flex-end;
+    padding-right: 10px;
+}
+
+.settings-button {
+    margin: 0;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: transparent;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+}
+
+.settings-button:hover {
+    background-color: transparent;
+}
+
+.print-button {
+    margin: 0;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+}
+
+.print-button:hover {
+    background-color: transparent;
+}
+
+.print-button img {
+    width: 26px;
+    height: 26px;
 }

@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import './SchedulePage.css';
+import printIcon from "../../icons/printer.png";
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const hours = Array.from({ length: 9 }, (_, i) => 8 + i);
-
 const COLOR_OPTIONS = [
     '#f3f3f3',
     '#7a77be',
@@ -35,7 +34,11 @@ function SchedulePage() {
         return backendDay.charAt(0) + backendDay.slice(1).toLowerCase();
     };
     const [isEditing, setIsEditing] = useState(false);
+    const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+    const [startHour, setStartHour] = useState(8);
+    const [endHour, setEndHour] = useState(16);
 
+    const hours = Array.from({ length: endHour - startHour + 1 }, (_, i) => startHour + i);
     useEffect(() => {
         const fetchScheduleBlocks = async () => {
             try {
@@ -197,6 +200,20 @@ function SchedulePage() {
 
     return (
         <div className="schedule-container">
+            <div className="button-container">
+                <button className="print-button" onClick={() => window.print()}>
+                    <img src={printIcon} alt="Print" />
+                </button>
+                <button
+                    className="settings-button"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setSettingsModalOpen(true);
+                    }}
+                >
+                    ⚙️
+                </button>
+            </div>
             <div className="schedule-grid">
                 <div className="corner-cell" style={{ gridRow: 1, gridColumn: 1 }} />
 
@@ -345,6 +362,44 @@ function SchedulePage() {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {settingsModalOpen && (
+                <div className="modal-backdrop" onClick={() => {
+                    setSettingsModalOpen(false);
+                }}>
+                    <div className="modal" onClick={e => e.stopPropagation()}>
+                        <h2>Settings</h2>
+                        <div className="modal-actions">
+                            <button
+                                type="button"
+                                className="cancel-btn-schedule"
+                                onClick={() => setSettingsModalOpen(false)}
+                            >
+                                Close
+                            </button>
+                            <div className="time-range-settings">
+                                <label>Start Hour:</label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max={endHour - 1}
+                                    value={startHour}
+                                    onChange={e => setStartHour(parseInt(e.target.value))}
+                                />
+                                <label>End Hour:</label>
+                                <input
+                                    type="number"
+                                    min={startHour + 1}
+                                    max="23"
+                                    value={endHour}
+                                    onChange={e => setEndHour(parseInt(e.target.value))}
+                                />
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             )}
