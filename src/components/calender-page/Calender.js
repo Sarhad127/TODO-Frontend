@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, addMonths, subMonths, isSameMonth, isSameDay } from 'date-fns';
 import './Calendar.css';
-import calenderColor from '../../icons/calender-color-icon.png';
 
 function CalendarPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -12,6 +11,8 @@ function CalendarPage() {
   const textareaRefs = useRef({});
   const menuRefs = useRef({});
   const [cellColors, setCellColors] = useState({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedDayForModal, setSelectedDayForModal] = useState(null);
 
   const colorOptions = [
     'rgba(201,0,0,0.76)',
@@ -24,6 +25,12 @@ function CalendarPage() {
     '',
   ];
 
+  const handleDayClick = (day) => {
+    setSelectedDate(day);
+    setSelectedDayForModal(day);
+    setModalOpen(true);
+  };
+
   const handleColorChange = (dayKey, color) => {
     const newColors = {
       ...cellColors,
@@ -33,7 +40,6 @@ function CalendarPage() {
     saveNote(dayKey, newColors[dayKey]);
     setActiveMenu(null);
   };
-
 
   const formatDate = (date) => date.toISOString().split('T')[0];
 
@@ -109,7 +115,6 @@ function CalendarPage() {
         content: notes[dayKey] || '',
         color: color
       };
-      
       const response = await fetch('http://localhost:8080/api/calendar', {
         method: 'POST',
         headers: {
@@ -185,7 +190,7 @@ function CalendarPage() {
             <div
                 key={dayKey}
                 className={`calendar-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isOutsideMonth ? 'outside' : ''}`}
-                onClick={() => setSelectedDate(day)}
+                onClick={() => handleDayClick(day)}
                 style={{ backgroundColor: cellColor }}
             >
               <div className="day-number">{formattedDate}</div>
@@ -199,16 +204,6 @@ function CalendarPage() {
                   spellCheck="false"
               />
               <div className="day-menu-container">
-                <button
-                    className="day-menu-button"
-                    onClick={(e) => toggleMenu(dayKey, e)}
-                >
-                  <img
-                      src={calenderColor}
-                      alt="Menu"
-                      className="menu-icon"
-                  />
-                </button>
                 {activeMenu === dayKey && (
                     <div
                         ref={el => menuRefs.current[dayKey] = el}
@@ -246,6 +241,48 @@ function CalendarPage() {
           {renderDays()}
           {renderCells()}
         </div>
+        {modalOpen && selectedDayForModal && (
+
+            <div className="modal-backdrop" onClick={() => setModalOpen(false)}>
+              <div className="modal" onClick={e => e.stopPropagation()}>
+                <h2>{format(selectedDayForModal, 'MMMM d, yyyy')}</h2>
+                <div className="modal-content">
+                  <div className="form-group">
+                    <label>Notes</label>
+                    <textarea
+                        value={notes[formatDate(selectedDayForModal)] || ''}
+                        onChange={(e) => handleNoteChange(formatDate(selectedDayForModal), e.target.value)}
+                        rows={5}
+                        className="modal-textarea"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Color</label>
+                    <div className="color-options-grid">
+                      {colorOptions.map((color, index) => (
+                          <button
+                              key={index}
+                              className={`color-option ${color === '' ? 'clear-option' : ''}`}
+                              style={{ backgroundColor: color }}
+                              onClick={() => {
+                                handleColorChange(formatDate(selectedDayForModal), color);
+                                setModalOpen(false);
+                              }}
+                          >
+                            {color === '' && <span>×</span>}
+                          </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="modal-actions">
+                  <button className="save-btn" onClick={() => setModalOpen(false)}>
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+        )}
       </div>
   );
 }
