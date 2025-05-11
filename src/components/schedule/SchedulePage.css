@@ -93,6 +93,16 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.block-content::-webkit-scrollbar {
+    display: none;
 }
 
 .block-content strong {
