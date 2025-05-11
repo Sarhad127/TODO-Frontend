@@ -327,23 +327,24 @@ function SchedulePage() {
                                 />
                             </div>
                             <div className="modal-actions">
-                                <button type="button" onClick={() => setModalOpen(false)}>
-                                    Cancel
-                                </button>
-                                <button type="submit" className="primary">
+                                <button type="submit" className="save-btn-schedule">
                                     {editingIndex !== null ? 'Update' : 'Save'}
                                 </button>
+                                <button type="button" className="cancel-btn-schedule"
+                                        onClick={() => setModalOpen(false)}>
+                                    Cancel
+                                </button>
+                                {isEditing && (
+                                    <button
+                                        type="button"
+                                        className="delete-btn-schedule"
+                                        onClick={handleDelete}
+                                    >
+                                        Delete
+                                    </button>
+                                )}
                             </div>
                         </form>
-                        {isEditing && (
-                            <button
-                                type="button"
-                                className="delete-day"
-                                onClick={handleDelete}
-                            >
-                                Delete
-                            </button>
-                        )}
                     </div>
                 </div>
             )}

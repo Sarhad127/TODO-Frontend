@@ -178,35 +178,26 @@
     justify-content: flex-end;
     gap: 10px;
     margin-top: 20px;
+    transition: background-color 0.3s;
 }
 
 .modal-actions button {
-    padding: 10px 16px;
-    border-radius: 4px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
+    background: #f0f0f0;
+    color: #333;
 }
 
-.modal-actions button[type="button"] {
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    color: #555;
+.save-btn-schedule:hover {
+    background: rgba(101, 162, 76, 0.87);
+}
+.cancel-btn-schedule:hover {
+    background: #ddd;
+    color: #333;
 }
 
-.modal-actions button[type="button"]:hover {
-    background: #e0e0e0;
+.delete-btn-schedule:hover {
+    background: rgba(220, 86, 86, 0.76);
 }
 
-.modal-actions button.primary {
-    background: #90caf9;
-    border: 1px solid #64b5f6;
-    color: #0d47a1;
-}
-
-.modal-actions button.primary:hover {
-    background: #64b5f6;
-}
 input[type="color"] {
     width: 100%;
     height: 40px;
@@ -218,9 +209,8 @@ input[type="color"] {
 
 .delete-day {
     margin-top: 8px;
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    color: #555;
+    background: #ddd;
+    color: #333;
     padding: 10px 16px;
     border-radius: 4px;
     font-weight: 500;
@@ -228,7 +218,7 @@ input[type="color"] {
     transition: all 0.2s;
 }
 .delete-day:hover{
-    background: #d91919;
+    background: #c43232;
     color: whitesmoke;
 }
 
