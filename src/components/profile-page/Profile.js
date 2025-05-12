@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Profile.css';
+import UserAvatar from '../UserAvatar';
 
 const Profile = () => {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -201,6 +202,9 @@ const Profile = () => {
 
     return (
         <div className="user-profileContainer">
+            <label>
+                <UserAvatar />
+            </label>
             <h2>User Profile</h2>
 
             {message && <div className="username-success">{message}</div>}
