@@ -368,16 +368,16 @@ function CalendarPage() {
                         Save & Close
                       </button>
                       <button
-                          className="cancel-btn"
-                          onClick={() => setModalOpen(false)}
-                      >
-                        Close
-                      </button>
-                      <button
                           className="delete-btn"
                           onClick={() => deleteNote(formatDate(selectedDate))}
                       >
                         Delete
+                      </button>
+                      <button
+                          className="cancel-btn"
+                          onClick={() => setModalOpen(false)}
+                      >
+                        Close
                       </button>
                     </div>
                   </div>
