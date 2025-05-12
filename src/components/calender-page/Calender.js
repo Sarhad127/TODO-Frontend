@@ -14,7 +14,7 @@ function CalendarPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   const colorOptions = [
-    { bg: 'rgba(201,0,0,0.76)', text: '#ffffff' },
+    { bg: '#c93939', text: '#ffffff' },
     { bg: '#ffbb98', text: '#000000' },
     { bg: '#fdfdb8', text: '#000000' },
     { bg: '#b9ffb9', text: '#000000' },
@@ -295,7 +295,6 @@ function CalendarPage() {
                 <h2>{format(new Date(selectedDate), 'MMMM d, yyyy')}</h2>
                 <div className="modal-content">
                   <div className="form-group">
-                    <label>Notes</label>
                     <textarea
                         value={notes[formatDate(selectedDate)] || ''}
                         onChange={(e) => handleNoteChange(formatDate(selectedDate), e.target.value)}
