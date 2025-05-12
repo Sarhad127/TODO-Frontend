@@ -291,7 +291,7 @@ function CalendarPage() {
 
         {modalOpen && selectedDate && (
             <div className="modal-backdrop" onClick={() => setModalOpen(false)}>
-              <div className="modal" onClick={e => e.stopPropagation()}>
+              <div className="modal-calender" onClick={e => e.stopPropagation()}>
                 <h2>{format(new Date(selectedDate), 'MMMM d, yyyy')}</h2>
                 <div className="modal-content">
                   <div className="form-group">
@@ -353,7 +353,7 @@ function CalendarPage() {
                           </button>
                       ))}
                     </div>
-                    <div className="modal-actions">
+                    <div className="modal-actions2">
                       <button
                           className="save-btn"
                           onClick={() => {
