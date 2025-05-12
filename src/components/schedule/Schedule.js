@@ -225,6 +225,14 @@ function SchedulePage() {
             alert('End hour must be after start hour');
             return;
         }
+        const blocksOutsideRange = blocks.some(block => {
+            return block.startHour < startHour || block.endHour > endHour;
+        });
+
+        if (blocksOutsideRange) {
+            alert('Cannot change schedule hours as some existing blocks would fall outside the new time range');
+            return;
+        }
 
         try {
             const response = await fetch('http://localhost:8080/api/schedule-blocks/schedule-settings', {
