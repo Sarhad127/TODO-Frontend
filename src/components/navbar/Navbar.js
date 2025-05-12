@@ -25,6 +25,7 @@ const Navbar = ({ onBoardSelect }) => {
     const [currentBoardId, setCurrentBoardId] = useState(null);
     const [boardUsers, setBoardUsers] = useState([]);
     const { userEmail } = useUser();
+    const [username, setUsername] = useState('');
 
     useEffect(() => {
         const fetchBoards = async () => {
@@ -34,7 +35,9 @@ const Navbar = ({ onBoardSelect }) => {
                     console.error("No token found");
                     return;
                 }
-
+                const decoded = JSON.parse(atob(token.split('.')[1]));
+                const currentUsername = decoded.sub || decoded.username;
+                setUsername(currentUsername);
                 const response = await fetch('http://localhost:8080/api/boards', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -463,6 +466,9 @@ const Navbar = ({ onBoardSelect }) => {
                         <label className="dropdown-item-avatar">
                             <UserAvatar />
                         </label>
+                        <div className="navbar-avatar-username">
+                            {username && <p className="user-username">{username}</p>}
+                        </div>
                         <div className="navbar-avatar-email">
                             {userEmail && <p className="user-email">{userEmail}</p>}
                         </div>

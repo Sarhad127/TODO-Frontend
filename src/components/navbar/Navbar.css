@@ -460,9 +460,17 @@
 }
 
 .user-email {
-    font-size: 12px;
+    font-size: 11px;
     color: #ffffff;
     font-weight: bold;
     margin-top: 4px;
     white-space: nowrap;
+}
+.user-username {
+    font-size: 16px;
+    color: #ffffff;
+    font-weight: bold;
+    margin-top: 4px;
+    white-space: nowrap;
+    text-align: center;
 }
