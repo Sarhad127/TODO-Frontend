@@ -37,7 +37,7 @@
 }
 
 .day-header {
-    background-color: #d3d3d3;
+    background-color: #c7c7c7;
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -70,7 +70,7 @@
 }
 
 .schedule-cell:hover {
-    background-color: #f5f5f5;
+    background-color: #e7e7e7;
 }
 
 .block {
@@ -324,6 +324,7 @@ input[type="color"] {
 }
 
 .print-button img {
+    margin-bottom: 2px;
     width: 26px;
     height: 26px;
 }

@@ -282,3 +282,7 @@
     padding: 0;
 
 }
+.modal-textarea {
+    width: 166px;
+    height: 100px;
+}
