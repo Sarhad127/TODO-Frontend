@@ -331,3 +331,63 @@ input[type="color"] {
     width: 26px;
     height: 26px;
 }
+
+@media print {
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    .schedule-container,
+    .schedule-container * {
+        visibility: visible;
+    }
+
+    .schedule-container {
+        position: static !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        overflow: visible !important;
+        transform: scale(1);
+        transform-origin: top left;
+    }
+
+    .schedule-grid {
+        transform: scale(0.6);
+        transform-origin: top left;
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 auto !important;
+        box-sizing: border-box;
+        page-break-inside: avoid;
+    }
+
+    .schedule-grid,
+    .schedule-grid * {
+        border: 1px solid #000 !important;
+        box-sizing: border-box;
+    }
+
+    .schedule-grid td,
+    .schedule-grid th {
+        border: 2px solid #000 !important;
+        padding: 4px !important;
+    }
+
+    @page {
+        size: A4 landscape;
+        margin: 10mm;
+    }
+
+    .modal, .button-container, .print-button, .settings-button {
+        display: none !important;
+    }
+}
