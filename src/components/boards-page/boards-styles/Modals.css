@@ -1,3 +1,11 @@
+h3,
+h4,
+.color-option,
+.color-option.selected{
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
 
 .modal-overlay {
     position: fixed;
@@ -23,43 +31,6 @@
 
 .modal h2 {
     margin-bottom: 20px;
-}
-
-.modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-}
-
-.delete-btn {
-    background: #dc3545;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-radius: 5px;
-}
-
-.delete-btn:hover {
-    background: #b52b38;
-}
-
-.cancel-btn {
-    background-color: #f44336;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-left: 10px;
-}
-
-.cancel-btn:hover {
-    background-color: #e53935;
 }
 
 .tabs {
@@ -99,14 +70,29 @@
     margin-top: 10px;
 }
 
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+}
+
 .modal-buttons button {
-    padding: 10px 20px;
+    margin:4px;
     border: none;
-    background: #007bff;
-    color: white;
+    background: #f0f0f0;
+    color: #333;
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s;
+}
+
+.save-btn:hover {
+    background: rgba(101, 162, 76, 0.87);
+}
+
+.delete-btn:hover {
+    background: rgba(220, 86, 86, 0.76);
 }
 
 .modal-buttons button.cancel-btn {
@@ -114,10 +100,71 @@
     color: #333;
 }
 
-.modal-buttons button:hover {
-    background: #0056b3;
-}
-
 .modal-buttons button.cancel-btn:hover {
     background: #ddd;
+}
+
+.new-task-input {
+    width: 94%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.new-task-input:focus {
+    outline: none;
+    border-color: #626262;
+    box-shadow: 0 0 0 2px rgba(201, 201, 201, 0.2);
+}
+
+.tag-section input {
+    width: 94%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.tag-section input:focus {
+    outline: none;
+    border-color: #626262;
+    box-shadow: 0 0 0 2px rgba(201, 201, 201, 0.2);
+}
+.tag-section h4 {
+    text-align: left;
+    font-size: 14px;
+    margin-left: 0;
+    margin-bottom: 10px;
+}
+
+.color-grid-container h5 {
+    font-size: 14px;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 12px;
+}
+
+.color-options {
+    display: flex;
+    flex-wrap: initial;
+    gap: 2px;
+    margin-top: 10px;
+}
+
+.color-option {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    margin: 2px;
+    transition: border 0.2s ease;
+}
+
+.color-option.selected {
+    border: 2px solid #000;
 }

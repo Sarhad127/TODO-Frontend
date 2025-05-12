@@ -4,6 +4,7 @@ import plutoIcon from '../icons/Pluto.png';
 import boardsIcon from '../icons/boards.png';
 import notesIcon from '../icons/notes.png';
 import calenderIcon from '../icons/calender.png';
+import scheduleIcon from '../icons/schedule-icon.png';
 
 function Sidebar() {
 
@@ -63,6 +64,12 @@ function Sidebar() {
                     <Link to="/home" className="sidebar-btn">
                         <img src={boardsIcon} alt="" className="sidebar-icon-small" />
                         Dashboard
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/Schedule" className="sidebar-btn">
+                        <img src={scheduleIcon} alt="" className="sidebar-icon-small" />
+                        Schedule
                     </Link>
                 </li>
                 <li>

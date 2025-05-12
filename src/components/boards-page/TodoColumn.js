@@ -123,7 +123,7 @@ function TodoColumn({
                     columnId: task.columnId,
                     position: task.position,
                     tagText: task.tag ? task.tag.text : '',
-                    tagColor: task.tag ? task.tag.color : '#ffffff',
+                    tagColor: task.tag ? task.tag.color : null,
                 })))
             });
 
@@ -227,7 +227,7 @@ function TodoColumn({
                     columnId: newTask.columnId,
                     position: newTask.position,
                     tagText: newTask.tag ? newTask.tag.text : '',
-                    tagColor: newTask.tag ? newTask.tag.color : '#ffffff',
+                    tagColor: newTask.tag ? newTask.tag.color : null,
                 })
             });
 

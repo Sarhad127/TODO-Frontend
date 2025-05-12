@@ -1,0 +1,330 @@
+.modal {
+    cursor: initial;
+}
+
+.schedule-container {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    margin: 0 170px 30px 290px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    box-sizing: border-box;
+    position: fixed;
+    cursor: cell;
+    background-color: transparent;
+}
+
+.schedule-grid-wrapper {
+    position: relative;
+    z-index: 1;
+    width: fit-content;
+}
+
+.schedule-grid {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 200px);
+    grid-template-rows: 60px repeat(9, 100px);
+    background-color: transparent;
+    position: relative;
+}
+
+.corner-cell {
+    background-color: #d3d3d3;
+    position: sticky;
+    left: 0;
+    z-index: 3;
+}
+
+.day-header {
+    background-color: #c7c7c7;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.hour-label {
+    grid-column: 1;
+    background-color: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #e0e0e0;
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    height: 100px;
+}
+
+.schedule-cell {
+    background-color: whitesmoke;
+    height: 100px;
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    box-sizing: border-box;
+}
+
+.schedule-cell:hover {
+    background-color: #e7e7e7;
+}
+
+.block {
+    background-color: #90caf9;
+    color: #000;
+    padding: 8px 8px 0 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    margin: 1px 1px 1px 0;
+    border: 1px solid #c2c2c2;
+    overflow: hidden;
+}
+
+.block-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.block-content::-webkit-scrollbar {
+    display: none;
+}
+
+.block-content strong {
+    color: #002250;
+    font-weight: bold;
+    font-size: 15px;
+    font-style: normal;
+    text-align: center;
+}
+.time-text {
+    font-size: 12px;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: 3px;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: white;
+    padding: 24px;
+    border-radius: 5px;
+    width: 380px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 1.4rem;
+}
+
+.form-group {
+    margin-bottom: 1px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #555;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-group input {
+    width: 94%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #90caf9;
+    box-shadow: 0 0 0 2px rgba(144, 202, 249, 0.2);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.modal-actions button {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.save-btn-schedule:hover {
+    background: rgba(101, 162, 76, 0.87);
+}
+.cancel-btn-schedule:hover {
+    background: #ddd;
+    color: #333;
+}
+
+.delete-btn-schedule:hover {
+    background: rgba(220, 86, 86, 0.76);
+}
+
+input[type="color"] {
+    width: 100%;
+    height: 40px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-day {
+    margin-top: 8px;
+    background: #ddd;
+    color: #333;
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.delete-day:hover{
+    background: #c43232;
+    color: whitesmoke;
+}
+
+.error-message {
+    color: #d91919;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #ffebee;
+    border-radius: 4px;
+    border-left: 4px solid #d91919;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.color-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 3px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.78);
+    padding: 3px;
+    width: 99%;
+}
+
+.color-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 20%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+}
+
+.color-option.selected {
+    border: 2px solid #333;
+    box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+}
+
+.button-container {
+    height: 20px;
+    display: flex;
+    gap: 10px;
+    margin: 10px 0 20px 10px;
+    justify-content: flex-end;
+    padding-right: 10px;
+}
+
+.settings-button {
+    margin: 0;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: transparent;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+}
+
+.settings-button:hover {
+    background-color: transparent;
+}
+
+.print-button {
+    margin: 0;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+}
+
+.print-button:hover {
+    background-color: transparent;
+}
+
+.print-button img {
+    margin-bottom: 2px;
+    width: 26px;
+    height: 26px;
+}
