@@ -40,30 +40,47 @@ function SchedulePage() {
 
     const hours = Array.from({ length: endHour - startHour + 1 }, (_, i) => startHour + i);
     useEffect(() => {
-        const fetchScheduleBlocks = async () => {
+        const fetchData = async () => {
             try {
                 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
                 if (!token) return;
+                const [blocksResponse, settingsResponse] = await Promise.all([
+                    fetch('http://localhost:8080/api/schedule-blocks', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                        },
+                    }),
+                    fetch('http://localhost:8080/api/schedule-blocks/schedule-settings', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                        },
+                    })
+                ]);
 
-                const response = await fetch('http://localhost:8080/api/schedule-blocks', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                if (!response.ok) {
+                if (!blocksResponse.ok) {
                     throw new Error('Failed to fetch schedule blocks');
                 }
+                if (!settingsResponse.ok) {
+                    throw new Error('Failed to fetch schedule settings');
+                }
 
-                const data = await response.json();
-                setBlocks(data);
-                console.log(data)
+                const blocksData = await blocksResponse.json();
+                const settingsData = await settingsResponse.json();
+
+                setBlocks(blocksData);
+                setStartHour(settingsData.startHour);
+                setEndHour(settingsData.endHour);
+
+                console.log('Fetched schedule data:', {
+                    blocks: blocksData,
+                    settings: settingsData
+                });
             } catch (error) {
-                console.error('Error fetching schedule blocks:', error);
+                console.error('Error fetching schedule data:', error);
             }
         };
 
-        fetchScheduleBlocks();
+        fetchData();
     }, []);
 
 
@@ -196,6 +213,38 @@ function SchedulePage() {
         const rowStart = hours.indexOf(parseInt(startHour)) + 2;
         const rowEnd = hours.indexOf(parseInt(endHour)) + 2;
         return { gridColumn: col, gridRow: `${rowStart} / ${rowEnd}` };
+    };
+
+    const handleSaveSettings = async () => {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        if (startHour >= endHour) {
+            alert('End hour must be after start hour');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/api/schedule-blocks/schedule-settings', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ startHour, endHour })
+            });
+
+            if (response.ok) {
+                setSettingsModalOpen(false);
+            } else {
+                const errorData = await response.json();
+                console.log('Failed to save settings');
+            }
+        } catch (error) {
+            console.error('Error updating settings:', error);
+        }
     };
 
     return (
@@ -367,20 +416,11 @@ function SchedulePage() {
             )}
 
             {settingsModalOpen && (
-                <div className="modal-backdrop" onClick={() => {
-                    setSettingsModalOpen(false);
-                }}>
+                <div className="modal-backdrop" onClick={() => setSettingsModalOpen(false)}>
                     <div className="modal" onClick={e => e.stopPropagation()}>
-                        <h2>Settings</h2>
-                        <div className="modal-actions">
-                            <button
-                                type="button"
-                                className="cancel-btn-schedule"
-                                onClick={() => setSettingsModalOpen(false)}
-                            >
-                                Close
-                            </button>
-                            <div className="time-range-settings">
+                        <h2>Schedule Settings</h2>
+                        <div className="time-range-settings">
+                            <div className="form-group">
                                 <label>Start Hour:</label>
                                 <input
                                     type="number"
@@ -389,6 +429,8 @@ function SchedulePage() {
                                     value={startHour}
                                     onChange={e => setStartHour(parseInt(e.target.value))}
                                 />
+                            </div>
+                            <div className="form-group">
                                 <label>End Hour:</label>
                                 <input
                                     type="number"
@@ -398,7 +440,22 @@ function SchedulePage() {
                                     onChange={e => setEndHour(parseInt(e.target.value))}
                                 />
                             </div>
-
+                        </div>
+                        <div className="modal-actions">
+                            <button
+                                type="button"
+                                className="save-btn-schedule"
+                                onClick={handleSaveSettings}
+                            >
+                                Save Settings
+                            </button>
+                            <button
+                                type="button"
+                                className="cancel-btn-schedule"
+                                onClick={() => setSettingsModalOpen(false)}
+                            >
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 </div>
