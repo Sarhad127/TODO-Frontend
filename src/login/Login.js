@@ -32,7 +32,7 @@ const Login = () => {
         const loginData = { email, password };
 
         try {
-            const response = await fetch('http://localhost:8080/auth/login', {
+            const response = await fetch('https://email-verification-production.up.railway.app/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(loginData),
@@ -79,7 +79,7 @@ const Login = () => {
         const invitationBoardId =
             localStorage.getItem('invitationBoardId') ||
             sessionStorage.getItem('invitationBoardId');
-        let redirectUrl = `http://localhost:8080/oauth2/authorization/${provider}?redirect_uri=http://localhost:8080/oauth2/redirect`;
+        let redirectUrl = `https://email-verification-production.up.railway.app/oauth2/authorization/${provider}?redirect_uri=https://todo-frontend-production-8fe7.up.railway.app/oauth2/redirect`;
         localStorage.setItem('rememberMe', rememberMe);
         if (invitationBoardId) {
             redirectUrl += `&state=invite_${invitationBoardId}`;

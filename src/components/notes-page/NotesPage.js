@@ -25,7 +25,7 @@ const NotesPage = () => {
                 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
                 if (!token) throw new Error('No authentication token found');
 
-                const response = await fetch('http://localhost:8080/api/notes', {
+                const response = await fetch('https://email-verification-production.up.railway.app/api/notes', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },
@@ -78,7 +78,7 @@ const NotesPage = () => {
             const noteToUpdate = notes[index];
             const updatedNote = { ...noteToUpdate };
 
-            const response = await fetch(`http://localhost:8080/api/notes/${noteToUpdate.id}`, {
+            const response = await fetch(`https://email-verification-production.up.railway.app/api/notes/${noteToUpdate.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ const NotesPage = () => {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) throw new Error('No authentication token found');
 
-            const response = await fetch('http://localhost:8080/api/notes', {
+            const response = await fetch('https://email-verification-production.up.railway.app/api/notes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ const NotesPage = () => {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) throw new Error('No authentication token found');
 
-            const response = await fetch(`http://localhost:8080/api/notes/${noteToDelete.id}`, {
+            const response = await fetch(`https://email-verification-production.up.railway.app/api/notes/${noteToDelete.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,

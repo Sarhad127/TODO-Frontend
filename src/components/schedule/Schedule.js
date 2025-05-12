@@ -45,12 +45,12 @@ function SchedulePage() {
                 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
                 if (!token) return;
                 const [blocksResponse, settingsResponse] = await Promise.all([
-                    fetch('http://localhost:8080/api/schedule-blocks', {
+                    fetch('https://email-verification-production.up.railway.app/api/schedule-blocks', {
                         headers: {
                             'Authorization': `Bearer ${token}`,
                         },
                     }),
-                    fetch('http://localhost:8080/api/schedule-blocks/schedule-settings', {
+                    fetch('https://email-verification-production.up.railway.app/api/schedule-blocks/schedule-settings', {
                         headers: {
                             'Authorization': `Bearer ${token}`,
                         },
@@ -151,8 +151,8 @@ function SchedulePage() {
             };
 
             const url = isEditing
-                ? `http://localhost:8080/api/schedule-blocks/${currentBlockId}`
-                : 'http://localhost:8080/api/schedule-blocks';
+                ? `https://email-verification-production.up.railway.app/api/schedule-blocks/${currentBlockId}`
+                : 'https://email-verification-production.up.railway.app/api/schedule-blocks';
 
             const method = isEditing ? 'PUT' : 'POST';
 
@@ -189,7 +189,7 @@ function SchedulePage() {
                 throw new Error('No authentication token found');
             }
 
-            const response = await fetch(`http://localhost:8080/api/schedule-blocks/${currentBlockId}`, {
+            const response = await fetch(`https://email-verification-production.up.railway.app/api/schedule-blocks/${currentBlockId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -227,7 +227,7 @@ function SchedulePage() {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/api/schedule-blocks/schedule-settings', {
+            const response = await fetch('https://email-verification-production.up.railway.app/api/schedule-blocks/schedule-settings', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

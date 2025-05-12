@@ -53,7 +53,7 @@ function TodoColumn({
             }
 
             const response = await fetch(
-                `http://localhost:8080/auth/boards/${boardId}/columns/${columnData.id}`,
+                `https://email-verification-production.up.railway.app/auth/boards/${boardId}/columns/${columnData.id}`,
                 {
                     method: 'PUT',
                     headers: {
@@ -109,7 +109,7 @@ function TodoColumn({
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) throw new Error('No authentication token found');
 
-            const response = await fetch('http://localhost:8080/tasks/reorder', {
+            const response = await fetch('https://email-verification-production.up.railway.app/tasks/reorder', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ function TodoColumn({
 
             const taskId = movedTodo.id;
 
-            const response = await fetch(`http://localhost:8080/tasks/move/${taskId}?newColumnId=${newColumnId}`, {
+            const response = await fetch(`https://email-verification-production.up.railway.app/tasks/move/${taskId}?newColumnId=${newColumnId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -215,7 +215,7 @@ function TodoColumn({
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) throw new Error('No authentication token found');
 
-            const response = await fetch('http://localhost:8080/tasks/create', {
+            const response = await fetch('https://email-verification-production.up.railway.app/tasks/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

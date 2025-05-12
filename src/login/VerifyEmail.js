@@ -25,7 +25,7 @@ const VerifyEmail = () => {
         setError('');
 
         try {
-            const response = await fetch(`http://localhost:8080/auth/verify?email=${encodeURIComponent(email)}&verificationCode=${encodeURIComponent(verificationCode)}`, {
+            const response = await fetch(`https://email-verification-production.up.railway.app/auth/verify?email=${encodeURIComponent(email)}&verificationCode=${encodeURIComponent(verificationCode)}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             });
