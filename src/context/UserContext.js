@@ -12,11 +12,27 @@ export const useUser = () => {
 
 export const UserProvider = ({ children }) => {
     const [userData, setUserData] = useState(null);
+    const [userEmail, setUserEmail] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const fetchUserData = useCallback(async (token) => {
         try {
+
+            const emailResponse = await fetch('http://localhost:8080/api/user/email', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+
+            if (!emailResponse.ok) {
+                throw new Error('Failed to fetch email');
+            }
+
+            const email = await emailResponse.text();
+            setUserEmail(email);
+
             const response = await fetch('http://localhost:8080/api/userdata', {
                 method: 'GET',
                 headers: {
@@ -68,6 +84,7 @@ export const UserProvider = ({ children }) => {
     return (
         <UserContext.Provider value={{
             userData,
+            userEmail: userEmail || null,
             setUserData,
             loading,
             error,

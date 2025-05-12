@@ -24,6 +24,7 @@ const Navbar = ({ onBoardSelect }) => {
     const toggleFriendsDropdown = () => setIsFriendsDropdownOpen(!isFriendsDropdownOpen);
     const [currentBoardId, setCurrentBoardId] = useState(null);
     const [boardUsers, setBoardUsers] = useState([]);
+    const { userEmail } = useUser();
 
     useEffect(() => {
         const fetchBoards = async () => {
@@ -459,6 +460,12 @@ const Navbar = ({ onBoardSelect }) => {
                 </button>
                 {isUserDropdownOpen && (
                     <ul className="dropdown-menu user-dropdown">
+                        <label className="dropdown-item-avatar">
+                            <UserAvatar />
+                        </label>
+                        <div className="navbar-avatar-email">
+                            {userEmail && <p className="user-email">{userEmail}</p>}
+                        </div>
                         <li className="dropdown-item" onClick={() => navigate('/profile')}>
                             <img src={profileIcon} alt="Profile" className="dropdown-icon-profile" />
                             Profile

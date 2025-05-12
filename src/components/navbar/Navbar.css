@@ -154,7 +154,7 @@
     right: 0;
     position: absolute;
     margin: 15px 7px 0 0;
-    width: 200px;
+    width: 250px;
     background-color: rgba(47, 47, 47, 0.98);
     border-radius: 4px;
 }
@@ -433,4 +433,36 @@
 }
 .leave-group-icon:hover {
     transform: scale(1.05);
+}
+
+.user-dropdown .dropdown-item-avatar .avatar-container {
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+    margin-top: 5px;
+}
+
+.user-dropdown .dropdown-item-avatar .avatar {
+    background-color: #6c63ff;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.navbar-avatar-email {
+    padding: 0;
+    text-align: center;
+}
+
+.user-email {
+    font-size: 12px;
+    color: #ffffff;
+    font-weight: bold;
+    margin-top: 4px;
+    white-space: nowrap;
 }
