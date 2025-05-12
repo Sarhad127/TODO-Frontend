@@ -33,20 +33,20 @@
 }
 
 .corner-cell {
-    background-color: #d3d3d3;
+    background-color: rgba(38, 38, 38, 0.89);
     position: sticky;
     left: 0;
     z-index: 3;
 }
 
 .day-header {
-    background-color: #c7c7c7;
+    background-color: rgba(38, 38, 38, 0.89);
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #e0e0e0;
     position: sticky;
+    color: whitesmoke;
     top: 0;
     z-index: 2;
 }
