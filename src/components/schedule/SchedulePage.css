@@ -107,7 +107,7 @@
 }
 
 .block-content strong {
-    color: #002250;
+    color: #000000;
     font-weight: bold;
     font-size: 15px;
     font-style: normal;
@@ -296,7 +296,7 @@ input[type="color"] {
     height: 30px;
     border-radius: 50%;
     background-color: transparent;
-    font-size: 20px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -306,15 +306,17 @@ input[type="color"] {
 
 .settings-button:hover {
     background-color: transparent;
+    transform: scale(1.1);
 }
 
 .print-button {
     margin: 0;
     padding: 0;
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 32px;
     border-radius: 50%;
     background-color: transparent;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -328,8 +330,11 @@ input[type="color"] {
 
 .print-button img {
     margin-bottom: 2px;
-    width: 26px;
-    height: 26px;
+    width: 22px;
+    height: 22px;
+}
+.print-button img:hover {
+    transform: scale(1.1);
 }
 
 @media print {
