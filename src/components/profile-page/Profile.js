@@ -254,7 +254,6 @@ const Profile = () => {
     return (
         <div className="user-profileContainer">
             <div className="avatar-customization-section">
-                <h3>Customize Avatar</h3>
 
                 <div className="avatar-preview">
                     <UserAvatar
