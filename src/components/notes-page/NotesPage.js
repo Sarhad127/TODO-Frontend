@@ -4,13 +4,16 @@ import './NotesPage.css';
 import colorIcon from '../../icons/color-icon.png';
 import trashIcon from '../../icons/trash-icon.png';
 import dateIcon from '../../icons/date-icon.png';
+import {AiOutlinePlus} from "react-icons/ai";
 
-const generateNotesColor = () => {
-    const r = Math.floor(Math.random() * 100 + 100).toString(16).padStart(2, '0');
-    const g = Math.floor(Math.random() * 100 + 100).toString(16).padStart(2, '0');
-    const b = Math.floor(Math.random() * 120 + 100).toString(16).padStart(2, '0');
-    return `#${r}${g}${b}`;
-};
+const COLOR_PALETTE = [
+    '#a47a34',
+    '#9f5832',
+    '#5b3088',
+    '#E2F0CB',
+    '#2d70c2',
+    '#5f8d2f'
+];
 
 const NotesPage = () => {
     const [notes, setNotes] = useState([]);
@@ -18,6 +21,9 @@ const NotesPage = () => {
     const [loading, setLoading] = useState(true);
     const textareaRefs = useRef([]);
     const dropdownRefs = useRef([]);
+
+    const [showColorPalette, setShowColorPalette] = useState(false);
+    const [selectedColor, setSelectedColor] = useState(COLOR_PALETTE[0]);
 
     useEffect(() => {
         const fetchNotes = async () => {
@@ -102,11 +108,11 @@ const NotesPage = () => {
         }
     };
 
-    const addNewNote = async () => {
+    const addNewNote = async (color = selectedColor) => {
         const newNote = {
             title: 'New Note',
             text: '',
-            color: generateNotesColor(),
+            color: color,
             date: new Date().toISOString().split('T')[0],
         };
 
@@ -129,9 +135,19 @@ const NotesPage = () => {
 
             const savedNote = await response.json();
             setNotes(prevNotes => [...prevNotes, savedNote]);
+            setShowColorPalette(false);
         } catch (error) {
             console.error('Error creating note:', error);
         }
+    };
+
+    const toggleColorPalette = () => {
+        setShowColorPalette(!showColorPalette);
+    };
+
+    const handleColorSelect = (color) => {
+        setSelectedColor(color);
+        addNewNote(color);
     };
 
     const deleteNote = async (index) => {
@@ -194,6 +210,31 @@ const NotesPage = () => {
     return (
         <div className="notesPage-app">
             <Sidebar changeBackgroundColor={() => true} />
+            <div className="notes-title">
+                Notes
+                <div className="add-note-container">
+                    <button
+                        className="add-note-btn"
+                        onClick={toggleColorPalette}
+                        aria-label="Add Note"
+                    >
+                        <AiOutlinePlus />
+                    </button>
+                    {showColorPalette && (
+                        <div className="color-palette">
+                            {COLOR_PALETTE.map((color, index) => (
+                                <button
+                                    key={index}
+                                    className="color-option"
+                                    style={{ backgroundColor: color }}
+                                    onClick={() => handleColorSelect(color)}
+                                    aria-label={`Select color ${index + 1}`}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
             <div className="notes-grid">
                 {notes.map((note, index) => (
                     <div
@@ -255,10 +296,6 @@ const NotesPage = () => {
                         <button onClick={() => saveNote(index)} className="save-text-btn">Save</button>
                     </div>
                 ))}
-
-                <button className="add-note-btn" onClick={addNewNote}>
-                    +
-                </button>
             </div>
         </div>
     );

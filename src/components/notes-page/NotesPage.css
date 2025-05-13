@@ -33,15 +33,16 @@ textarea:focus {
 }
 
 .add-note-btn {
-    position: fixed;
+    margin: 0 0 0 30px;
     bottom: 30px;
     right: 30px;
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: #4285f4;
-    color: white;
+    background: rgb(0, 0, 0);
+    color: #ffffff;
     font-size: 24px;
+    text-align: center;
     border: none;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
@@ -49,8 +50,19 @@ textarea:focus {
 }
 
 .add-note-btn:hover {
-    transform: scale(1.1);
+    transform: scale(1.01);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    background: rgba(0, 0, 0, 0.57);
+}
+
+.notes-title {
+    font-size: 55px;
+    font-weight: 540;
+    font-family: "Arial", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
 }
 
 .note-header {
@@ -268,3 +280,45 @@ textarea:focus {
     background-color: rgba(68, 68, 68, 0.64);
 }
 
+.notes-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.add-note-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 15px;
+}
+
+.color-palette {
+    display: flex;
+    gap: 10px;
+    margin-left: 28px;
+    padding: 5px 10px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.color-option {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+    border-color: #333;
+}
+
+.color-option.selected {
+    border-color: #333;
+    transform: scale(1.1);
+}
