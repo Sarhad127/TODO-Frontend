@@ -5,35 +5,75 @@
 }
 
 .user-profileContainer {
-    margin-top: 120px;
-    width: 450px;
+    margin-top: 60px;
+    width: 900px;
+    max-width: 95%;
     padding: 30px;
     background-color: #fff;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-columns-container {
+    display: flex;
+    gap: 40px;
+}
+
+.user-settings-column {
+    flex: 1.5;
+    padding-right: 20px;
+    border-right: 1px solid #eee;
+}
+
+.avatar-settings-column {
+    flex: 1;
+}
+
+.avatar-customization-section {
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.avatar-preview {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.avatar-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+@media (max-width: 768px) {
+    .profile-columns-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .user-settings-column {
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 30px;
+    }
 }
 
 .user-profileContainer h2 {
     text-align: center;
     color: #333;
     font-size: 24px;
-    margin-top: 20px;
+    margin-top: 0;
     margin-bottom: 2px;
-}
-
-.username-formGroup {
-    margin-bottom: 0px;
 }
 
 .username-formGroup label {
     font-size: 14px;
     color: #333;
-    margin-bottom: 10px;
     font-weight: 500;
 }
 
@@ -41,6 +81,7 @@
     width: 100%;
     padding: 12px;
     margin: 2px;
+    margin-top: 4px;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;
@@ -54,19 +95,20 @@
 }
 
 .username-formGroup button {
+    margin-top: 4px;
     width: 100%;
     padding: 12px;
-    background-color: #3f51b5;
+    background-color: #3d3d3d;
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 12px;
     transition: background-color 0.3s ease;
 }
 
 .username-formGroup button:hover {
-    background-color: #303f9f;
+    background-color: #505050;
 }
 
 .username-success {
@@ -109,7 +151,7 @@
     border-radius: 6px;
     cursor: pointer;
     width: 100%;
-    font-size: 16px;
+    font-size: 12px;
     transition: background-color 0.3s ease;
 }
 
@@ -171,7 +213,7 @@
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 12px;
     transition: background-color 0.3s ease;
 }
 
