@@ -23,6 +23,17 @@ const Profile = () => {
     const [avatarInitials, setAvatarInitials] = useState('');
     const [avatarImageUrl, setAvatarImageUrl] = useState('');
 
+    const COLOR_OPTIONS = [
+        '#0000FF',
+        '#FF0000',
+        '#008000',
+        '#FFA500',
+        '#800080',
+        '#FFC107',
+        '#00CED1',
+        '#A52A2A',
+    ];
+
     useEffect(() => {
         if (token) {
             try {
@@ -350,12 +361,17 @@ const Profile = () => {
                         </div>
 
                         <div className="avatar-controls">
-                            <label>Background Color:</label>
-                            <input
-                                type="color"
-                                value={avatarBackgroundColor}
-                                onChange={(e) => setAvatarBackgroundColor(e.target.value)}
-                            />
+                            <label>Avatar Color:</label>
+                            <div className="color-options">
+                                {COLOR_OPTIONS.map((color) => (
+                                    <div
+                                        key={color}
+                                        className={`color-option ${avatarBackgroundColor === color ? 'selected' : ''}`}
+                                        style={{ backgroundColor: color }}
+                                        onClick={() => setAvatarBackgroundColor(color)}
+                                    />
+                                ))}
+                            </div>
 
                             <label>Initials (optional):</label>
                             <input
