@@ -221,16 +221,25 @@ const NotesPage = () => {
                             className="note"
                             style={{ backgroundColor: note.color }}
                         >
-                        <textarea
-                            className="note-textarea"
-                            ref={(el) => (textareaRefs.current[index] = el)}
-                            value={note.text || ''}
-                            placeholder="Start typing your note..."
-                            onChange={(e) => handleTextChange(index, e.target.value)}
-                            spellCheck="false"
-                            readOnly={!editableNotes[index]}
-                            onBlur={() => handleBlur(index)}
-                        />
+                       <textarea
+                           className={`note-textarea ${editableNotes[index] ? 'editable' : ''}`}
+                           ref={(el) => {
+                               textareaRefs.current[index] = el;
+                               if (editableNotes[index] && el) {
+                                   setTimeout(() => el.focus(), 0);
+                               }
+                           }}
+                           value={note.text || ''}
+                           placeholder={editableNotes[index] ? "Start typing..." : ""}
+                           onChange={(e) => handleTextChange(index, e.target.value)}
+                           spellCheck="false"
+                           readOnly={!editableNotes[index]}
+                           onBlur={() => {
+                               if (editableNotes[index]) {
+                                   handleBlur(index);
+                               }
+                           }}
+                       />
                            <div className="note-controls">
                                 <button
                                         className="delete-note-btn"

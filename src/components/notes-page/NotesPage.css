@@ -1,3 +1,12 @@
+.note,
+.notesPage-app,
+.delete-note-btn,
+.notes-title{
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 .notesPage-app {
     margin-left: 280px;
     padding: 20px;
@@ -344,4 +353,14 @@
     background: rgba(0, 0, 0, 0.2);
     transform: scale(1.05);
     color: #333;
+}
+
+.note-textarea.editable {
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: text;
+}
+
+.note-textarea:not(.editable) {
+    cursor: default;
+    pointer-events: none;
 }
