@@ -362,5 +362,7 @@
 
 .note-textarea:not(.editable) {
     cursor: default;
-    pointer-events: none;
+    overflow-y: auto ;
+    pointer-events: auto;
+    -webkit-overflow-scrolling: touch;
 }
