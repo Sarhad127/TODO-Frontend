@@ -428,14 +428,24 @@ const Navbar = ({ onBoardSelect }) => {
                 <div className="board-members-display">
                     {boardUsers.length > 0 && (
                         <div className="user-list">
-                            {boardUsers.map((username, index) => (
-                                <span
+                            {boardUsers.map((user, index) => (
+                                <div
                                     key={index}
-                                    className="user-icon"
-                                    data-tooltip={username}
+                                    className="user-avatar-container"
+                                    data-tooltip={user.username}
                                 >
-            {username[0].toUpperCase()}
-        </span>
+                                    <div
+                                        className="user-avatar"
+                                        style={{
+                                            backgroundColor: user.avatarBackgroundColor || '#3f51b5',
+                                            backgroundImage: user.avatarImageUrl ? `url(${user.avatarImageUrl})` : 'none',
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center'
+                                        }}
+                                    >
+                                        {!user.avatarImageUrl && (user.avatarInitials || user.username.substring(0, 2).toUpperCase())}
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     )}
