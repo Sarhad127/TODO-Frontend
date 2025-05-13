@@ -73,15 +73,15 @@ function Sidebar() {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/calendar" className="sidebar-btn">
-                        <img src={notesIcon} alt="" className="sidebar-icon-small" />
-                        Calendar
-                    </Link>
-                </li>
-                <li>
                     <Link to="/notes" className="sidebar-btn">
                         <img src={calenderIcon} alt="" className="sidebar-icon-small" />
                         Notes
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/calendar" className="sidebar-btn">
+                        <img src={notesIcon} alt="" className="sidebar-icon-small" />
+                        Calendar
                     </Link>
                 </li>
 
