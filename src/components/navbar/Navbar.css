@@ -16,9 +16,11 @@
 .avatar-button,
 .friends-dropdown-wrapper,
 .friends-icon,
+.dropdown-item,
 .leave-group-icon,
 .testing-icon-removal,
 .board-members-display,
+.avatar-dropdown-header .avatar-container,
 .dropdown-item {
     user-select: none;
     -webkit-user-select: none;
@@ -463,14 +465,32 @@
     font-size: 11px;
     color: #ffffff;
     font-weight: bold;
-    margin-top: 4px;
+    margin: 8px;
     white-space: nowrap;
 }
 .user-username {
     font-size: 16px;
     color: #ffffff;
     font-weight: bold;
-    margin-top: 4px;
+    margin: 8px;
     white-space: nowrap;
     text-align: center;
+}
+
+.avatar-dropdown-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+.avatar-dropdown-header .avatar-container {
+    margin: 0;
+}
+
+.avatar-user-info {
+    margin: 0;
 }

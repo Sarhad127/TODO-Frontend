@@ -27,6 +27,12 @@ const Navbar = ({ onBoardSelect }) => {
     const { userEmail } = useUser();
     const [username, setUsername] = useState('');
 
+    const [avatarData, setAvatarData] = useState({
+        backgroundColor: '#3f51b5',
+        initials: '',
+        imageUrl: ''
+    });
+
     useEffect(() => {
         const fetchBoards = async () => {
             try {
@@ -38,6 +44,22 @@ const Navbar = ({ onBoardSelect }) => {
                 const decoded = JSON.parse(atob(token.split('.')[1]));
                 const currentUsername = decoded.sub || decoded.username;
                 setUsername(currentUsername);
+
+                const userResponse = await fetch('http://localhost:8080/api/user/avatar', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    setAvatarData({
+                        backgroundColor: userData.avatarBackgroundColor || '#3f51b5',
+                        initials: userData.avatarInitials || '',
+                        imageUrl: userData.avatarImageUrl || ''
+                    });
+                }
+
                 const response = await fetch('http://localhost:8080/api/boards', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -459,18 +481,21 @@ const Navbar = ({ onBoardSelect }) => {
 
             <div className="navbar-item-avatar" onClick={toggleUserDropdown}>
                 <button className="avatar-button">
-                    <UserAvatar />
+                    <UserAvatar
+                        backgroundColor={avatarData.backgroundColor}
+                        initials={avatarData.initials || (username ? username.substring(0, 2).toUpperCase() : '')}
+                        imageUrl={avatarData.imageUrl}
+                        size="small"
+                    />
                 </button>
                 {isUserDropdownOpen && (
                     <ul className="dropdown-menu user-dropdown">
-                        <label className="dropdown-item-avatar">
-                            <UserAvatar />
-                        </label>
-                        <div className="navbar-avatar-username">
-                            {username && <p className="user-username">{username}</p>}
-                        </div>
-                        <div className="navbar-avatar-email">
-                            {userEmail && <p className="user-email">{userEmail}</p>}
+                        <div className="avatar-dropdown-header">
+                            <UserAvatar size="large" showName={true} />
+                            <div className="avatar-user-info">
+                                {username && <p className="user-username">{username}</p>}
+                                {userEmail && <p className="user-email">{userEmail}</p>}
+                            </div>
                         </div>
                         <li className="dropdown-item" onClick={() => navigate('/profile')}>
                             <img src={profileIcon} alt="Profile" className="dropdown-icon-profile" />

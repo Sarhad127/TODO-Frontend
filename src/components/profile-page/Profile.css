@@ -1,6 +1,6 @@
 .user-profileContainer {
     width: 400px;
-    margin: 0 0 0 0;
+    margin: 100px 0 0 0;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -113,4 +113,43 @@
     align-items: center;
     justify-content: center;
     text-transform: uppercase;
+}
+
+.avatar-customization-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+.avatar-preview {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+.avatar-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.avatar-controls input[type="color"] {
+    width: 50px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.avatar-controls button {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.avatar-controls button:hover {
+    background-color: #303f9f;
 }

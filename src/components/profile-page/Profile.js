@@ -19,6 +19,10 @@ const Profile = () => {
     const [showVerificationCodeInput, setShowVerificationCodeInput] = useState(false);
     const [isOAuthUser, setIsOAuthUser] = useState(false);
 
+    const [avatarBackgroundColor, setAvatarBackgroundColor] = useState('#3f51b5');
+    const [avatarInitials, setAvatarInitials] = useState('');
+    const [avatarImageUrl, setAvatarImageUrl] = useState('');
+
     useEffect(() => {
         if (token) {
             try {
@@ -26,6 +30,15 @@ const Profile = () => {
                 const currentUsername = decoded.sub || decoded.username;
                 setUsername(currentUsername);
                 setEmail(decoded.email || '');
+                if (decoded.avatarBackgroundColor) {
+                    setAvatarBackgroundColor(decoded.avatarBackgroundColor);
+                }
+                if (decoded.avatarInitials) {
+                    setAvatarInitials(decoded.avatarInitials);
+                }
+                if (decoded.avatarImageUrl) {
+                    setAvatarImageUrl(decoded.avatarImageUrl);
+                }
                 const expDate = new Date(decoded.exp * 1000);
                 const isExpired = expDate < new Date();
                 if (isExpired) {
@@ -200,11 +213,84 @@ const Profile = () => {
         }
     };
 
+    const updateAvatar = async () => {
+        setError('');
+        setMessage('');
+
+        try {
+            const response = await fetch('http://localhost:8080/api/user/avatar', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    avatarBackgroundColor,
+                    avatarInitials,
+                    avatarImageUrl
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setMessage('Avatar updated successfully!');
+
+                if (data.token) {
+                    if (localStorage.getItem('token')) {
+                        localStorage.setItem('token', data.token);
+                    } else {
+                        sessionStorage.setItem('token', data.token);
+                    }
+                }
+            } else {
+                const errorData = await response.json();
+                setError(errorData.message || 'Failed to update avatar');
+            }
+        } catch (err) {
+            setError('Network error while updating avatar');
+        }
+    };
+
     return (
         <div className="user-profileContainer">
-            <label>
-                <UserAvatar />
-            </label>
+            <div className="avatar-customization-section">
+                <h3>Customize Avatar</h3>
+
+                <div className="avatar-preview">
+                    <UserAvatar
+                        backgroundColor={avatarBackgroundColor}
+                        initials={avatarInitials || username.substring(0, 2).toUpperCase()}
+                    />
+                </div>
+
+                <div className="avatar-controls">
+                    <label>Background Color:</label>
+                    <input
+                        type="color"
+                        value={avatarBackgroundColor}
+                        onChange={(e) => setAvatarBackgroundColor(e.target.value)}
+                    />
+
+                    <label>Initials (optional):</label>
+                    <input
+                        type="text"
+                        value={avatarInitials}
+                        onChange={(e) => setAvatarInitials(e.target.value)}
+                        maxLength="2"
+                        placeholder="e.g., JS"
+                    />
+
+                    <label>Image URL (optional):</label>
+                    <input
+                        type="text"
+                        value={avatarImageUrl}
+                        onChange={(e) => setAvatarImageUrl(e.target.value)}
+                        placeholder="https://example.com/avatar.jpg"
+                    />
+
+                    <button onClick={updateAvatar}>Save Avatar</button>
+                </div>
+            </div>
             <h2>User Profile</h2>
 
             {message && <div className="username-success">{message}</div>}
