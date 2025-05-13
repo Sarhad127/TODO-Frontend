@@ -8,10 +8,10 @@
     position: relative;
     padding: 15px;
     margin: 10px;
-    border-radius: 6px;
+    border-radius: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    max-width: 350px;
-    height: 350px;
+    max-width: 300px;
+    height: 300px;
     display: flex;
     flex-direction: column;
 }
@@ -198,7 +198,6 @@ textarea:focus {
 .notes-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
     padding: 10px;
     margin-right: 310px;
 }
@@ -208,25 +207,23 @@ textarea:focus {
     min-height: 120px;
     width: calc(100% - 30px);
     padding: 12px;
-    border: 1px solid #e0d6b9;
-    background: repeating-linear-gradient(
-            #fdf6e3,
-            #fdf6e3 30px,
-            #f8f1d9 30px,
-            #f8f1d9 31px
-    );
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 0 3px rgba(0, 0, 0, 0.05);
     resize: none;
-    font-size: 18px;
+    font-size: 22px;
     line-height: 1.6;
-    font-family: "Segoe Print", "Calibri Light", serif;
+    font-family: "Arial", sans-serif;
     border-radius: 8px 8px 0 0;
     outline: none;
-    margin-top: 10px;
 }
 
-.note textarea:focus {
-    box-shadow: 0 0 0 2px #ffe599, 0 2px 10px rgba(0, 0, 0, 0.1);
+.note textarea {
+    overflow: hidden;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.note textarea::-webkit-scrollbar {
+    display: none;
 }
 
 .dropdown-menu-notes {

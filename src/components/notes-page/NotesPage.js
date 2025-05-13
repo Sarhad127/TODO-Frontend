@@ -243,19 +243,19 @@ const NotesPage = () => {
                         style={{ backgroundColor: note.color }}
                     >
                         <div className="note-header">
-                            <input
-                                className="title-input"
-                                value={note.title || ''}
-                                onChange={(e) => handleTitleChange(index, e.target.value)}
-                                placeholder="Note"
-                            />
+                            {/*<input*/}
+                            {/*    className="title-input"*/}
+                            {/*    value={note.title || ''}*/}
+                            {/*    onChange={(e) => handleTitleChange(index, e.target.value)}*/}
+                            {/*    placeholder="Note"*/}
+                            {/*/>*/}
                             <div className="note-actions" ref={el => dropdownRefs.current[index] = el}>
-                                <button
-                                    className="dropdown-toggle"
-                                    onClick={() => toggleDropdown(index)}
-                                >
-                                    ⋮
-                                </button>
+                                {/*<button*/}
+                                {/*    className="dropdown-toggle"*/}
+                                {/*    onClick={() => toggleDropdown(index)}*/}
+                                {/*>*/}
+                                {/*    ⋮*/}
+                                {/*</button>*/}
                                 {openDropdown === index && (
                                     <div className="dropdown-menu-notes">
                                         <label className="color-text-label">
