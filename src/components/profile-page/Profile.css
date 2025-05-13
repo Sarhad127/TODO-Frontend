@@ -98,7 +98,7 @@
     margin-top: 4px;
     width: 100%;
     padding: 12px;
-    background-color: #3d3d3d;
+    background-color: #3f51b5;
     color: white;
     border: none;
     border-radius: 6px;
@@ -108,7 +108,7 @@
 }
 
 .username-formGroup button:hover {
-    background-color: #505050;
+    background-color: #303f9f;
 }
 
 .username-success {
