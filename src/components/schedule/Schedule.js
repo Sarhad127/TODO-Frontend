@@ -72,7 +72,7 @@ function SchedulePage() {
                 setEndHour(settingsData.endHour);
 
             } catch (error) {
-                console.error('Error fetching schedule data:', error);
+                console.error('No schedule settings found');
             }
         };
 

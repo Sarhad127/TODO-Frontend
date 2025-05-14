@@ -136,8 +136,6 @@ function CalendarPage() {
         throw new Error('Failed to save calendar note');
       }
 
-      const savedNote = await response.json();
-      console.log('Note saved:', savedNote);
     } catch (error) {
       console.error('Error saving calendar note:', error);
     }
