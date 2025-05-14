@@ -129,7 +129,6 @@ const Navbar = ({ onBoardSelect }) => {
                 body: JSON.stringify(newBoard),
             });
             const createdBoard = await response.json();
-            console.log('Created new board:', createdBoard);
             updateUserData();
             setSelectedBoardTitle(createdBoard.title || `Board ${createdBoard.position}`);
             if (onBoardSelect) {
