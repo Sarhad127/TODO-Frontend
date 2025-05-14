@@ -183,9 +183,7 @@ function CalendarPage() {
 
   const renderHeader = () => (
       <div className="calendar-header">
-        <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>&lt;</button>
         <div>{format(currentMonth, 'MMMM yyyy')}</div>
-        <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>&gt;</button>
       </div>
   );
 
@@ -193,6 +191,17 @@ function CalendarPage() {
     const days = [];
     const dateFormat = 'EEE';
     const startDate = startOfWeek(currentMonth);
+
+    days.push(
+        <div
+            className="calendar-nav-button"
+            key="prev-month"
+            onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+        >
+          &lt;
+        </div>
+    );
+
     for (let i = 0; i < 7; i++) {
       days.push(
           <div className="calendar-day-name" key={i}>
@@ -200,6 +209,17 @@ function CalendarPage() {
           </div>
       );
     }
+
+    days.push(
+        <div
+            className="calendar-nav-button"
+            key="next-month"
+            onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+        >
+          &gt;
+        </div>
+    );
+
     return <div className="calendar-days-row">{days}</div>;
   };
 

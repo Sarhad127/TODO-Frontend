@@ -1,3 +1,12 @@
+.calendar-header,
+.calendar-day-name,
+.day-number,
+.main-content{
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 .modal-calender {
     background: #e3e3e3;
     padding: 20px;
@@ -15,7 +24,7 @@
 }
 
 .calendar-app {
-    margin: 0 100px 30px 290px;
+    margin: 0 150px 30px 290px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     box-sizing: border-box;
@@ -31,32 +40,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    padding: 0 10px;
+    margin-bottom: 8px;
 }
 
 .calendar-header div {
-    font-size: 4rem;
-    font-style: normal;
-    font-weight: 200;
+    font-size: 2rem;
+    font-weight: 400;
     color: #eaeaea;
-}
-
-.calendar-header button {
-    margin-top: 8px;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    background-color: grey;
-    color: black;
-}
-
-.calendar-header button:hover {
-    background: #b2b2b2;
+    flex: 1;
+    text-align: center;
 }
 
 .calendar-days-row {
@@ -331,7 +323,7 @@
     color: #333;
 }
 
-textarea {
+textarea.note-preview {
     width: 100%;
     min-height: 100px;
     border: none;
@@ -341,4 +333,28 @@ textarea {
     line-height: 1.5;
     padding: 5px;
     font-family: inherit;
+}
+
+textarea.note-preview:focus {
+    visibility: hidden;
+}
+
+.calendar-day-name {
+    flex: 1;
+    text-align: center;
+}
+
+.calendar-nav-button {
+    background-color: rgba(0, 0, 0, 0.82);
+    height: 37px;
+    cursor: pointer;
+    padding: 0 10px;
+    font-weight: bold;
+    user-select: none;
+    color: white;
+    align-content: center;
+}
+
+.calendar-nav-button:hover {
+    background-color: rgba(40, 40, 40, 0.68);
 }
