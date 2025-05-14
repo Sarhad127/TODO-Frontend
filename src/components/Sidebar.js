@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import plutoIcon from '../icons/Pluto.png';
 import boardsIcon from '../icons/boards.png';
@@ -7,19 +7,30 @@ import calenderIcon from '../icons/calender.png';
 import scheduleIcon from '../icons/schedule-icon.png';
 
 function Sidebar() {
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [currentImageUrl, setCurrentImageUrl] = useState(null);
 
     useEffect(() => {
         const type = localStorage.getItem('backgroundType');
         const value = localStorage.getItem('backgroundValue');
-
         if (type === 'color' && value) {
-            document.body.style.background = `linear-gradient(to bottom, ${value}, #420b70)`;
+            applyColor(value, false);
         } else if (type === 'image' && value) {
-            document.body.style.background = `url(${value}) center/cover no-repeat`;
+            if (value.startsWith('blob:')) {
+                console.warn("Blob URLs don't persist after page reload");
+            } else {
+                applyImage(value, false);
+            }
         }
+        return () => {
+            if (currentImageUrl && currentImageUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(currentImageUrl);
+            }
+        };
     }, []);
 
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const toggleDropDown = () => {
+        setIsDropdownOpen(prevState => !prevState); };
 
     const predefinedColors = [
         'rgba(110,11,0,0.57)', 'rgba(141,112,0,0.57)', 'rgba(155,147,23,0.57)', 'rgba(64,117,0,0.57)',
@@ -29,24 +40,57 @@ function Sidebar() {
         'rgba(53,23,107,0.57)', 'rgba(101,68,18,0.57)', 'rgba(72,114,24,0.57)', 'rgba(20,84,114,0.57)',
     ];
 
-    const toggleDropDown = () => {
-        setIsDropdownOpen(prevState => !prevState);
+    const applyColor = (color, saveToStorage = true) => {
+        if (currentImageUrl) {
+            URL.revokeObjectURL(currentImageUrl);
+            setCurrentImageUrl(null);
+        }
+
+        document.body.style.background = `linear-gradient(to bottom, ${color}, #420b70)`;
+
+        if (saveToStorage) {
+            localStorage.setItem('backgroundType', 'color');
+            localStorage.setItem('backgroundValue', color);
+        }
+        setIsDropdownOpen(false);
     };
 
-    const applyColor = (color) => {
-        document.body.style.background = `linear-gradient(to bottom, ${color}, #420b70)`;
-        localStorage.setItem('backgroundType', 'color');
-        localStorage.setItem('backgroundValue', color);
+    const applyImage = (imageUrl, saveToStorage = true) => {
+        if (currentImageUrl) {
+            URL.revokeObjectURL(currentImageUrl);
+        }
+
+        document.body.style.background = `url(${imageUrl}) center/cover no-repeat`;
+        setCurrentImageUrl(imageUrl);
+
+        if (saveToStorage) {
+            localStorage.setItem('backgroundType', 'image');
+            localStorage.setItem('backgroundValue', imageUrl);
+        }
         setIsDropdownOpen(false);
     };
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            document.body.style.background = `url(${imageUrl}) center/cover no-repeat`;
-            setIsDropdownOpen(false);
+        if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Please select an image smaller than 2MB');
+            return;
         }
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const base64String = e.target.result;
+            applyImage(base64String);
+        };
+
+        reader.onerror = () => {
+            alert('Error reading file');
+        };
+
+        reader.readAsDataURL(file);
     };
 
     return (

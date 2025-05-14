@@ -18,9 +18,16 @@ const Login = () => {
     const { updateUserData } = useUser();
 
     useEffect(() => {
+        const type = localStorage.getItem('backgroundType');
+        const value = localStorage.getItem('backgroundValue');
         const invitationBoardId = localStorage.getItem('invitationBoardId');
         if (invitationBoardId) {
             setErrorMessage(`You have a pending invitation. Please login to accept it.`);
+        }
+        if (type === 'color' && value) {
+            document.body.style.background = `linear-gradient(to bottom, ${value}, #420b70)`;
+        } else if (type === 'image' && value) {
+            document.body.style.background = `url(${value}) center/cover no-repeat`;
         }
     }, []);
 

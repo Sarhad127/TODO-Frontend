@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './styles/Register.module.css';
 
@@ -9,6 +9,17 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const type = localStorage.getItem('backgroundType');
+        const value = localStorage.getItem('backgroundValue');
+
+        if (type === 'color' && value) {
+            document.body.style.background = `linear-gradient(to bottom, ${value}, #420b70)`;
+        } else if (type === 'image' && value) {
+            document.body.style.background = `url(${value}) center/cover no-repeat`;
+        }
+    }, []);
 
     const handleRegister = async (e) => {
         e.preventDefault();
