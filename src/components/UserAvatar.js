@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { jwtDecode } from 'jwt-decode';
 
-const UserAvatar = ({ size = 'medium', showName = false }) => {
+const UserAvatar = ({ size = 'medium', userData = null }) => {
     const [avatarData, setAvatarData] = useState({
         backgroundColor: '#3f51b5',
         initials: '',
@@ -12,17 +12,27 @@ const UserAvatar = ({ size = 'medium', showName = false }) => {
 
     useEffect(() => {
         const fetchAvatar = async () => {
+            if (userData) {
+                setAvatarData({
+                    backgroundColor: userData.avatarBackgroundColor || '#3f51b5',
+                    initials: userData.avatarInitials || '',
+                    imageUrl: userData.avatarImageUrl || '',
+                    username: userData.username || 'Unknown'
+                });
+                return;
+            }
+
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) return;
 
             try {
                 const decoded = jwtDecode(token);
-                const userData = await api.getAvatar(token);
+                const fetchedData = await api.getAvatar(token);
 
                 setAvatarData({
-                    backgroundColor: userData.avatarBackgroundColor || '#3f51b5',
-                    initials: userData.avatarInitials || '',
-                    imageUrl: userData.avatarImageUrl || '',
+                    backgroundColor: fetchedData.avatarBackgroundColor || '#3f51b5',
+                    initials: fetchedData.avatarInitials || '',
+                    imageUrl: fetchedData.avatarImageUrl || '',
                     username: decoded.sub || 'Unknown'
                 });
             } catch (error) {
@@ -33,14 +43,14 @@ const UserAvatar = ({ size = 'medium', showName = false }) => {
         fetchAvatar();
 
         const handleStorage = (e) => {
-            if (e.key === 'token') {
+            if (!userData && e.key === 'token') {
                 fetchAvatar();
             }
         };
 
         window.addEventListener('storage', handleStorage);
         return () => window.removeEventListener('storage', handleStorage);
-    }, []);
+    }, [userData]);
 
     const sizeConfig = {
         small: { diameter: '32px', fontSize: '14px' },
@@ -69,7 +79,11 @@ const UserAvatar = ({ size = 'medium', showName = false }) => {
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
-                    borderRadius: '50%'
+                    borderRadius: '50%',
+                    color: '#fff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                 }}
             >
                 {!avatarData.imageUrl && getInitials()}

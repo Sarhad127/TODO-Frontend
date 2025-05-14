@@ -9,6 +9,8 @@ import scheduleIcon from '../icons/schedule-icon.png';
 function Sidebar() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [currentImageUrl, setCurrentImageUrl] = useState(null);
+    const [imageUrlInput, setImageUrlInput] = useState('');
+    const [urlError, setUrlError] = useState('');
 
     useEffect(() => {
         const type = localStorage.getItem('backgroundType');
@@ -30,7 +32,9 @@ function Sidebar() {
     }, []);
 
     const toggleDropDown = () => {
-        setIsDropdownOpen(prevState => !prevState); };
+        setIsDropdownOpen(prevState => !prevState);
+        setUrlError('');
+    };
 
     const predefinedColors = [
         'rgba(110,11,0,0.57)', 'rgba(141,112,0,0.57)', 'rgba(155,147,23,0.57)', 'rgba(64,117,0,0.57)',
@@ -60,7 +64,7 @@ function Sidebar() {
             URL.revokeObjectURL(currentImageUrl);
         }
 
-        document.body.style.background = `url(${imageUrl}) center/cover no-repeat`;
+        document.body.style.background = `url(${imageUrl}) center/cover no-repeat fixed`;
         setCurrentImageUrl(imageUrl);
 
         if (saveToStorage) {
@@ -79,18 +83,27 @@ function Sidebar() {
             return;
         }
 
-        const reader = new FileReader();
+        const imageUrl = URL.createObjectURL(file);
+        applyImage(imageUrl);
+    };
 
-        reader.onload = (e) => {
-            const base64String = e.target.result;
-            applyImage(base64String);
+    const handleUrlSubmit = (e) => {
+        e.preventDefault();
+
+        if (!imageUrlInput.match(/\.(jpeg|jpg|gif|png|webp)(\?.*)?$/i)) {
+            setUrlError('Please enter a valid image URL (jpg, png, gif, webp)');
+            return;
+        }
+
+        const img = new Image();
+        img.onload = () => {
+            applyImage(imageUrlInput);
+            setUrlError('');
         };
-
-        reader.onerror = () => {
-            alert('Error reading file');
+        img.onerror = () => {
+            setUrlError('Could not load image from this URL');
         };
-
-        reader.readAsDataURL(file);
+        img.src = imageUrlInput;
     };
 
     return (
@@ -138,15 +151,18 @@ function Sidebar() {
                     </button>
                 </li>
                 {isDropdownOpen && (
-                    <div className="color-grid">
-                        {predefinedColors.map((color, index) => (
-                            <div
-                                key={index}
-                                className="color-swatch"
-                                style={{ backgroundColor: color }}
-                                onClick={() => applyColor(color)}
-                            />
-                        ))}
+                    <div className="background-options">
+                        <div className="color-grid">
+                            {predefinedColors.map((color, index) => (
+                                <div
+                                    key={index}
+                                    className="color-swatch"
+                                    style={{ backgroundColor: color }}
+                                    onClick={() => applyColor(color)}
+                                />
+                            ))}
+                        </div>
+
                         <div className="upload-wrapper">
                             <label htmlFor="bg-upload" className="upload-btn">
                                 Upload image
@@ -158,6 +174,22 @@ function Sidebar() {
                                 onChange={handleImageUpload}
                                 style={{ display: 'none' }}
                             />
+                        </div>
+
+                        <div className="url-input-wrapper">
+                            <form onSubmit={handleUrlSubmit}>
+                                <input
+                                    type="text"
+                                    value={imageUrlInput}
+                                    onChange={(e) => setImageUrlInput(e.target.value)}
+                                    placeholder="Paste image URL"
+                                    className="url-input"
+                                />
+                                <button type="submit" className="url-submit-btn">
+                                    Apply
+                                </button>
+                            </form>
+                            {urlError && <p className="url-error">{urlError}</p>}
                         </div>
                     </div>
                 )}

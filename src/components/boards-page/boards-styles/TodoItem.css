@@ -123,3 +123,37 @@
     font-weight: lighter;
     line-height: 1;
 }
+.avatar-button-tag {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0 4px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.avatar-button-tag:hover {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0 4px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-button-tag:focus {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0 4px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -13,8 +13,42 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
     const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
     const [board, setBoard] = useState(null);
-
+    const [boardUsers, setBoardUsers] = useState([]);
     const { userData } = useUser();
+
+    useEffect(() => {
+        const fetchBoardUsers = async () => {
+            if (!boardData?.id) return;
+
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) {
+                console.error("No token found");
+                return;
+            }
+
+            try {
+                const res = await fetch(`http://localhost:8080/api/boards/${boardData.id}/Allusers`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (res.status === 204) {
+                    setBoardUsers([]);
+                } else if (res.ok) {
+                    const users = await res.json();
+                    setBoardUsers(users);
+                } else {
+                    const error = await res.text();
+                    console.error("Failed to fetch users:", error);
+                }
+            } catch (err) {
+                console.error("Error fetching board users:", err);
+            }
+        };
+
+        fetchBoardUsers();
+    }, [boardData?.id]);
 
     useEffect(() => {
         const initializeBoard = (data) => {
@@ -39,7 +73,11 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                         position: task.position,
                         tag: {
                             text: task.tagText || '',
-                            color: task.tagColor || null
+                            color: task.tagColor || null,
+                            avatarInitials: task.avatarInitials || '',
+                            avatarImageUrl: task.avatarImageUrl || '',
+                            avatarUsername: task.avatarUsername || '',
+                            avatarBackgroundColor: task.avatarBackgroundColor || '#ccc'
                         }
                     }));
                 }
@@ -245,6 +283,9 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     columnId: taskData.columnId,
                     tagText: taskData.tag ? taskData.tag.text : '',
                     tagColor: taskData.tag ? taskData.tag.color : null,
+                    avatarBackgroundColor: taskData.avatarBackgroundColor || '',
+                    avatarImageUrl: taskData.avatarImageUrl || '',
+                    avatarInitials: taskData.avatarInitials || '',
                 }),
             });
 
@@ -331,8 +372,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     text: selectedTodo.text,
                     color: selectedTodo.color,
                     columnId: columnData.id,
-                    tag: selectedTodo.tag || '',
-                    tagColor: null
+                    tag: selectedTodo.tag || { avatarBackgroundColor: '', avatarImageUrl: '', avatarInitials: '', avatarUsername: '' },
+                    tagColor: selectedTodo.tag?.color || null
                 };
                 console.log('Sending the following task data to the backend:', taskData);
                 const response = await fetch('http://localhost:8080/tasks/create', {
@@ -352,17 +393,28 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                         ...allColumns,
                         [column]: {
                             ...columnData,
-                            tasks: [...columnData.tasks, {
-                                id: newTask.id,
-                                text: newTask.text,
-                                color: newTask.color,
-                                position: newTask.position,
-                                columnId: newTask.columnId,
-                                tag: {
-                                    text: newTask.tagText || '',
-                                    color: null
+                            tasks: [
+                                ...columnData.tasks,
+                                {
+                                    id: newTask.id,
+                                    text: newTask.text,
+                                    color: newTask.color,
+                                    position: newTask.position,
+                                    columnId: newTask.columnId,
+                                    tag: {
+                                        text: newTask.tagText || '',
+                                        color: newTask.tagColor || null,
+                                        avatarBackgroundColor: newTask.avatarBackgroundColor || '',
+                                        avatarImageUrl: newTask.avatarImageUrl || '',
+                                        avatarInitials: newTask.avatarInitials || '',
+                                        avatarUsername: newTask.avatarUsername || ''
+                                    },
+                                    avatarBackgroundColor: newTask.avatarBackgroundColor || '',
+                                    avatarImageUrl: newTask.avatarImageUrl || '',
+                                    avatarInitials: newTask.avatarInitials || '',
+                                    avatarUsername: newTask.avatarUsername || ''
                                 }
-                            }],
+                            ],
                         },
                     });
                 } else {
@@ -596,6 +648,8 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     deleteTodo={deleteTodo}
                     changeColumnTitle={changeColumnTitle}
                     cancelAddTodo={cancelAddTodo}
+                    boardUsers={boardUsers}
+                    userData={userData}
                 />
             </div>
         </DndProvider>
