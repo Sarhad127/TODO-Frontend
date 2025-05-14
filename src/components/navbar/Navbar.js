@@ -91,7 +91,6 @@ const Navbar = ({ onBoardSelect }) => {
     const handleLogout = () => {
         localStorage.removeItem('token');
         sessionStorage.removeItem('token');
-        console.log('token removed');
         navigate('/auth/login');
     };
 
@@ -149,7 +148,6 @@ const Navbar = ({ onBoardSelect }) => {
                 console.error("No authentication token found");
                 return;
             }
-            console.log(`Fetching board at position ${position}...`);
             const boardResponse = await fetch(`http://localhost:8080/api/boards/${position}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -165,12 +163,10 @@ const Navbar = ({ onBoardSelect }) => {
 
             const boardData = await boardResponse.json();
             setCurrentBoardId(boardData.id);
-            console.log('Board data:', boardData);
             setSelectedBoardTitle(boardData.title);
 
             setBoardUsers([]);
 
-            console.log(`Fetching users for board ID ${boardData.id}...`);
             const usersResponse = await fetch(`http://localhost:8080/api/boards/${boardData.id}/users`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -186,7 +182,6 @@ const Navbar = ({ onBoardSelect }) => {
             } else {
                 const usersData = await usersResponse.json();
                 setBoardUsers(usersData);
-                console.log('Users on this board:', usersData);
             }
             if (onBoardSelect) {
                 onBoardSelect(position);

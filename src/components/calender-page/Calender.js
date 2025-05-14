@@ -176,7 +176,6 @@ function CalendarPage() {
       });
 
       setModalOpen(false);
-      console.log('Note deleted for', dayKey);
     } catch (error) {
       console.error('Error deleting calendar note:', error);
     }

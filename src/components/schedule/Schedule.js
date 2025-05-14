@@ -71,10 +71,6 @@ function SchedulePage() {
                 setStartHour(settingsData.startHour);
                 setEndHour(settingsData.endHour);
 
-                console.log('Fetched schedule data:', {
-                    blocks: blocksData,
-                    settings: settingsData
-                });
             } catch (error) {
                 console.error('Error fetching schedule data:', error);
             }
