@@ -229,7 +229,7 @@ const Profile = () => {
         setMessage('');
 
         try {
-            const response = await fetch('http://localhost:8080/api/user/avatar', {
+            const response = await fetch('https://email-verification-production.up.railway.app/api/user/avatar', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

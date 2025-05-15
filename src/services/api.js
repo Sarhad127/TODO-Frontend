@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/api/user/avatar';
+const API_URL = 'https://email-verification-production.up.railway.app/api/user/avatar';
 
 const getAvatar = async (token) => {
     const response = await fetch(API_URL, {

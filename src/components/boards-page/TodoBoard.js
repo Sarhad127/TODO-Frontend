@@ -27,7 +27,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             }
 
             try {
-                const res = await fetch(`http://localhost:8080/api/boards/${boardData.id}/Allusers`, {
+                const res = await fetch(`https://email-verification-production.up.railway.app/api/boards/${boardData.id}/Allusers`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
