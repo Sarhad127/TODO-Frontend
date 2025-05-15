@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import UserAvatar from "../UserAvatar";
 
 export function EditModal({
@@ -9,6 +9,22 @@ export function EditModal({
                               cancelAddTodo,
                               boardUsers
                           }) {
+
+    const EditTodoModal = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (EditTodoModal.current && !EditTodoModal.current.contains(event.target)) {
+                cancelAddTodo();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     if (!selectedTodo) return null;
 
     const handleTagTextChange = (e) => {
@@ -88,7 +104,7 @@ export function EditModal({
 
     return (
         <div className="modal-overlay">
-            <div className="modal">
+            <div className="modal" ref={EditTodoModal}>
                 <h3>Edit Card</h3>
                 <div className="board-users-container">
                     {boardUsers.length > 1 && boardUsers.map(user => (
