@@ -50,25 +50,48 @@ const VerifyEmail = () => {
     };
 
     return (
-        <div className={styles.formContainer}>
-            <h3 className={styles.verifyEmailText}>Check your email</h3>
-            {error && <div className={styles.errorMessage}>{error}</div>}
-            <form onSubmit={handleVerification}>
-                <div className={styles.formGroup}>
-                    <div className={styles.inputFieldText}>
-                        <input
-                            type="text"
-                            name="verificationCode"
-                            value={verificationCode}
-                            onChange={(e) => setVerificationCode(e.target.value)}
-                            placeholder="Enter Verification Code"
-                            required
-                        />
-                    </div>
+        <div className={`${styles.ve__container} ve__container`}>
+            <h3 className={`${styles.ve__title} ve__title`}>Check your email</h3>
+            {error && (
+                <div className={`${styles.ve__error} ve__error`}>
+                    {error}
                 </div>
-                <input type="hidden" name="email" value={email} />
-                <button type="submit" disabled={isLoading}>
-                    {isLoading ? 'Verifying...' : 'Verify'}
+            )}
+            <form
+                onSubmit={handleVerification}
+                className={`${styles.ve__form} ve__form`}
+            >
+                <div className={`${styles.ve__inputGroup} ve__inputGroup`}>
+                    <input
+                        type="text"
+                        name="verificationCode"
+                        value={verificationCode}
+                        onChange={(e) => setVerificationCode(e.target.value)}
+                        placeholder="Enter Verification Code"
+                        required
+                        className={`${styles.ve__input} ve__input`}
+                    />
+                </div>
+                <input
+                    type="hidden"
+                    name="email"
+                    value={email}
+                    className={`${styles.ve__hiddenInput} ve__hiddenInput`}
+                />
+                <button
+                    type="submit"
+                    disabled={isLoading}
+                    className={`${styles.ve__submitBtn} ve__submitBtn ${isLoading ? styles.ve__submitBtnLoading : ''}`}
+                >
+                    {isLoading ? (
+                        <span className={`${styles.ve__loadingText} ve__loadingText`}>
+            Verifying...
+          </span>
+                    ) : (
+                        <span className={`${styles.ve__submitText} ve__submitText`}>
+            Verify
+          </span>
+                    )}
                 </button>
             </form>
         </div>

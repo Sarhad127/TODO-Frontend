@@ -16,9 +16,11 @@
 .avatar-button,
 .friends-dropdown-wrapper,
 .friends-icon,
+.dropdown-item,
 .leave-group-icon,
 .testing-icon-removal,
 .board-members-display,
+.avatar-dropdown-header .avatar-container,
 .dropdown-item {
     user-select: none;
     -webkit-user-select: none;
@@ -154,8 +156,8 @@
     right: 0;
     position: absolute;
     margin: 15px 7px 0 0;
-    width: 200px;
-    background-color: rgba(47, 47, 47, 0.98);
+    width: 250px;
+    background-color: rgba(47, 47, 47, 0.9);
     border-radius: 4px;
 }
 
@@ -163,7 +165,7 @@
     content: '';
     position: absolute;
     top: -8px;
-    right: 33px;
+    right: 31px;
     width: 0;
     height: 0;
     border-left: 8px solid transparent;
@@ -197,7 +199,7 @@
 .dropdown-menu.boards-dropdown {
     padding: 0;
     margin: 12px 0 0 8px;
-    background-color: rgba(47, 47, 47, 0.99);
+    background-color: rgb(47, 47, 47);
     border-radius: 4px;
 }
 
@@ -327,7 +329,7 @@
 .friends-dropdown-wrapper .friends-dropdown {
     display: block;
     margin-top: 11px;
-    background-color: rgba(80, 80, 80, 0.7);
+    background-color: rgba(65, 65, 65, 0.82);
 }
 .friends-dropdown-wrapper .friends-dropdown .dropdown-item-friends {
     font-weight: normal;
@@ -377,18 +379,42 @@
     height: 20px;
 }
 
-.board-members-display {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    padding-left: 10px;
-    margin-left: 20px;
-}
-
 .user-list {
     display: flex;
     gap: 10px;
+}
+
+.user-avatar-container {
+    position: relative;
+}
+
+.user-avatar-container:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    margin-top: 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .user-icon {
@@ -433,4 +459,80 @@
 }
 .leave-group-icon:hover {
     transform: scale(1.05);
+}
+
+.user-dropdown .dropdown-item-avatar .avatar-container {
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+    margin-top: 5px;
+}
+
+.user-dropdown .dropdown-item-avatar .avatar {
+    background-color: #6c63ff;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.navbar-avatar-email {
+    padding: 0;
+    text-align: center;
+}
+
+.user-email {
+    font-size: 11px;
+    color: #ffffff;
+    font-weight: bold;
+    margin: 8px;
+    white-space: nowrap;
+}
+.user-username {
+    font-size: 16px;
+    color: #ffffff;
+    font-weight: bold;
+    margin: 8px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.avatar-dropdown-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+.avatar-dropdown-header .avatar-container {
+    margin: 0;
+}
+
+.avatar-user-info {
+    margin: 0;
+}
+
+.dropdown-menu.friends-dropdown {
+    margin-top: 13px;
+}
+
+.board-members-display {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 10px;
+    margin-left: 20px;
+}
+
+.board-members-display .user-avatar:hover {
+    opacity: 0.8;
+    transform: scale(1.07);
 }

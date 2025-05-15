@@ -1,5 +1,14 @@
+.note,
+.notesPage-app,
+.delete-note-btn,
+.notes-title{
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 .notesPage-app {
-    margin-left: 290px;
+    margin-left: 280px;
     padding: 20px;
 }
 
@@ -8,40 +17,56 @@
     position: relative;
     padding: 15px;
     margin: 10px;
-    border-radius: 6px;
+    border-radius: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    max-width: 350px;
-    height: 350px;
+    max-width: 300px;
+    height: 250px;
     display: flex;
     flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-textarea {
-    width: 100%;
-    min-height: 100px;
-    border: none;
-    background: transparent;
-    resize: none;
-    font-size: 16px;
-    line-height: 1.5;
-    padding: 5px;
-    font-family: inherit;
+.note:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: scale(1.02);
 }
 
-textarea:focus {
-    outline: none;
+.notes-title {
+    font-size: 55px;
+    font-weight: 540;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+    margin-left: 20px;
+}
+
+.notes-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.add-note-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 15px;
 }
 
 .add-note-btn {
-    position: fixed;
+    margin: 4px 0 0 30px;
     bottom: 30px;
     right: 30px;
-    width: 50px;
-    height: 50px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
-    background: #4285f4;
-    color: white;
-    font-size: 24px;
+    background: rgb(0, 0, 0);
+    color: #ffffff;
+    font-size: 20px;
+    text-align: center;
     border: none;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
@@ -49,8 +74,19 @@ textarea:focus {
 }
 
 .add-note-btn:hover {
-    transform: scale(1.1);
+    transform: scale(1.02);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    background: rgba(31, 31, 31, 0.89);
+}
+
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px;
+    padding: 10px;
+    margin-top: 10px;
+    margin-right: 310px;
+    width: calc(100% - 310px);
 }
 
 .note-header {
@@ -164,59 +200,6 @@ textarea:focus {
     opacity: 1;
 }
 
-.date-icon {
-    padding-right: 6px;
-    width: 20px;
-    height: 20px;
-}
-
-.date-input {
-    position: absolute;
-    visibility: hidden;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 40px;
-    z-index: 9999;
-    opacity: 0;
-    cursor: pointer;
-    transition: opacity 0.2s ease-in-out;
-}
-
-.notes-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    padding: 10px;
-    margin-right: 310px;
-}
-
-.note textarea {
-    flex-grow: 1;
-    min-height: 120px;
-    width: calc(100% - 30px);
-    padding: 12px;
-    border: 1px solid #e0d6b9;
-    background: repeating-linear-gradient(
-            #fdf6e3,
-            #fdf6e3 30px,
-            #f8f1d9 30px,
-            #f8f1d9 31px
-    );
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 0 3px rgba(0, 0, 0, 0.05);
-    resize: none;
-    font-size: 18px;
-    line-height: 1.6;
-    font-family: "Segoe Print", "Calibri Light", serif;
-    border-radius: 8px 8px 0 0;
-    outline: none;
-    margin-top: 10px;
-}
-
-.note textarea:focus {
-    box-shadow: 0 0 0 2px #ffe599, 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
 .dropdown-menu-notes {
     position: absolute;
     top: 24px;
@@ -241,23 +224,6 @@ textarea:focus {
     transition: background-color 0.2s ease;
 }
 
-.title-input {
-    width: 100%;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    border: none;
-    background: transparent;
-    margin-bottom: 10px;
-    padding: 5px;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-}
-
-.title-input:focus {
-    outline: none;
-    border-bottom: 1px solid rgba(0,0,0,0.3);
-}
-
 .save-text-btn {
     width: 346px;
     border-radius: 0 0 8px 8px;
@@ -268,3 +234,135 @@ textarea:focus {
     background-color: rgba(68, 68, 68, 0.64);
 }
 
+.color-palette {
+    display: flex;
+    gap: 10px;
+    margin-left: 28px;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.13);
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.color-option {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+    border-color: #333;
+}
+
+.color-option.selected {
+    border-color: #333;
+    transform: scale(1.1);
+}
+
+.edit-note-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #000;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    visibility: visible;
+    transition: transform 0.2s;
+}
+
+.edit-note-btn:hover {
+    background-color: #000;
+    transform: scale(1.05);
+}
+
+.edit-icon {
+    color: white;
+    font-size: 16px;
+}
+
+.note textarea {
+    background-color: transparent;
+    width: calc(100% - 30px);
+    height: 180px !important;
+    padding: 12px;
+    font-size: 22px;
+    color: rgba(16, 16, 16, 0.78);
+    line-height: 1.2;
+    font-family: "Arial", sans-serif;
+    border-radius: 8px 8px 0 0;
+    border: none;
+    resize: none;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.note textarea::-webkit-scrollbar {
+    display: none;
+}
+
+.note textarea:focus {
+    outline: none;
+}
+
+.note-textarea::placeholder {
+    color: rgba(153, 153, 153, 0.49);
+    font-style: italic;
+    font-size: 22px;
+    font-family: "Arial", sans-serif;
+    line-height: 1.2;
+}
+
+.note-controls {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5px 5px 5px;
+    margin-top: auto;
+    align-items: center;
+}
+
+.delete-note-btn {
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #555;
+    font-size: 25px;
+    line-height: 1;
+    padding: 0;
+    transition: all 0.2s;
+}
+
+.delete-note-btn:hover {
+    background: rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    color: #333;
+}
+
+.note-textarea.editable {
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: text;
+}
+
+.note-textarea:not(.editable) {
+    cursor: default;
+    overflow-y: auto ;
+    pointer-events: auto;
+    -webkit-overflow-scrolling: touch;
+}

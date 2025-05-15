@@ -1,98 +1,269 @@
+.user-profileContainer .avatar-preview .avatar {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 .user-profileContainer {
-    width: 400px;
-    margin: 0 0 0 0;
+    margin-top: 60px;
+    width: 900px;
+    max-width: 95%;
+    padding: 30px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-columns-container {
+    display: flex;
+    gap: 40px;
+}
+
+.user-settings-column {
+    flex: 1.5;
+    padding-right: 20px;
+    border-right: 1px solid #eee;
+}
+
+.avatar-settings-column {
+    flex: 1;
+}
+
+.avatar-customization-section {
     padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    position: absolute;
-    top: 48%;
-    left: 53%;
-    transform: translate(-50%, -50%);
+    border-radius: 8px;
+}
+
+.avatar-preview {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.avatar-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+@media (max-width: 768px) {
+    .profile-columns-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .user-settings-column {
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 30px;
+    }
 }
 
 .user-profileContainer h2 {
     text-align: center;
     color: #333;
-}
-
-.username-formGroup {
-    margin-bottom: 20px;
+    font-size: 24px;
+    margin-top: 0;
+    margin-bottom: 2px;
 }
 
 .username-formGroup label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: normal;
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
 }
 
 .username-formGroup input {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
+    padding: 12px;
+    margin: 2px;
+    margin-top: 4px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border 0.3s ease;
+}
+
+.username-formGroup input:focus {
+    border-color: #3f51b5;
+    outline: none;
 }
 
 .username-formGroup button {
+    margin-top: 4px;
     width: 100%;
-    padding: 10px;
-    background-color: rgba(0, 89, 187, 0.87);
+    padding: 12px;
+    background-color: #333333;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
 }
 
 .username-formGroup button:hover {
-    background-color: #0056b3;
-}
-
-.username-text {
-    width: 70%;
-    max-width: 400px;
-    margin-top: 10px;
-    box-sizing: border-box;
+    background-color: rgba(59, 59, 59, 0.91);
 }
 
 .username-success {
-    color: green;
+    color: #4caf50;
     text-align: center;
     margin-bottom: 10px;
+    font-weight: 500;
 }
 
 .username-error {
-    color: red;
+    color: #f44336;
     text-align: center;
     margin-bottom: 10px;
+    font-weight: 500;
 }
 
 .user-profileContainer hr {
-    margin: 20px 0;
+    margin: 25px 0;
+    border: 0;
+    border-top: 1px solid #e0e0e0;
 }
 
 .account-deletion-section h3 {
-    font-size: 16px;
-    font-weight: normal;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
 }
 
 .warning-message {
-    color: red;
-    font-size: 15px;
+    color: #f44336;
+    font-size: 14px;
+    margin-bottom: 15px;
 }
 
 .delete-account-button {
-    background-color: rgba(210, 0, 0, 0.77);
+    background-color: #d32f2f;
+    padding: 12px;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
 }
 
 .delete-account-button:hover {
-    background-color: rgba(210, 0, 0, 0.69);
+    background-color: #c62828;
 }
 
 .verification-code-group input {
-    width: 150px;
-    margin: 0 0 10px 0;
+    width: 160px;
+    margin-bottom: 15px;
     border: 1px solid #ccc;
-    height: 23px;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 14px;
+}
 
+.avatar-customization-section {
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fafafa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-preview {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+.avatar-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.avatar-controls input {
+    width: 100%;
+    padding: 12px;
+    margin: 2px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border 0.3s ease;
+}
+
+.avatar-controls input[type="color"] {
+    width: 50px;
+    height: 30px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.avatar-controls button {
+    padding: 12px;
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.avatar-controls button:hover {
+    background-color: #303f9f;
+}
+
+.avatar-controls label {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.user-profileContainer .avatar-customization-section .avatar-preview {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px;
+}
+
+.user-profileContainer .avatar-preview .avatar-container {
+    position: relative;
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+.user-profileContainer .avatar-preview .avatar {
+    width: 100px !important;
+    height: 100px !important;
+    font-size: 36px !important;
+    border: 3px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.user-profileContainer .avatar-preview .avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.user-profileContainer .avatar-preview .avatar[style*="background-image"] {
+    border: 3px solid rgba(255, 255, 255, 0.8);
+}
+
+.user-profileContainer .avatar-preview .avatar:not([style*="background-image"]) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }

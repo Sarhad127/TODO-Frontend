@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Profile.css';
+import UserAvatar from '../UserAvatar';
 
 const Profile = () => {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -18,6 +19,21 @@ const Profile = () => {
     const [showVerificationCodeInput, setShowVerificationCodeInput] = useState(false);
     const [isOAuthUser, setIsOAuthUser] = useState(false);
 
+    const [avatarBackgroundColor, setAvatarBackgroundColor] = useState('#3f51b5');
+    const [avatarInitials, setAvatarInitials] = useState('');
+    const [avatarImageUrl, setAvatarImageUrl] = useState('');
+
+    const COLOR_OPTIONS = [
+        '#0000FF',
+        '#FF0000',
+        '#008000',
+        '#FFA500',
+        '#800080',
+        '#FFC107',
+        '#00CED1',
+        '#A52A2A',
+    ];
+
     useEffect(() => {
         if (token) {
             try {
@@ -25,6 +41,15 @@ const Profile = () => {
                 const currentUsername = decoded.sub || decoded.username;
                 setUsername(currentUsername);
                 setEmail(decoded.email || '');
+                if (decoded.avatarBackgroundColor) {
+                    setAvatarBackgroundColor(decoded.avatarBackgroundColor);
+                }
+                if (decoded.avatarInitials) {
+                    setAvatarInitials(decoded.avatarInitials);
+                }
+                if (decoded.avatarImageUrl) {
+                    setAvatarImageUrl(decoded.avatarImageUrl);
+                }
                 const expDate = new Date(decoded.exp * 1000);
                 const isExpired = expDate < new Date();
                 if (isExpired) {
@@ -199,88 +224,176 @@ const Profile = () => {
         }
     };
 
+    const updateAvatar = async () => {
+        setError('');
+        setMessage('');
+
+        try {
+            const response = await fetch('http://localhost:8080/api/user/avatar', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    avatarBackgroundColor,
+                    avatarInitials,
+                    avatarImageUrl
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setMessage('Avatar updated successfully!');
+
+                if (data.token) {
+                    if (localStorage.getItem('token')) {
+                        localStorage.setItem('token', data.token);
+                    } else {
+                        sessionStorage.setItem('token', data.token);
+                    }
+                }
+            } else {
+                const errorData = await response.json();
+                setError(errorData.message || 'Failed to update avatar');
+            }
+        } catch (err) {
+            setError('Network error while updating avatar');
+        }
+    };
+
     return (
         <div className="user-profileContainer">
-            <h2>User Profile</h2>
+            <div className="profile-columns-container">
+                <div className="user-settings-column">
+                    <h2>User Profile</h2>
 
-            {message && <div className="username-success">{message}</div>}
-            {error && <div className="username-error">{error}</div>}
+                    {message && <div className="username-success">{message}</div>}
+                    {error && <div className="username-error">{error}</div>}
 
-            <div className="username-formGroup">
-                <label>New Username:</label>
-                <input
-                    className="username-text"
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Enter new username"
-                />
-                <button onClick={handleUsernameUpdate}>Update Username</button>
-            </div>
+                    <div className="username-formGroup">
+                        <label>New Username:</label>
+                        <input
+                            className="username-text"
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            placeholder="Enter new username"
+                        />
+                        <button onClick={handleUsernameUpdate}>Update Username</button>
+                    </div>
 
-            <hr />
+                    <hr />
 
-            <div className="username-formGroup">
-                <label>Current Password:</label>
-                <input
-                    type="password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                />
+                    <div className="username-formGroup">
+                        <label>Current Password:</label>
+                        <input
+                            type="password"
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                        />
 
-                <label>New Password:</label>
-                <input
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                />
+                        <label>New Password:</label>
+                        <input
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                        />
 
-                <label>Confirm New Password:</label>
-                <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                />
+                        <label>Confirm New Password:</label>
+                        <input
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
 
-                <button onClick={handlePasswordUpdate}>Change Password</button>
-            </div>
+                        <button onClick={handlePasswordUpdate}>Change Password</button>
+                    </div>
 
-            <hr />
+                    <hr />
 
-            <div className="account-deletion-section">
-                <h3>Delete Account:</h3>
-                <p className="warning-message">
-                    Warning: This will permanently delete your account and all associated data.
-                </p>
+                    <div className="account-deletion-section">
+                        <h3>Delete Account:</h3>
+                        <p className="warning-message">
+                            Warning: This will permanently delete your account and all associated data.
+                        </p>
 
-                {showVerificationCodeInput ? (
-                    <>
-                        <div className="verification-code-group">
-                            <label>Enter verification code sent to email:</label>
-                            <input
-                                type="text"
-                                value={verificationCode}
-                                onChange={(e) => setVerificationCode(e.target.value)}
-                                placeholder="6-digit code"
-                                maxLength="6"
+                        {showVerificationCodeInput ? (
+                            <>
+                                <div className="verification-code-group">
+                                    <label>Enter verification code sent to email:</label>
+                                    <input
+                                        type="text"
+                                        value={verificationCode}
+                                        onChange={(e) => setVerificationCode(e.target.value)}
+                                        placeholder="6-digit code"
+                                        maxLength="6"
+                                    />
+                                </div>
+                                <button
+                                    onClick={confirmAccountDeletion}
+                                    className="delete-account-button"
+                                    disabled={isVerifying || verificationCode.length < 6}
+                                >
+                                    {isVerifying ? 'Deleting...' : 'Confirm Deletion'}
+                                </button>
+                            </>
+                        ) : (
+                            <button
+                                onClick={handleAccountDelete}
+                                className="delete-account-button"
+                            >
+                                Request Account Deletion
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                <div className="avatar-settings-column">
+                    <div className="avatar-customization-section">
+                        <h3>Customize Avatar</h3>
+
+                        <div className="avatar-preview">
+                            <UserAvatar
+                                backgroundColor={avatarBackgroundColor}
+                                initials={avatarInitials || username.substring(0, 2).toUpperCase()}
                             />
                         </div>
-                        <button
-                            onClick={confirmAccountDeletion}
-                            className="delete-account-button"
-                            disabled={isVerifying || verificationCode.length < 6}
-                        >
-                            {isVerifying ? 'Deleting...' : 'Confirm Deletion'}
-                        </button>
-                    </>
-                ) : (
-                    <button
-                        onClick={handleAccountDelete}
-                        className="delete-account-button"
-                    >
-                        Request Account Deletion
-                    </button>
-                )}
+
+                        <div className="avatar-controls">
+                            <label>Avatar Color:</label>
+                            <div className="color-options">
+                                {COLOR_OPTIONS.map((color) => (
+                                    <div
+                                        key={color}
+                                        className={`color-option ${avatarBackgroundColor === color ? 'selected' : ''}`}
+                                        style={{ backgroundColor: color }}
+                                        onClick={() => setAvatarBackgroundColor(color)}
+                                    />
+                                ))}
+                            </div>
+
+                            <label>Initials (optional):</label>
+                            <input
+                                type="text"
+                                value={avatarInitials}
+                                onChange={(e) => setAvatarInitials(e.target.value)}
+                                maxLength="2"
+                                placeholder="e.g., JS"
+                            />
+
+                            <label>Image URL (optional):</label>
+                            <input
+                                type="text"
+                                value={avatarImageUrl}
+                                onChange={(e) => setAvatarImageUrl(e.target.value)}
+                                placeholder="https://example.com/avatar.jpg"
+                            />
+
+                            <button onClick={updateAvatar}>Save Avatar</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

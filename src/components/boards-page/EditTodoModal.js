@@ -1,11 +1,13 @@
 import React from 'react';
+import UserAvatar from "../UserAvatar";
 
 export function EditModal({
                               selectedTodo,
                               setSelectedTodo,
                               saveChanges,
                               deleteTodo,
-                              cancelAddTodo
+                              cancelAddTodo,
+                              boardUsers
                           }) {
     if (!selectedTodo) return null;
 
@@ -18,6 +20,36 @@ export function EditModal({
                 text
             }
         });
+    };
+
+    const handleAvatarClick = async (user) => {
+        console.log("Setting avatar for user:", user.username);
+
+        const updatedTodo = {
+            ...selectedTodo,
+            tag: {
+                ...selectedTodo.tag,
+                text: selectedTodo.tag?.text || '',
+                color: selectedTodo.tag?.color || null,
+                avatarBackgroundColor: user.avatarBackgroundColor,
+                avatarImageUrl: user.avatarImageUrl,
+                avatarInitials: user.avatarInitials,
+                avatarUsername: user.username
+            },
+            avatarBackgroundColor: user.avatarBackgroundColor,
+            avatarImageUrl: user.avatarImageUrl,
+            avatarInitials: user.avatarInitials,
+            avatarUsername: user.username
+        };
+
+        console.log("Updated todo with avatar:", updatedTodo);
+        setSelectedTodo(updatedTodo);
+
+        try {
+            console.log("Avatar update successful");
+        } catch (error) {
+            console.error("Failed to update avatar:", error);
+        }
     };
 
     const COLOR_OPTIONS = [
@@ -58,6 +90,26 @@ export function EditModal({
         <div className="modal-overlay">
             <div className="modal">
                 <h3>Edit Card</h3>
+                <div className="board-users-container">
+                    {boardUsers.length > 1 && boardUsers.map(user => (
+                        <button
+                            key={user.userId}
+                            className="avatar-button-tag"
+                            onClick={() => handleAvatarClick(user)}
+                        >
+                            <UserAvatar
+                                size="small"
+                                userData={{
+                                    avatarBackgroundColor: user.avatarBackgroundColor,
+                                    avatarInitials: user.avatarInitials,
+                                    avatarImageUrl: user.avatarImageUrl,
+                                    username: user.username
+                                }}
+                            />
+                        </button>
+                    ))}
+                </div>
+
                 <input
                     type="text"
                     value={selectedTodo.text}

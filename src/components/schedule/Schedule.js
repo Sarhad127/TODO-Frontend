@@ -71,12 +71,8 @@ function SchedulePage() {
                 setStartHour(settingsData.startHour);
                 setEndHour(settingsData.endHour);
 
-                console.log('Fetched schedule data:', {
-                    blocks: blocksData,
-                    settings: settingsData
-                });
             } catch (error) {
-                console.error('Error fetching schedule data:', error);
+                console.error('No schedule settings found');
             }
         };
 
@@ -223,6 +219,14 @@ function SchedulePage() {
 
         if (startHour >= endHour) {
             alert('End hour must be after start hour');
+            return;
+        }
+        const blocksOutsideRange = blocks.some(block => {
+            return block.startHour < startHour || block.endHour > endHour;
+        });
+
+        if (blocksOutsideRange) {
+            alert('Cannot change schedule hours as some existing blocks would fall outside the new time range');
             return;
         }
 

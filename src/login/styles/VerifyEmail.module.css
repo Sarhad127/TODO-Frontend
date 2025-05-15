@@ -1,69 +1,134 @@
-/* VerifyEmail.module.css */
-.formContainer {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: white;
-    padding: 40px 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.formContainer h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-}
-
-.formGroup {
-    margin-bottom: 20px;
-}
-.verifyEmailText{
-    margin-top: 15px;
+.ve__container {
+    max-width: 420px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
     text-align: center;
-    font-size: 14px;
-    color: #666;
 }
 
-.formGroup label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+.ve__title {
+    color: #2d3748;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.025em;
 }
 
-.inputFieldText input[type="text"] {
-    width: calc(100% - 20px);
-    padding: 12px;
-    margin: 20px 0 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    display: block;
-    box-sizing: border-box;
+.ve__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #2196F3;
+.ve__inputGroup {
+    position: relative;
+}
+
+.ve__input {
+    width: 89%;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #1a202c;
+}
+
+.ve__input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+.ve__input::placeholder {
+    color: #94a3b8;
+}
+
+.ve__error {
+    padding: 0.75rem 1rem;
+    background-color: #fee2e2;
+    color: #dc2626;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.ve__submitBtn {
+    padding: 1rem;
+    background-color: #4f46e5;
     color: white;
     border: none;
-    border-radius: 5px;
-    font-weight: bold;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 52px;
 }
 
-button:hover {
-    background-color: #1e88e5;
+.ve__submitBtn:hover:not(:disabled) {
+    background-color: #4338ca;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
 
-.errorMessage {
-    color: red;
-    margin-bottom: 10px;
+.ve__submitBtn:disabled {
+    background-color: #c7d2fe;
+    cursor: not-allowed;
 }
-.inputFieldText{
-    width: 100%;
+
+.ve__submitBtnLoading {
+    position: relative;
+}
+
+.ve__submitBtnLoading::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.ve__loadingText,
+.ve__submitText {
+    transition: opacity 0.3s ease;
+}
+
+.ve__submitBtnLoading .ve__loadingText {
+    margin-left: 1.5rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+    .ve__container {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .ve__title {
+        font-size: 1.25rem;
+    }
+
+    .ve__input {
+        padding: 0.875rem 1rem;
+    }
 }
