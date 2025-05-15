@@ -265,8 +265,8 @@ body, html {
     justify-content: center;
     gap: 8px;
     max-width: 260px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 
 .upload-btn, .url-submit-btn {
