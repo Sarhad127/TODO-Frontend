@@ -53,48 +53,55 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
                 <div
                     style={{
                         position: 'absolute',
-                        top: '50%',
-                        right: 0,
-                        width: '10%',
-                        height: '10px',
+                        top: 4,
+                        left: 4,
+                        width: 40,
+                        height: 9,
                         backgroundColor: todo.tag.color,
-                        borderTopLeftRadius: '2px',
-                        borderTopRightRadius: '2px',
-                        transform: 'translateY(-50%)',
+                        borderRadius: '4px',
                     }}
                 />
             )}
 
-            <strong>{todo.text}</strong>
+            <div style={{ paddingTop: todo.tag?.color ? 12 : 0 }}>
+                <strong>{todo.text}</strong>
 
-            {(todo.tag?.text || todo.tag?.avatarInitials || todo.tag?.avatarImageUrl) && (
-                <div style={{ display: 'flex', alignItems: 'center', marginTop: '6px', fontSize: '10px', color: '#666' }}>
-                    {(todo.tag.avatarImageUrl || todo.tag.avatarInitials) && (
-                        <div
-                            style={{
-                                width: 20,
-                                height: 20,
-                                borderRadius: '50%',
-                                backgroundColor: todo.tag.avatarBackgroundColor || '#ccc',
-                                backgroundImage: todo.tag.avatarImageUrl ? `url(${todo.tag.avatarImageUrl})` : 'none',
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: 'white',
-                                fontSize: '10px',
-                                fontWeight: 'bold',
-                                marginRight: 6,
-                            }}
-                        >
-                            {!todo.tag.avatarImageUrl && todo.tag.avatarInitials}
-                        </div>
-                    )}
-                    {todo.tag.text}
-                </div>
-            )}
-
+                {(todo.tag?.text || todo.tag?.avatarInitials || todo.tag?.avatarImageUrl) && (
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginTop: '6px',
+                            fontSize: '10px',
+                            color: '#666',
+                        }}
+                    >
+                        {(todo.tag.avatarImageUrl || todo.tag.avatarInitials) && (
+                            <div
+                                style={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: '50%',
+                                    backgroundColor: todo.tag.avatarBackgroundColor || '#ccc',
+                                    backgroundImage: todo.tag.avatarImageUrl ? `url(${todo.tag.avatarImageUrl})` : 'none',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: 'white',
+                                    fontSize: '10px',
+                                    fontWeight: 'bold',
+                                    marginRight: 6,
+                                }}
+                            >
+                                {!todo.tag.avatarImageUrl && todo.tag.avatarInitials}
+                            </div>
+                        )}
+                        {todo.tag.text}
+                    </div>
+                )}
+            </div>
             {/*<div style={{ fontSize: '0.75rem', marginTop: '4px', color: '#333' }}>*/}
             {/*    ID: {todo.id} | Column ID: {todo.columnId} | Position: {todo.position}*/}
             {/*</div>*/}
