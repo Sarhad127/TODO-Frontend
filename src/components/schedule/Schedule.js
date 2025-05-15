@@ -396,7 +396,7 @@ function SchedulePage() {
                                     placeholder="Enter description"
                                 />
                             </div>
-                            <div className="modal-actions">
+                            <div className="modal-actions-schedule-settings">
                                 <button type="submit" className="save-btn-schedule">
                                     {editingIndex !== null ? 'Update' : 'Save'}
                                 </button>
@@ -445,7 +445,7 @@ function SchedulePage() {
                                 />
                             </div>
                         </div>
-                        <div className="modal-actions">
+                        <div className="modal-actions-schedule-settings">
                             <button
                                 type="button"
                                 className="save-btn-schedule"

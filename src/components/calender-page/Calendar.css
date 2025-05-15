@@ -305,24 +305,6 @@
     margin-top: 10px;
 }
 
-.cancel-btn:hover {
-    background: #ddd;
-}
-
-.modal-actions2 {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 60px;
-    transition: background-color 0.3s;
-}
-
-.modal-actions2 button {
-    background: #f0f0f0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    color: #333;
-}
-
 textarea.note-preview {
     width: 100%;
     min-height: 100px;
@@ -357,4 +339,39 @@ textarea.note-preview:focus {
 
 .calendar-nav-button:hover {
     background-color: rgba(40, 40, 40, 0.68);
+}
+
+.modal-actions-calender {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.modal-actions-calender button {
+    margin:4px;
+    background: #f0f0f0;
+    color: #333;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    width: 90px;
+    height: 30px;
+    border: 1px black solid;
+    font-size: 12px;
+}
+
+.save-btn-calender:hover {
+    background: rgba(101, 162, 76, 0.87);
+}
+.delete-btn-calender:hover {
+    background: rgba(220, 86, 86, 0.76);
+}
+.cancel-btn-calender:hover {
+    background: #b0b0b0;
+}
+
+.color-options-grid-calender {
+    margin-bottom: 50px;
 }

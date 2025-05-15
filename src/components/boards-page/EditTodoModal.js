@@ -170,12 +170,12 @@ export function EditModal({
                     </div>
                 </div>
 
-                <div className="modal-buttons">
-                    <button className="save-btn" onClick={saveChanges}>Save</button>
-                    <button className="delete-btn" onClick={() => deleteTodo(selectedTodo)}>
+                <div className="modal-buttons-todoBoard">
+                    <button className="save-btn-todoBoard" onClick={saveChanges}>Save</button>
+                    <button className="delete-btn-todoBoard" onClick={() => deleteTodo(selectedTodo)}>
                         Delete
                     </button>
-                    <button className="cancel-btn" onClick={cancelAddTodo}>
+                    <button className="cancel-btn-todoBoard" onClick={cancelAddTodo}>
                         Cancel
                     </button>
                 </div>

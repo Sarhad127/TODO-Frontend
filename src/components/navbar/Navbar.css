@@ -188,12 +188,13 @@
     font-size: 17px;
     border-radius: 0;
     cursor: pointer;
+    height: 40px;
     margin: 0 10px 0 6px;
 }
 
 .navbar-button:hover {
-    background-color: rgba(51, 51, 51, 0.77);
-    border-radius: 2px;
+    background-color: rgba(51, 51, 51, 0.44);
+    border-radius: 5px;
 }
 
 .dropdown-menu.boards-dropdown {

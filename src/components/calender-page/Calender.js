@@ -348,7 +348,7 @@ function CalendarPage() {
                   </div>
                   <div className="form-group">
                     <label>Text Color</label>
-                    <div className="color-options-grid">
+                    <div className="color-options-grid-calender">
                       {['#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff', '#ffff00'].map((color, index) => (
                           <button
                               key={`text-${index}`}
@@ -370,9 +370,9 @@ function CalendarPage() {
                           </button>
                       ))}
                     </div>
-                    <div className="modal-actions2">
+                    <div className="modal-actions-calender">
                       <button
-                          className="save-btn"
+                          className="save-btn-calender"
                           onClick={() => {
                             saveNote(
                                 formatDate(selectedDate),
@@ -385,13 +385,13 @@ function CalendarPage() {
                         Save & Close
                       </button>
                       <button
-                          className="delete-btn"
+                          className="delete-btn-calender"
                           onClick={() => deleteNote(formatDate(selectedDate))}
                       >
                         Delete
                       </button>
                       <button
-                          className="cancel-btn"
+                          className="cancel-btn-calender"
                           onClick={() => setModalOpen(false)}
                       >
                         Close
