@@ -1,5 +1,30 @@
+.calendar-header,
+.calendar-day-name,
+.day-number,
+.main-content{
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.modal-calender {
+    background: #e3e3e3;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 400px;
+    max-width: 90%;
+    height: 450px;
+}
+
+.modal-calender h2 {
+    font-style: normal;
+    font-family: Cambria, serif;
+    font-size: 30px;
+}
+
 .calendar-app {
-    margin: 0 100px 30px 290px;
+    margin: 0 150px 30px 290px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     box-sizing: border-box;
@@ -15,32 +40,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    padding: 0 10px;
+    margin-bottom: 8px;
 }
 
 .calendar-header div {
-    font-size: 4rem;
-    font-style: normal;
-    font-weight: 200;
+    font-size: 2rem;
+    font-weight: 400;
     color: #eaeaea;
-}
-
-.calendar-header button {
-    margin-top: 8px;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    background-color: grey;
-    color: black;
-}
-
-.calendar-header button:hover {
-    background: #b2b2b2;
+    flex: 1;
+    text-align: center;
 }
 
 .calendar-days-row {
@@ -273,22 +281,80 @@
 .day-menu-dropup button:hover {
     background-color: #f5f5f5;
 }
+
 .menu-icon {
     width: 10px;
     height: auto;
 }
-.color-option.clear-option {
-    color: black;
-    padding: 0;
 
+.color-option {
+    color: black;
+    background-color: whitesmoke;
+    padding: 0;
 }
+
 .form-group textarea {
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 7px rgba(0,0,0,0.6);
     border: 1px solid #ddd;
     width: 200px;
     height: 100px;
+    margin: 5px;
+}
+
+.form-group label {
+    margin-top: 10px;
 }
 
 .cancel-btn:hover {
     background: #ddd;
+}
+
+.modal-actions2 {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 60px;
+    transition: background-color 0.3s;
+}
+
+.modal-actions2 button {
+    background: #f0f0f0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    color: #333;
+}
+
+textarea.note-preview {
+    width: 100%;
+    min-height: 100px;
+    border: none;
+    background: transparent;
+    resize: none;
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 5px;
+    font-family: inherit;
+}
+
+textarea.note-preview:focus {
+    visibility: hidden;
+}
+
+.calendar-day-name {
+    flex: 1;
+    text-align: center;
+}
+
+.calendar-nav-button {
+    background-color: rgba(0, 0, 0, 0.82);
+    height: 37px;
+    cursor: pointer;
+    padding: 0 10px;
+    font-weight: bold;
+    user-select: none;
+    color: white;
+    align-content: center;
+}
+
+.calendar-nav-button:hover {
+    background-color: rgba(40, 40, 40, 0.68);
 }

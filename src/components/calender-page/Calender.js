@@ -136,8 +136,6 @@ function CalendarPage() {
         throw new Error('Failed to save calendar note');
       }
 
-      const savedNote = await response.json();
-      console.log('Note saved:', savedNote);
     } catch (error) {
       console.error('Error saving calendar note:', error);
     }
@@ -176,7 +174,6 @@ function CalendarPage() {
       });
 
       setModalOpen(false);
-      console.log('Note deleted for', dayKey);
     } catch (error) {
       console.error('Error deleting calendar note:', error);
     }
@@ -184,9 +181,7 @@ function CalendarPage() {
 
   const renderHeader = () => (
       <div className="calendar-header">
-        <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>&lt;</button>
         <div>{format(currentMonth, 'MMMM yyyy')}</div>
-        <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>&gt;</button>
       </div>
   );
 
@@ -194,6 +189,17 @@ function CalendarPage() {
     const days = [];
     const dateFormat = 'EEE';
     const startDate = startOfWeek(currentMonth);
+
+    days.push(
+        <div
+            className="calendar-nav-button"
+            key="prev-month"
+            onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+        >
+          &lt;
+        </div>
+    );
+
     for (let i = 0; i < 7; i++) {
       days.push(
           <div className="calendar-day-name" key={i}>
@@ -201,6 +207,17 @@ function CalendarPage() {
           </div>
       );
     }
+
+    days.push(
+        <div
+            className="calendar-nav-button"
+            key="next-month"
+            onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+        >
+          &gt;
+        </div>
+    );
+
     return <div className="calendar-days-row">{days}</div>;
   };
 
@@ -291,7 +308,7 @@ function CalendarPage() {
 
         {modalOpen && selectedDate && (
             <div className="modal-backdrop" onClick={() => setModalOpen(false)}>
-              <div className="modal" onClick={e => e.stopPropagation()}>
+              <div className="modal-calender" onClick={e => e.stopPropagation()}>
                 <h2>{format(new Date(selectedDate), 'MMMM d, yyyy')}</h2>
                 <div className="modal-content">
                   <div className="form-group">
@@ -353,7 +370,7 @@ function CalendarPage() {
                           </button>
                       ))}
                     </div>
-                    <div className="modal-actions">
+                    <div className="modal-actions2">
                       <button
                           className="save-btn"
                           onClick={() => {

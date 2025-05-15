@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../Sidebar';
 import './NotesPage.css';
-import colorIcon from '../../icons/color-icon.png';
-import trashIcon from '../../icons/trash-icon.png';
-import dateIcon from '../../icons/date-icon.png';
+import { AiOutlinePlus, AiOutlineEdit } from "react-icons/ai";
 
-const generateNotesColor = () => {
-    const r = Math.floor(Math.random() * 100 + 100).toString(16).padStart(2, '0');
-    const g = Math.floor(Math.random() * 100 + 100).toString(16).padStart(2, '0');
-    const b = Math.floor(Math.random() * 120 + 100).toString(16).padStart(2, '0');
-    return `#${r}${g}${b}`;
-};
+const COLOR_PALETTE = [
+    '#a47a34',
+    '#9f5832',
+    '#5b3088',
+    '#E2F0CB',
+    '#2d70c2',
+    '#5f8d2f'
+];
 
 const NotesPage = () => {
     const [notes, setNotes] = useState([]);
@@ -18,6 +18,10 @@ const NotesPage = () => {
     const [loading, setLoading] = useState(true);
     const textareaRefs = useRef([]);
     const dropdownRefs = useRef([]);
+    const [editableNotes, setEditableNotes] = useState([]);
+
+    const [showColorPalette, setShowColorPalette] = useState(false);
+    const [selectedColor, setSelectedColor] = useState(COLOR_PALETTE[0]);
 
     useEffect(() => {
         const fetchNotes = async () => {
@@ -61,15 +65,6 @@ const NotesPage = () => {
         };
     }, []);
 
-    useEffect(() => {
-        textareaRefs.current.forEach((textarea) => {
-            if (textarea) {
-                textarea.style.height = "auto";
-                textarea.style.height = `${textarea.scrollHeight}px`;
-            }
-        });
-    }, [notes]);
-
     const saveNote = async (index) => {
         try {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -102,11 +97,11 @@ const NotesPage = () => {
         }
     };
 
-    const addNewNote = async () => {
+    const addNewNote = async (color = selectedColor) => {
         const newNote = {
             title: 'New Note',
             text: '',
-            color: generateNotesColor(),
+            color: color,
             date: new Date().toISOString().split('T')[0],
         };
 
@@ -129,9 +124,32 @@ const NotesPage = () => {
 
             const savedNote = await response.json();
             setNotes(prevNotes => [...prevNotes, savedNote]);
+            setShowColorPalette(false);
         } catch (error) {
             console.error('Error creating note:', error);
         }
+    };
+
+    const toggleColorPalette = () => {
+        setShowColorPalette(!showColorPalette);
+    };
+
+    const handleColorSelect = (color) => {
+        setSelectedColor(color);
+        addNewNote(color);
+    };
+
+    const toggleEditMode = (index) => {
+        setEditableNotes(prev => {
+            const newEditable = [...prev];
+            newEditable[index] = !newEditable[index];
+            return newEditable;
+        });
+    };
+
+    const handleBlur = (index) => {
+        saveNote(index);
+        toggleEditMode(index);
     };
 
     const deleteNote = async (index) => {
@@ -158,33 +176,10 @@ const NotesPage = () => {
         }
     };
 
-    const handleTitleChange = (index, value) => {
-        const updatedNotes = [...notes];
-        updatedNotes[index].title = value;
-        setNotes(updatedNotes);
-    };
-
     const handleTextChange = (index, value) => {
         const updatedNotes = [...notes];
         updatedNotes[index].text = value;
         setNotes(updatedNotes);
-    };
-
-    const handleColorChange = (index, color) => {
-        const updatedNotes = [...notes];
-        updatedNotes[index].color = color;
-        setNotes(updatedNotes);
-        setOpenDropdown(null);
-    };
-
-    const handleDateChange = (index, date) => {
-        const updatedNotes = [...notes];
-        updatedNotes[index].date = date;
-        setNotes(updatedNotes);
-    };
-
-    const toggleDropdown = (index) => {
-        setOpenDropdown(openDropdown === index ? null : index);
     };
 
     if (loading) {
@@ -194,71 +189,88 @@ const NotesPage = () => {
     return (
         <div className="notesPage-app">
             <Sidebar changeBackgroundColor={() => true} />
+            <div className="notes-title">
+                Notes
+                <div className="add-note-container">
+                    <button
+                        className="add-note-btn"
+                        onClick={toggleColorPalette}
+                        aria-label="Add Note"
+                    >
+                        <AiOutlinePlus />
+                    </button>
+                    {showColorPalette && (
+                        <div className="color-palette">
+                            {COLOR_PALETTE.map((color, index) => (
+                                <button
+                                    key={index}
+                                    className="color-option"
+                                    style={{ backgroundColor: color }}
+                                    onClick={() => handleColorSelect(color)}
+                                    aria-label={`Select color ${index + 1}`}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
             <div className="notes-grid">
                 {notes.map((note, index) => (
-                    <div
-                        key={note.id || index}
-                        className="note"
-                        style={{ backgroundColor: note.color }}
-                    >
-                        <div className="note-header">
-                            <input
-                                className="title-input"
-                                value={note.title || ''}
-                                onChange={(e) => handleTitleChange(index, e.target.value)}
-                                placeholder="Note"
-                            />
-                            <div className="note-actions" ref={el => dropdownRefs.current[index] = el}>
+                       <div
+                            key={note.id || index}
+                            className="note"
+                            style={{ backgroundColor: note.color }}
+                        >
+                       <textarea
+                           className={`note-textarea ${editableNotes[index] ? 'editable' : ''}`}
+                           ref={(el) => {
+                               textareaRefs.current[index] = el;
+                               if (editableNotes[index] && el) {
+                                   setTimeout(() => el.focus(), 0);
+                               }
+                           }}
+                           value={note.text || ''}
+                           placeholder={editableNotes[index] ? "Start typing..." : ""}
+                           onChange={(e) => handleTextChange(index, e.target.value)}
+                           spellCheck="false"
+                           readOnly={!editableNotes[index]}
+                           onBlur={() => {
+                               if (editableNotes[index]) {
+                                   handleBlur(index);
+                               }
+                           }}
+                       />
+                           <div className="note-controls">
                                 <button
-                                    className="dropdown-toggle"
-                                    onClick={() => toggleDropdown(index)}
-                                >
-                                    ⋮
+                                        className="delete-note-btn"
+                                        onClick={() => {
+                                        const confirmed = window.confirm('Are you sure you want to delete this note?');
+                                        if (confirmed) {
+                                        deleteNote(index);
+                                        }
+                                        }}
+                                        aria-label="Delete note"
+                                        >
+                                    <span
+                                        style={{
+                                            display: 'inline-block',
+                                            transform: 'rotate(90deg) scaleX(0.6)',
+                                            fontSize: '1rem',
+                                            lineHeight: '1',
+                                          }}
+                                           >
+                                          |
+                                    </span>
                                 </button>
-                                {openDropdown === index && (
-                                    <div className="dropdown-menu-notes">
-                                        <label className="color-text-label">
-                                            <img src={colorIcon} alt="Color Icon" className="color-icon" />
-                                            Color
-                                            <input
-                                                type="color"
-                                                value={note.color || '#ffffff'}
-                                                onChange={(e) => handleColorChange(index, e.target.value)}
-                                                className="hidden-color-input"
-                                            />
-                                        </label>
-                                        <label className="delete-option" onClick={() => deleteNote(index)}>
-                                            <img src={trashIcon} alt="Delete Note" className="delete-icon" />
-                                            Delete Note
-                                        </label>
-                                        <label className="date-option">
-                                            <img src={dateIcon} alt="Date Icon" className="date-icon" />
-                                            Date
-                                            <input
-                                                type="date"
-                                                value={note.date || ''}
-                                                onChange={(e) => handleDateChange(index, e.target.value)}
-                                                className="date-input"
-                                            />
-                                        </label>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        <textarea
-                            ref={(el) => (textareaRefs.current[index] = el)}
-                            value={note.text || ''}
-                            onChange={(e) => handleTextChange(index, e.target.value)}
-                            placeholder="Start typing your note..."
-                            spellCheck="false"
-                        />
-                        <button onClick={() => saveNote(index)} className="save-text-btn">Save</button>
+                                <button
+                                    className="edit-note-btn"
+                                    onClick={() => toggleEditMode(index)}
+                                    >
+                                    <AiOutlineEdit className="edit-icon" />
+                                </button>
+                           </div>
                     </div>
                 ))}
-
-                <button className="add-note-btn" onClick={addNewNote}>
-                    +
-                </button>
             </div>
         </div>
     );

@@ -24,6 +24,14 @@ const Navbar = ({ onBoardSelect }) => {
     const toggleFriendsDropdown = () => setIsFriendsDropdownOpen(!isFriendsDropdownOpen);
     const [currentBoardId, setCurrentBoardId] = useState(null);
     const [boardUsers, setBoardUsers] = useState([]);
+    const { userEmail } = useUser();
+    const [username, setUsername] = useState('');
+
+    const [avatarData, setAvatarData] = useState({
+        backgroundColor: '#3f51b5',
+        initials: '',
+        imageUrl: ''
+    });
 
     useEffect(() => {
         const fetchBoards = async () => {
@@ -32,6 +40,24 @@ const Navbar = ({ onBoardSelect }) => {
                 if (!token) {
                     console.error("No token found");
                     return;
+                }
+                const decoded = JSON.parse(atob(token.split('.')[1]));
+                const currentUsername = decoded.sub || decoded.username;
+                setUsername(currentUsername);
+
+                const userResponse = await fetch('https://email-verification-production.up.railway.app/api/user/avatar', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    setAvatarData({
+                        backgroundColor: userData.avatarBackgroundColor || '#3f51b5',
+                        initials: userData.avatarInitials || '',
+                        imageUrl: userData.avatarImageUrl || ''
+                    });
                 }
 
                 const response = await fetch('https://email-verification-production.up.railway.app/api/boards', {
@@ -65,7 +91,6 @@ const Navbar = ({ onBoardSelect }) => {
     const handleLogout = () => {
         localStorage.removeItem('token');
         sessionStorage.removeItem('token');
-        console.log('token removed');
         navigate('/auth/login');
     };
 
@@ -104,7 +129,6 @@ const Navbar = ({ onBoardSelect }) => {
                 body: JSON.stringify(newBoard),
             });
             const createdBoard = await response.json();
-            console.log('Created new board:', createdBoard);
             updateUserData();
             setSelectedBoardTitle(createdBoard.title || `Board ${createdBoard.position}`);
             if (onBoardSelect) {
@@ -123,7 +147,6 @@ const Navbar = ({ onBoardSelect }) => {
                 console.error("No authentication token found");
                 return;
             }
-            console.log(`Fetching board at position ${position}...`);
             const boardResponse = await fetch(`https://email-verification-production.up.railway.app/api/boards/${position}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -144,7 +167,6 @@ const Navbar = ({ onBoardSelect }) => {
 
             setBoardUsers([]);
 
-            console.log(`Fetching users for board ID ${boardData.id}...`);
             const usersResponse = await fetch(`https://email-verification-production.up.railway.app/api/boards/${boardData.id}/users`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -160,7 +182,6 @@ const Navbar = ({ onBoardSelect }) => {
             } else {
                 const usersData = await usersResponse.json();
                 setBoardUsers(usersData);
-                console.log('Users on this board:', usersData);
             }
             if (onBoardSelect) {
                 onBoardSelect(position);
@@ -402,14 +423,24 @@ const Navbar = ({ onBoardSelect }) => {
                 <div className="board-members-display">
                     {boardUsers.length > 0 && (
                         <div className="user-list">
-                            {boardUsers.map((username, index) => (
-                                <span
+                            {boardUsers.map((user, index) => (
+                                <div
                                     key={index}
-                                    className="user-icon"
-                                    data-tooltip={username}
+                                    className="user-avatar-container"
+                                    data-tooltip={user.username}
                                 >
-            {username[0].toUpperCase()}
-        </span>
+                                    <div
+                                        className="user-avatar"
+                                        style={{
+                                            backgroundColor: user.avatarBackgroundColor || '#3f51b5',
+                                            backgroundImage: user.avatarImageUrl ? `url(${user.avatarImageUrl})` : 'none',
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center'
+                                        }}
+                                    >
+                                        {!user.avatarImageUrl && (user.avatarInitials || user.username.substring(0, 2).toUpperCase())}
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     )}
@@ -455,10 +486,22 @@ const Navbar = ({ onBoardSelect }) => {
 
             <div className="navbar-item-avatar" onClick={toggleUserDropdown}>
                 <button className="avatar-button">
-                    <UserAvatar />
+                    <UserAvatar
+                        backgroundColor={avatarData.backgroundColor}
+                        initials={avatarData.initials || (username ? username.substring(0, 2).toUpperCase() : '')}
+                        imageUrl={avatarData.imageUrl}
+                        size="small"
+                    />
                 </button>
                 {isUserDropdownOpen && (
                     <ul className="dropdown-menu user-dropdown">
+                        <div className="avatar-dropdown-header">
+                            <UserAvatar size="large" showName={true} />
+                            <div className="avatar-user-info">
+                                {username && <p className="user-username">{username}</p>}
+                                {userEmail && <p className="user-email">{userEmail}</p>}
+                            </div>
+                        </div>
                         <li className="dropdown-item" onClick={() => navigate('/profile')}>
                             <img src={profileIcon} alt="Profile" className="dropdown-icon-profile" />
                             Profile

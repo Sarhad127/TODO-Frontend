@@ -67,8 +67,30 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
 
             <strong>{todo.text}</strong>
 
-            {todo.tag?.text && (
-                <div style={{ fontSize: '10px', marginTop: '4px', color: '#666' }}>
+            {(todo.tag?.text || todo.tag?.avatarInitials || todo.tag?.avatarImageUrl) && (
+                <div style={{ display: 'flex', alignItems: 'center', marginTop: '6px', fontSize: '10px', color: '#666' }}>
+                    {(todo.tag.avatarImageUrl || todo.tag.avatarInitials) && (
+                        <div
+                            style={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: '50%',
+                                backgroundColor: todo.tag.avatarBackgroundColor || '#ccc',
+                                backgroundImage: todo.tag.avatarImageUrl ? `url(${todo.tag.avatarImageUrl})` : 'none',
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: 'white',
+                                fontSize: '10px',
+                                fontWeight: 'bold',
+                                marginRight: 6,
+                            }}
+                        >
+                            {!todo.tag.avatarImageUrl && todo.tag.avatarInitials}
+                        </div>
+                    )}
                     {todo.tag.text}
                 </div>
             )}

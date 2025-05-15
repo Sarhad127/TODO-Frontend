@@ -6,11 +6,14 @@
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
-    margin: 0 170px 30px 290px;
+    margin: 0 0 30px 290px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     box-sizing: border-box;
-    position: fixed;
+    position: absolute;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     cursor: cell;
     background-color: transparent;
 }
@@ -30,20 +33,20 @@
 }
 
 .corner-cell {
-    background-color: #d3d3d3;
+    background-color: rgba(38, 38, 38, 0.89);
     position: sticky;
     left: 0;
     z-index: 3;
 }
 
 .day-header {
-    background-color: #c7c7c7;
+    background-color: rgba(38, 38, 38, 0.89);
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #e0e0e0;
     position: sticky;
+    color: whitesmoke;
     top: 0;
     z-index: 2;
 }
@@ -104,7 +107,7 @@
 }
 
 .block-content strong {
-    color: #002250;
+    color: #000000;
     font-weight: bold;
     font-size: 15px;
     font-style: normal;
@@ -293,7 +296,7 @@ input[type="color"] {
     height: 30px;
     border-radius: 50%;
     background-color: transparent;
-    font-size: 20px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -303,15 +306,17 @@ input[type="color"] {
 
 .settings-button:hover {
     background-color: transparent;
+    transform: scale(1.1);
 }
 
 .print-button {
     margin: 0;
     padding: 0;
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 32px;
     border-radius: 50%;
     background-color: transparent;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -325,6 +330,69 @@ input[type="color"] {
 
 .print-button img {
     margin-bottom: 2px;
-    width: 26px;
-    height: 26px;
+    width: 22px;
+    height: 22px;
+}
+.print-button img:hover {
+    transform: scale(1.1);
+}
+
+@media print {
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    .schedule-container,
+    .schedule-container * {
+        visibility: visible;
+    }
+
+    .schedule-container {
+        position: static !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        overflow: visible !important;
+        transform: scale(1);
+        transform-origin: top left;
+    }
+
+    .schedule-grid {
+        transform: scale(0.6);
+        transform-origin: top left;
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 auto !important;
+        box-sizing: border-box;
+        page-break-inside: avoid;
+    }
+
+    .schedule-grid,
+    .schedule-grid * {
+        border: 1px solid #000 !important;
+        box-sizing: border-box;
+    }
+
+    .schedule-grid td,
+    .schedule-grid th {
+        border: 2px solid #000 !important;
+        padding: 4px !important;
+    }
+
+    @page {
+        size: A4 landscape;
+        margin: 10mm;
+    }
+
+    .modal, .button-container, .print-button, .settings-button {
+        display: none !important;
+    }
 }
