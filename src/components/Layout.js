@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Navbar from './navbar/Navbar';
 import Sidebar from './Sidebar';
 import { useUser } from '../context/UserContext';
-
+import ChatBox from './boards-page/ChatBox';
 const Layout = ({ children }) => {
     const { updateUserData } = useUser();
     const [currentBoard, setCurrentBoard] = useState(null);
@@ -44,6 +44,7 @@ const Layout = ({ children }) => {
             <div className="main-content">
                 {childrenWithProps}
             </div>
+            <ChatBox boardId={currentBoard?.id} />
         </div>
     );
 };

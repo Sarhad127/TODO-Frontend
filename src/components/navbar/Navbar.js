@@ -8,6 +8,7 @@ import logoutIcon from '../../icons/logout.png';
 import tasksIcon from '../../icons/tasks.png'
 import friendsIcon from '../../icons/friends.png'
 import friendsSubmit from '../../icons/friend-submit.png'
+import ChatBox from "../boards-page/ChatBox";
 
 const Navbar = ({ onBoardSelect }) => {
     const navigate = useNavigate();
@@ -496,6 +497,7 @@ const Navbar = ({ onBoardSelect }) => {
                     )}
                 </div>
             </ul>
+            {currentBoardId && <ChatBox boardId={currentBoardId} />}
             <div className="testing-icon-removal">
             {boardUsers.length > 0 && currentBoardId && (
                 <img
@@ -533,7 +535,6 @@ const Navbar = ({ onBoardSelect }) => {
                     </ul>
                 )}
             </div>
-
             <div className="navbar-item-avatar" onClick={toggleUserDropdown}>
                 <button className="avatar-button">
                     <UserAvatar
