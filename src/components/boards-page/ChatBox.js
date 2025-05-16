@@ -109,7 +109,7 @@ function ChatBox({ boardId }) {
     return (
         <div className="navbar-chat-container">
             <button className="navbar-chat-toggle" onClick={() => setIsOpen(!isOpen)}>
-                Chat <span className="dropdown-arrow">{isOpen ? '▲' : '▼'}</span>
+                Chat <span className="dropdown-arrow"></span>
             </button>
             {isOpen && (
                 <div className="navbar-chat-dropdown">
@@ -129,6 +129,7 @@ function ChatBox({ boardId }) {
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
                             placeholder="Type your message..."
+                            spellCheck={false}
                         />
                         <button
                             className="chat-send-btn"
