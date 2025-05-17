@@ -13,7 +13,7 @@ function ChatBox({ boardId }) {
     const connectWebSocket = () => {
         if (stompClientRef.current?.connected) return;
 
-        const socket = new SockJS('http://localhost:8080/webSocket');
+        const socket = new SockJS('https://email-verification-production.up.railway.app/webSocket');
         const stompClient = new Client({
             webSocketFactory: () => socket,
             reconnectDelay: 5000,
@@ -62,7 +62,7 @@ function ChatBox({ boardId }) {
     const fetchInitialMessages = async () => {
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
         try {
-            const res = await fetch(`http://localhost:8080/api/boards/${boardId}/chat`, {
+            const res = await fetch(`https://email-verification-production.up.railway.app/api/boards/${boardId}/chat`, {
                 headers: { 'Authorization': `Bearer ${token}` },
             });
             if (res.ok) {
