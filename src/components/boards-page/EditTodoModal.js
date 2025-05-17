@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import UserAvatar from "../UserAvatar";
 
 export function EditModal({
@@ -9,6 +9,22 @@ export function EditModal({
                               cancelAddTodo,
                               boardUsers
                           }) {
+
+    const EditTodoModal = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (EditTodoModal.current && !EditTodoModal.current.contains(event.target)) {
+                cancelAddTodo();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     if (!selectedTodo) return null;
 
     const handleTagTextChange = (e) => {
@@ -88,7 +104,7 @@ export function EditModal({
 
     return (
         <div className="modal-overlay">
-            <div className="modal">
+            <div className="modal" ref={EditTodoModal}>
                 <h3>Edit Card</h3>
                 <div className="board-users-container">
                     {boardUsers.length > 1 && boardUsers.map(user => (
@@ -170,12 +186,12 @@ export function EditModal({
                     </div>
                 </div>
 
-                <div className="modal-buttons">
-                    <button className="save-btn" onClick={saveChanges}>Save</button>
-                    <button className="delete-btn" onClick={() => deleteTodo(selectedTodo)}>
+                <div className="modal-buttons-todoBoard">
+                    <button className="save-btn-todoBoard" onClick={saveChanges}>Save</button>
+                    <button className="delete-btn-todoBoard" onClick={() => deleteTodo(selectedTodo)}>
                         Delete
                     </button>
-                    <button className="cancel-btn" onClick={cancelAddTodo}>
+                    <button className="cancel-btn-todoBoard" onClick={cancelAddTodo}>
                         Cancel
                     </button>
                 </div>

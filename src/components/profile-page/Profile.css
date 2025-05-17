@@ -89,16 +89,11 @@
     transition: border 0.3s ease;
 }
 
-.username-formGroup input:focus {
-    border-color: #3f51b5;
-    outline: none;
-}
-
 .username-formGroup button {
     margin-top: 4px;
     width: 100%;
     padding: 12px;
-    background-color: #333333;
+    background-color: #3f51b5;
     color: white;
     border: none;
     border-radius: 6px;
@@ -108,7 +103,7 @@
 }
 
 .username-formGroup button:hover {
-    background-color: rgba(59, 59, 59, 0.91);
+    background-color: #303f9f;
 }
 
 .username-success {
