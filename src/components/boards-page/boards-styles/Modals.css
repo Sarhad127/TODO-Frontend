@@ -70,38 +70,40 @@ h4,
     margin-top: 10px;
 }
 
-.modal-buttons {
+.modal-buttons-todoBoard {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     margin-top: 15px;
     transition: background-color 0.3s;
 }
 
-.modal-buttons button {
+.modal-buttons-todoBoard button {
     margin:4px;
-    border: none;
     background: #f0f0f0;
     color: #333;
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s;
+    width: 90px;
+    height: 30px;
+    border: 1px black solid;
 }
 
-.save-btn:hover {
+.save-btn-todoBoard:hover {
     background: rgba(101, 162, 76, 0.87);
 }
 
-.delete-btn:hover {
+.delete-btn-todoBoard:hover {
     background: rgba(220, 86, 86, 0.76);
 }
 
-.modal-buttons button.cancel-btn {
+.cancel-btn-todoBoard {
     background: #f0f0f0;
     color: #333;
 }
 
-.modal-buttons button.cancel-btn:hover {
-    background: #ddd;
+.cancel-btn-todoBoard:hover {
+    background: #b0b0b0;
 }
 
 .new-task-input {

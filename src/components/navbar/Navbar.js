@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import './Navbar.css';
 import UserAvatar from '../UserAvatar';
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import logoutIcon from '../../icons/logout.png';
 import tasksIcon from '../../icons/tasks.png'
 import friendsIcon from '../../icons/friends.png'
 import friendsSubmit from '../../icons/friend-submit.png'
+import ChatBox from "../boards-page/ChatBox";
 
 const Navbar = ({ onBoardSelect }) => {
     const navigate = useNavigate();
@@ -26,7 +27,14 @@ const Navbar = ({ onBoardSelect }) => {
     const [boardUsers, setBoardUsers] = useState([]);
     const { userEmail } = useUser();
     const [username, setUsername] = useState('');
-
+    const settingsDropdownRef = useRef(null);
+    const dropdownRef = useRef(null);
+    const boardsDropdownRef = useRef(null);
+    const friendsDropdownRef = useRef(null);
+    const toggleBoardsDropdown = () => setIsBoardsDropdownOpen(!isBoardsDropdownOpen);
+    const toggleUserDropdown = () => {
+        setIsUserDropdownOpen((prev) => !prev);
+    };
     const [avatarData, setAvatarData] = useState({
         backgroundColor: '#3f51b5',
         initials: '',
@@ -85,8 +93,52 @@ const Navbar = ({ onBoardSelect }) => {
         }
     }, [userData]);
 
-    const toggleBoardsDropdown = () => setIsBoardsDropdownOpen(!isBoardsDropdownOpen);
-    const toggleUserDropdown = () => setIsUserDropdownOpen(!isUserDropdownOpen);
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                isUserDropdownOpen &&
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target)
+            ) {
+                setIsUserDropdownOpen(false);
+            }
+
+            if (
+                isBoardsDropdownOpen &&
+                boardsDropdownRef.current &&
+                !boardsDropdownRef.current.contains(event.target)
+            ) {
+                setIsBoardsDropdownOpen(false);
+            }
+
+            if (
+                isSettingsDropdownOpen &&
+                settingsDropdownRef.current &&
+                !settingsDropdownRef.current.contains(event.target)
+            ) {
+                setIsSettingsDropdownOpen(false);
+            }
+
+            if (
+                isFriendsDropdownOpen &&
+                friendsDropdownRef.current &&
+                !friendsDropdownRef.current.contains(event.target)
+            ) {
+                setIsFriendsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [
+        isUserDropdownOpen,
+        isBoardsDropdownOpen,
+        isSettingsDropdownOpen,
+        isFriendsDropdownOpen,
+    ]);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -336,7 +388,7 @@ const Navbar = ({ onBoardSelect }) => {
     return (
         <nav className="navbar">
             <ul className="navbar-buttons">
-                <li className="boards-item" onClick={toggleBoardsDropdown}>
+                <li className="boards-item" ref={boardsDropdownRef} onClick={toggleBoardsDropdown}>
                     <button className="navbar-button">
                         Boards <span className="dropdown-arrow">{isBoardsDropdownOpen ? '▲' : '▼'}</span>
                     </button>
@@ -390,7 +442,7 @@ const Navbar = ({ onBoardSelect }) => {
                         ) : (
                             <span className="selected-board-title">{selectedBoardTitle}</span>
                         )}
-                        <div className="board-settings-container">
+                        <div className="board-settings-container" ref={settingsDropdownRef}>
                             <button
                                 className="vertical-dots-button"
                                 onClick={(e) => {
@@ -401,7 +453,7 @@ const Navbar = ({ onBoardSelect }) => {
                                 ⋮
                             </button>
                             {isSettingsDropdownOpen && (
-                                <div className="settings-dropdown">
+                                <div className="settings-dropdown" >
                                     <div
                                         className="dropdown-item"
                                         onClick={() => {
@@ -446,6 +498,7 @@ const Navbar = ({ onBoardSelect }) => {
                     )}
                 </div>
             </ul>
+            {currentBoardId && boardUsers.length > 1 && <ChatBox boardId={currentBoardId} />}
             <div className="testing-icon-removal">
             {boardUsers.length > 0 && currentBoardId && (
                 <img
@@ -457,7 +510,7 @@ const Navbar = ({ onBoardSelect }) => {
                 />
             )}
             </div>
-            <div className="friends-dropdown-wrapper">
+            <div className="friends-dropdown-wrapper" ref={friendsDropdownRef}>
                 <img
                     src={friendsIcon}
                     alt="Friends Icon"
@@ -483,7 +536,6 @@ const Navbar = ({ onBoardSelect }) => {
                     </ul>
                 )}
             </div>
-
             <div className="navbar-item-avatar" onClick={toggleUserDropdown}>
                 <button className="avatar-button">
                     <UserAvatar
@@ -494,7 +546,7 @@ const Navbar = ({ onBoardSelect }) => {
                     />
                 </button>
                 {isUserDropdownOpen && (
-                    <ul className="dropdown-menu user-dropdown">
+                    <ul ref={dropdownRef} className="dropdown-menu user-dropdown">
                         <div className="avatar-dropdown-header">
                             <UserAvatar size="large" showName={true} />
                             <div className="avatar-user-info">

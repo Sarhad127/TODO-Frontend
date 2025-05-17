@@ -188,31 +188,6 @@
     box-shadow: 0 0 0 2px rgba(144, 202, 249, 0.2);
 }
 
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-    transition: background-color 0.3s;
-}
-
-.modal-actions button {
-    background: #f0f0f0;
-    color: #333;
-}
-
-.save-btn-schedule:hover {
-    background: rgba(101, 162, 76, 0.87);
-}
-.cancel-btn-schedule:hover {
-    background: #ddd;
-    color: #333;
-}
-
-.delete-btn-schedule:hover {
-    background: rgba(220, 86, 86, 0.76);
-}
-
 input[type="color"] {
     width: 100%;
     height: 40px;
@@ -395,4 +370,36 @@ input[type="color"] {
     .modal, .button-container, .print-button, .settings-button {
         display: none !important;
     }
+}
+
+.modal-actions-schedule-settings {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.modal-actions-schedule-settings button {
+    margin:4px;
+    background: #f0f0f0;
+    color: #333;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    width: 90px;
+    height: 30px;
+    border: 1px black solid;
+    font-size: 12px;
+}
+
+.save-btn-schedule:hover {
+    background: rgba(101, 162, 76, 0.87);
+}
+.cancel-btn-schedule:hover {
+    background: #b0b0b0;
+}
+
+.delete-btn-schedule:hover {
+    background: rgba(220, 86, 86, 0.76);
 }
