@@ -498,7 +498,7 @@ const Navbar = ({ onBoardSelect }) => {
                     )}
                 </div>
             </ul>
-            {currentBoardId && boardUsers.length > 1 && <ChatBox boardId={currentBoardId} />}
+            {currentBoardId && boardUsers.length > 0 && <ChatBox boardId={currentBoardId} />}
             <div className="testing-icon-removal">
             {boardUsers.length > 0 && currentBoardId && (
                 <img
