@@ -13,13 +13,13 @@ function ChatBox({ boardId }) {
     const connectWebSocket = () => {
         if (stompClientRef.current?.connected) return;
 
-        const socket = new SockJS('http://localhost:8080/ws');
+        const socket = new SockJS('http://localhost:8080/webSocket');
         const stompClient = new Client({
             webSocketFactory: () => socket,
             reconnectDelay: 5000,
             onConnect: () => {
                 setConnected(true);
-                stompClient.subscribe(`/topic/chat/${boardId}`, (msg) => {
+                stompClient.subscribe(`/board/chat/${boardId}`, (msg) => {
                     const received = JSON.parse(msg.body);
                     const normalized = {
                         text: received.message || received.text || '',
