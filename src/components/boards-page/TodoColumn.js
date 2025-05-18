@@ -356,10 +356,11 @@ function TodoColumn({
         >
             <div
                 style={{
-                    height: '10px',
-                    backgroundColor: currentTitleColor,
+                    height: currentTitleColor === 'transparent' ? '0px' : '10px',
+                    backgroundColor: currentTitleColor === 'transparent' ? 'transparent' : currentTitleColor,
                     borderTopLeftRadius: '3px',
                     borderTopRightRadius: '3px',
+                    transition: 'height 0.2s ease'
                 }}
             />
             <div className="column-header">
@@ -394,13 +395,20 @@ function TodoColumn({
                                     <div
                                         key={color}
                                         className={`color-cell${color === currentTitleColor ? ' selected' : ''}`}
-                                        style={{ backgroundColor: color }}
+                                        style={{
+                                            backgroundColor: color === 'transparent' ? 'white' : color,
+                                            border: color === 'transparent' ? '1px dashed #ccc' : 'none'
+                                        }}
                                         onClick={() => {
                                             handleColorChange(color);
                                             setShowColorDropdown(false);
                                         }}
-                                        title={`Set color ${color}`}
-                                    />
+                                        title={color === 'transparent' ? 'Remove color' : `Set color ${color}`}
+                                    >
+                                        {color === 'transparent' && (
+                                            <span style={{ color: '#999', fontSize: '12px' }}>×</span>
+                                        )}
+                                    </div>
                                 ))}
                             </div>
                         )}
