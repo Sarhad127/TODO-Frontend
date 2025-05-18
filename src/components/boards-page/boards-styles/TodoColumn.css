@@ -164,3 +164,40 @@
     height: 20px;
     border: 1px solid #ddd;
 }
+
+.todo-column {
+    position: relative;
+    padding-bottom: 50px;
+}
+
+.color-picker-container {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 6px;
+    padding: 4px 6px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.color-cell {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 3px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.color-cell:hover {
+    transform: scale(1.2);
+    border-color: #555;
+}
+
+.color-cell.selected {
+    border-color: black;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+}

@@ -6,6 +6,17 @@ import {FaTrash} from "react-icons/fa";
 
 const ItemType = 'TODO';
 const ColumnType = 'COLUMN';
+
+const presetColors = [
+    '#3498db',
+    '#e74c3c',
+    '#2ecc71',
+    '#f1c40f',
+    '#9b59b6',
+    '#e67e22',
+    '#7f8c8d',
+];
+
 function TodoColumn({
                         title,
                         columnName,
@@ -23,6 +34,61 @@ function TodoColumn({
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [editedTitle, setEditedTitle] = useState(title);
     const { userData } = useUser();
+
+    const columnData = allColumns[columnName];
+    const currentTitleColor = columnData?.titleColor || '#3498db';
+
+    const handleColorChange = async (color) => {
+        if (color === currentTitleColor) return;
+
+        const updatedColumns = {
+            ...allColumns,
+            [columnName]: {
+                ...columnData,
+                titleColor: color,
+            }
+        };
+        setAllColumns(updatedColumns);
+
+        let token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) {
+            console.error('No authentication token found');
+            return;
+        }
+
+        try {
+            const boardId = currentBoardId;
+            if (!boardId) {
+                console.error('Board ID not found in user data');
+                return;
+            }
+
+            const response = await fetch(
+                `http://localhost:8080/auth/boards/${boardId}/columns/${columnData.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        title: columnData.title,
+                        titleColor: color,
+                    }),
+                }
+            );
+
+            if (response.ok) {
+                console.log('Column color updated successfully');
+            } else {
+                console.error('Failed to update column color on backend');
+                setAllColumns(allColumns);
+            }
+        } catch (error) {
+            console.error('Error updating column color:', error);
+            setAllColumns(allColumns);
+        }
+    };
 
     const handleTitleSave = async () => {
         setIsEditingTitle(false);
@@ -271,6 +337,14 @@ function TodoColumn({
             className="todo-column"
             style={{ opacity: isDragging ? 0.5 : 1 }}
         >
+            <div
+                style={{
+                    height: '10px',
+                    backgroundColor: currentTitleColor,
+                    borderTopLeftRadius: '3px',
+                    borderTopRightRadius: '3px',
+                }}
+            />
             <div className="column-header">
                 {isEditingTitle ? (
                     <input
@@ -317,6 +391,18 @@ function TodoColumn({
             >
                 <span>+</span>
             </button>
+
+            <div className="color-picker-container">
+                {presetColors.map((color) => (
+                    <div
+                        key={color}
+                        className={`color-cell${color === currentTitleColor ? ' selected' : ''}`}
+                        style={{ backgroundColor: color }}
+                        onClick={() => handleColorChange(color)}
+                        title={`Set color ${color}`}
+                    />
+                ))}
+            </div>
         </div>
     );
 }
