@@ -19,7 +19,7 @@
     left: 266px;
     right: 0;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: visible;
     height: 100vh;
     pointer-events: auto;
     padding-top: 60px;
