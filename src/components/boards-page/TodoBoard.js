@@ -608,6 +608,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
     return (
         <DndProvider backend={HTML5Backend}>
             <div style={mainContentStyle}>
+                <div className="columns-scroll-wrapper">
                 <div className="columns">
                     {Object.keys(allColumns).map((column, index) => (
                         <TodoColumn
@@ -633,6 +634,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     >
                         <FaPlus size={20} />
                     </div>
+                </div>
                 </div>
                 {showAddColumnModal && (
                     <AddColumnModal

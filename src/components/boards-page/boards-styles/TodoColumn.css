@@ -1,10 +1,21 @@
+.columns-scroll-wrapper {
+    position: fixed;
+    left: 278px;
+    right: 0;
+    bottom: 0;
+    top: 50px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    z-index: 1;
+    padding-top: 18px;
+}
 
 .columns {
     display: flex;
     align-items: flex-start;
     gap: 16px;
-    margin-top: 18px;
-    margin-left: 278px;
+    width: max-content;
+    padding-bottom: 50px;
 }
 
 .todo-column {
