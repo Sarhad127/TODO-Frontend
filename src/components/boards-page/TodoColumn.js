@@ -15,6 +15,7 @@ const presetColors = [
     '#9b59b6',
     '#e67e22',
     '#7f8c8d',
+    'transparent'
 ];
 
 function TodoColumn({
