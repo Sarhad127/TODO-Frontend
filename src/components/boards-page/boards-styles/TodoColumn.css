@@ -211,7 +211,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: #666;
+    color: #232323;;
     padding: 5px;
     margin-right: 5px;
     border-radius: 3px;
@@ -219,8 +219,9 @@
 }
 
 .color-picker-btn:hover {
-    background-color: #f0f0f0;
-    color: #333;
+    opacity: 0.9;
+    background-color: transparent;
+    transform: scale(1.1);
 }
 
 .color-dropdown {
