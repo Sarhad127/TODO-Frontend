@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import TodoItem from './TodoItem';
 import {useUser} from "../../context/UserContext";
-import {FaTrash} from "react-icons/fa";
+import {FaPalette, FaTrash} from "react-icons/fa";
 
 const ItemType = 'TODO';
 const ColumnType = 'COLUMN';
@@ -37,6 +37,22 @@ function TodoColumn({
 
     const columnData = allColumns[columnName];
     const currentTitleColor = columnData?.titleColor || '#3498db';
+
+    const [showColorDropdown, setShowColorDropdown] = useState(false);
+    const colorDropdownRef = useRef(null);
+
+    const toggleColorDropdown = () => setShowColorDropdown(prev => !prev);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (colorDropdownRef.current && !colorDropdownRef.current.contains(event.target)) {
+                setShowColorDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const handleColorChange = async (color) => {
         if (color === currentTitleColor) return;
@@ -362,7 +378,32 @@ function TodoColumn({
                     </h2>
                 )}
 
-                <div className="column-settings-wrapper" ref={dropdownRef}>
+                <div className="column-settings-wrapper">
+                    <div className="color-picker-wrapper" ref={colorDropdownRef}>
+                        <button
+                            className="color-picker-btn"
+                            onClick={toggleColorDropdown}
+                            title="Change column color"
+                        >
+                            <FaPalette size={12} />
+                        </button>
+                        {showColorDropdown && (
+                            <div className="color-dropdown">
+                                {presetColors.map((color) => (
+                                    <div
+                                        key={color}
+                                        className={`color-cell${color === currentTitleColor ? ' selected' : ''}`}
+                                        style={{ backgroundColor: color }}
+                                        onClick={() => {
+                                            handleColorChange(color);
+                                            setShowColorDropdown(false);
+                                        }}
+                                        title={`Set color ${color}`}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
                     <button
                         className="delete-column-btn"
                         onClick={() => removeColumn(columnName)}
@@ -391,20 +432,7 @@ function TodoColumn({
             >
                 <span>+</span>
             </button>
-
-            <div className="color-picker-container">
-                {presetColors.map((color) => (
-                    <div
-                        key={color}
-                        className={`color-cell${color === currentTitleColor ? ' selected' : ''}`}
-                        style={{ backgroundColor: color }}
-                        onClick={() => handleColorChange(color)}
-                        title={`Set color ${color}`}
-                    />
-                ))}
-            </div>
         </div>
     );
 }
-
 export default TodoColumn;
