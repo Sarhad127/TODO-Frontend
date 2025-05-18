@@ -12,7 +12,7 @@
     word-wrap: break-word;
     white-space: normal;
     word-break: break-word;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 .todo-item > strong {
     display: inline-block;

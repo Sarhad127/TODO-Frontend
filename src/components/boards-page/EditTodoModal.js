@@ -136,6 +136,7 @@ export function EditModal({
                     placeholder="Enter Todo text"
                     autoFocus
                     className="new-task-input"
+                    spellCheck={false}
                 />
                 <div className="color-options">
                     {COLOR_OPTIONS.map((color, index) => (

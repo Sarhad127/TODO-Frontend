@@ -253,20 +253,21 @@ function SchedulePage() {
 
     return (
         <div className="schedule-container">
-            <div className="button-container">
-                <button className="print-button" onClick={() => window.print()}>
-                    <img src={printIcon} alt="Print" />
-                </button>
-                <button
-                    className="settings-button"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setSettingsModalOpen(true);
-                    }}
-                >
-                    ⚙️
-                </button>
-            </div>
+            <div className="scroll-wrapper">
+                <div className="button-container">
+                    <button className="print-button" onClick={() => window.print()}>
+                        <img src={printIcon} alt="Print" />
+                    </button>
+                    <button
+                        className="settings-button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setSettingsModalOpen(true);
+                        }}
+                    >
+                        ⚙️
+                    </button>
+                </div>
             <div className="schedule-grid">
                 <div className="corner-cell" style={{ gridRow: 1, gridColumn: 1 }} />
 
@@ -333,6 +334,7 @@ function SchedulePage() {
                     );
                 })}
             </div>
+            </div>
             {modalOpen && (
                 <div className="modal-backdrop" onClick={() => {
                     setModalOpen(false);
@@ -344,6 +346,7 @@ function SchedulePage() {
                             <div className="form-group">
                                 <label>Title</label>
                                 <input
+                                    spellCheck={false}
                                     type="text"
                                     value={formData.title}
                                     onChange={e => setFormData({...formData, title: e.target.value})}
@@ -390,6 +393,7 @@ function SchedulePage() {
                             <div className="form-group">
                                 <label>Description</label>
                                 <input
+                                    spellCheck={false}
                                     type="text"
                                     value={formData.label}
                                     onChange={e => setFormData({...formData, label: e.target.value})}
