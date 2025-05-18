@@ -30,6 +30,7 @@
     display: grid;
     min-width: 1200px;
     padding: 16px;
+    margin-top: 25px;
 }
 
 .schedule-grid-wrapper {
@@ -270,10 +271,11 @@ input[type="color"] {
 }
 
 .button-container {
+    position: absolute;
     height: 20px;
     display: flex;
     gap: 10px;
-    margin-left: 20px;
+    margin-left: 1300px;
     justify-content: end;
     align-content: end;
 }
