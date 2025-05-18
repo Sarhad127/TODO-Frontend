@@ -274,6 +274,7 @@ const Profile = () => {
                     <div className="username-formGroup">
                         <label>New Username:</label>
                         <input
+                            spellCheck={false}
                             className="username-text"
                             type="text"
                             value={username}
@@ -375,6 +376,7 @@ const Profile = () => {
 
                             <label>Initials (optional):</label>
                             <input
+                                spellCheck={false}
                                 type="text"
                                 value={avatarInitials}
                                 onChange={(e) => setAvatarInitials(e.target.value)}
@@ -384,6 +386,7 @@ const Profile = () => {
 
                             <label>Image URL (optional):</label>
                             <input
+                                spellCheck={false}
                                 type="text"
                                 value={avatarImageUrl}
                                 onChange={(e) => setAvatarImageUrl(e.target.value)}

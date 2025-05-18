@@ -344,6 +344,7 @@ function SchedulePage() {
                             <div className="form-group">
                                 <label>Title</label>
                                 <input
+                                    spellCheck={false}
                                     type="text"
                                     value={formData.title}
                                     onChange={e => setFormData({...formData, title: e.target.value})}
@@ -390,6 +391,7 @@ function SchedulePage() {
                             <div className="form-group">
                                 <label>Description</label>
                                 <input
+                                    spellCheck={false}
                                     type="text"
                                     value={formData.label}
                                     onChange={e => setFormData({...formData, label: e.target.value})}

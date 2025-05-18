@@ -313,6 +313,7 @@ function CalendarPage() {
                 <div className="modal-content">
                   <div className="form-group">
                     <textarea
+                        spellCheck={false}
                         value={notes[formatDate(selectedDate)] || ''}
                         onChange={(e) => handleNoteChange(formatDate(selectedDate), e.target.value)}
                         style={{
