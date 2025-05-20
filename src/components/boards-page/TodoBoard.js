@@ -3,14 +3,12 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { FaPlus } from 'react-icons/fa';
 import TodoColumn from './TodoColumn';
-import { AddColumnModal } from './AddColumnModal';
 import { EditModal } from './EditTodoModal';
 import { useUser } from '../../context/UserContext';
 
 const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
     const [allColumns, setAllColumns] = useState({});
     const [selectedTodo, setSelectedTodo] = useState(null);
-    const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
     const [board, setBoard] = useState(null);
     const [boardUsers, setBoardUsers] = useState([]);
@@ -110,7 +108,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
 
         const newColumn = {
             title: titleToUse,
-            titleColor: '#000000',
+            titleColor: 'transparent',
             tasks: [],
         };
 
@@ -169,10 +167,9 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         }
 
         setNewColumnTitle('');
-        setShowAddColumnModal(false);
     };
 
-    const removeColumn = async (columnName) => {                      /* TODO removes tasks and columns */
+    const removeColumn = async (columnName) => {                                   /* TODO removes tasks and columns */
         const isConfirmed = window.confirm('Are you sure you want to delete this column? This will also delete all associated tasks.');
         if (!isConfirmed) {
             return;
@@ -493,64 +490,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         });
     };
 
-    const addNewColumn = async () => {                                              /* TODO creates new column*/
-        if (newColumnTitle.trim()) {
-            const newColumn = {
-                title: newColumnTitle,
-                titleColor: '#000000',
-                tasks: [],
-            };
-
-            let token = localStorage.getItem('token') || sessionStorage.getItem('token');
-            if (!token) {
-                console.error('No authentication token found');
-                return;
-            }
-
-            const boardId = board?.id;
-            if (!boardId) {
-                console.error('Board ID is missing');
-                return;
-            }
-
-            try {
-                const response = await fetch(`http://localhost:8080/auth/boards/${board.id}/columns`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(newColumn),
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const backendId = data.id;
-                    const newColumnKey = `column${backendId}`;
-                    setAllColumns((prev) => ({
-                        ...prev,
-                        [newColumnKey]: {
-                            ...newColumn,
-                            id: backendId,
-                        },
-                    }));
-                    console.log('Column added successfully');
-                } else {
-                    console.error('Error adding column to backend:', await response.text());
-                }
-            } catch (error) {
-                console.error('Error with API call:', error);
-            }
-
-            setNewColumnTitle('');
-            setShowAddColumnModal(false);
-        } else {
-            alert('Column title cannot be empty!');
-        }
-    };
-
-
-    const moveColumn = async (fromIndex, toIndex) => {                  /* TODO reorders columns */
+    const moveColumn = async (fromIndex, toIndex) => {                                      /* TODO reorders columns */
 
         const columnsArray = Object.keys(allColumns);
         const columnKeys = [...columnsArray];
@@ -636,13 +576,6 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     </div>
                 </div>
                 </div>
-                {showAddColumnModal && (
-                    <AddColumnModal
-                        setNewColumnTitle={setNewColumnTitle}
-                        saveNewColumn={addNewColumn}
-                        cancelAddColumn={() => setShowAddColumnModal(false)}
-                    />
-                )}
                 <EditModal
                     selectedTodo={selectedTodo}
                     setSelectedTodo={setSelectedTodo}
