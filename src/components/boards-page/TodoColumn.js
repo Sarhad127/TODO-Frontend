@@ -280,6 +280,7 @@ function TodoColumn({
     const [{ isDragging }, drag] = useDrag({
         type: ColumnType,
         item: { index, columnName },
+        canDrag: !isEditingTitle,
         collect: (monitor) => ({
             isDragging: !!monitor.isDragging(),
         }),
@@ -369,8 +370,16 @@ function TodoColumn({
                         type="text"
                         value={editedTitle}
                         onChange={(e) => setEditedTitle(e.target.value)}
-                        onBlur={handleTitleSave}
-                        onKeyDown={(e) => e.key === 'Enter' && handleTitleSave()}
+                        onBlur={() => {
+                            handleTitleSave();
+                            setIsEditingTitle(false);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleTitleSave();
+                                setIsEditingTitle(false);
+                            }
+                        }}
                         autoFocus
                         className="edit-title-input"
                     />
