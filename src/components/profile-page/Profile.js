@@ -224,6 +224,30 @@ const Profile = () => {
         }
     };
 
+    const getUsernameFromTokenStorage = () => {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) return '';
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.sub || '';
+        } catch {
+            return '';
+        }
+    };
+
+    const initialsToSend = avatarInitials.trim() !== ''
+        ? avatarInitials.trim()
+        : (() => {
+            const username = getUsernameFromTokenStorage();
+            if (!username) return '';
+            const parts = username.trim().split(/\s+/);
+            if (parts.length >= 2) {
+                return (parts[0][0] + parts[1][0]).toUpperCase();
+            } else {
+                return username.substring(0, 2).toUpperCase();
+            }
+        })();
+
     const updateAvatar = async () => {
         setError('');
         setMessage('');
@@ -237,7 +261,7 @@ const Profile = () => {
                 },
                 body: JSON.stringify({
                     avatarBackgroundColor,
-                    avatarInitials,
+                    avatarInitials: initialsToSend,
                     avatarImageUrl
                 }),
             });
