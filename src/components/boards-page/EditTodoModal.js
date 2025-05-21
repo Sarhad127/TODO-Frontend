@@ -102,25 +102,55 @@ export function EditModal({
         });
     };
 
+    const isAvatarSelected = (user) => {
+        if (!selectedTodo || !user) return false;
+
+        const todoAvatar = {
+            username: selectedTodo.avatarUsername || selectedTodo.tag?.avatarUsername,
+            initials: selectedTodo.avatarInitials || selectedTodo.tag?.avatarInitials,
+            bgColor: selectedTodo.avatarBackgroundColor || selectedTodo.tag?.avatarBackgroundColor,
+            imageUrl: selectedTodo.avatarImageUrl || selectedTodo.tag?.avatarImageUrl
+        };
+
+        const normalize = (str) => String(str || '').trim().toLowerCase();
+
+        const usernameMatch = normalize(todoAvatar.username) === normalize(user.username);
+        const initialsMatch = normalize(todoAvatar.initials) === normalize(user.avatarInitials);
+        const colorMatch = normalize(todoAvatar.bgColor) === normalize(user.avatarBackgroundColor);
+        const imageMatch = normalize(todoAvatar.imageUrl) === normalize(user.avatarImageUrl);
+
+        if (usernameMatch) return true;
+
+        const bothInitialsAndColorMatch =
+            !!todoAvatar.initials &&
+            !!todoAvatar.bgColor &&
+            initialsMatch &&
+            colorMatch;
+
+        if (bothInitialsAndColorMatch) return true;
+
+        if (imageMatch && (initialsMatch || usernameMatch)) return true;
+
+        return false;
+    };
+
     return (
         <div className="modal-overlay">
             <div className="modal" ref={EditTodoModal}>
                 <h3>Edit Card</h3>
                 <div className="board-users-container">
-                    {boardUsers.length > 1 && boardUsers.map(user => (
+                    {boardUsers.length > 0 && boardUsers.map(user => (
                         <button
                             key={user.userId}
-                            className="avatar-button-tag"
+                            className={`avatar-button-tag ${isAvatarSelected(user) ? 'selected-avatar' : ''}`}
                             onClick={() => handleAvatarClick(user)}
+                            aria-label={`Select ${user.username} as assignee`}
                         >
                             <UserAvatar
                                 size="small"
-                                userData={{
-                                    avatarBackgroundColor: user.avatarBackgroundColor,
-                                    avatarInitials: user.avatarInitials,
-                                    avatarImageUrl: user.avatarImageUrl,
-                                    username: user.username
-                                }}
+                                userData={user}
+                                isSelected={isAvatarSelected(user)}
+                                showSelectionIndicator={true}
                             />
                         </button>
                     ))}

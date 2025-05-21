@@ -303,9 +303,16 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         }
     };
 
-    const saveChanges = async () => {                                                        /* TODO updates columns */
+    const saveChanges = async () => {
         const { column, index, isNew, isTitleChange } = selectedTodo;
         const columnData = allColumns[column];
+
+        const currentAvatar = {
+            avatarUsername: selectedTodo.avatarUsername || selectedTodo.tag?.avatarUsername || '',
+            avatarInitials: selectedTodo.avatarInitials || selectedTodo.tag?.avatarInitials || '',
+            avatarBackgroundColor: selectedTodo.avatarBackgroundColor || selectedTodo.tag?.avatarBackgroundColor || '',
+            avatarImageUrl: selectedTodo.avatarImageUrl || selectedTodo.tag?.avatarImageUrl || ''
+        };
 
         if (isTitleChange) {
             setAllColumns({
@@ -317,10 +324,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                 },
             });
 
-            let token = localStorage.getItem('token');
-            if (!token) {
-                token = sessionStorage.getItem('token');
-            }
+            let token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) {
                 console.error('No authentication token found');
                 return;
@@ -329,36 +333,31 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             try {
                 const response = await fetch(
                     `http://localhost:8080/auth/boards/${board.id}/columns/${columnData.id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        title: selectedTodo.text,
-                        titleColor: selectedTodo.color,
-                    }),
-                });
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                            title: selectedTodo.text,
+                            titleColor: selectedTodo.color,
+                        }),
+                    });
 
-                if (response.ok) {
-                    console.log('Column updated successfully');
-                } else {
+                if (!response.ok) {
                     console.error('Failed to update column on backend');
                 }
             } catch (error) {
                 console.error('Error updating column:', error);
             }
 
-        } else if (isNew) {                                                            /* TODO handles new todo task */
+        } else if (isNew) {
             if (!selectedTodo.text.trim()) {
                 alert("Todo text cannot be empty!");
                 return;
             }
 
-            let token = localStorage.getItem('token');
-            if (!token) {
-                token = sessionStorage.getItem('token');
-            }
+            let token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) {
                 console.error('No authentication token found');
                 return;
@@ -369,10 +368,14 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     text: selectedTodo.text,
                     color: selectedTodo.color,
                     columnId: columnData.id,
-                    tag: selectedTodo.tag || { avatarBackgroundColor: '', avatarImageUrl: '', avatarInitials: '', avatarUsername: '' },
-                    tagColor: selectedTodo.tag?.color || null
+                    ...currentAvatar,
+                    tag: {
+                        text: selectedTodo.tag?.text || '',
+                        color: selectedTodo.tag?.color || null,
+                        ...currentAvatar
+                    }
                 };
-                console.log('Sending the following task data to the backend:', taskData);
+
                 const response = await fetch('http://localhost:8080/tasks/create', {
                     method: 'POST',
                     headers: {
@@ -384,8 +387,6 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
 
                 if (response.ok) {
                     const newTask = await response.json();
-                    console.log('Task created successfully:', newTask);
-
                     setAllColumns({
                         ...allColumns,
                         [column]: {
@@ -398,18 +399,12 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                                     color: newTask.color,
                                     position: newTask.position,
                                     columnId: newTask.columnId,
+                                    ...currentAvatar,
                                     tag: {
                                         text: newTask.tagText || '',
                                         color: newTask.tagColor || null,
-                                        avatarBackgroundColor: newTask.avatarBackgroundColor || '',
-                                        avatarImageUrl: newTask.avatarImageUrl || '',
-                                        avatarInitials: newTask.avatarInitials || '',
-                                        avatarUsername: newTask.avatarUsername || ''
-                                    },
-                                    avatarBackgroundColor: newTask.avatarBackgroundColor || '',
-                                    avatarImageUrl: newTask.avatarImageUrl || '',
-                                    avatarInitials: newTask.avatarInitials || '',
-                                    avatarUsername: newTask.avatarUsername || ''
+                                        ...currentAvatar
+                                    }
                                 }
                             ],
                         },
@@ -422,19 +417,32 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             }
 
         } else {
-            const updatedTask = { ...selectedTodo, columnId: columnData.id };
+            const updatedTask = {
+                ...selectedTodo,
+                columnId: columnData.id,
+                ...currentAvatar,
+                tag: {
+                    ...selectedTodo.tag,
+                    ...currentAvatar
+                }
+            };
+
             const updatedTaskFromBackend = await updateTask(updatedTask);
             if (updatedTaskFromBackend) {
                 const updatedColumn = [...columnData.tasks];
                 updatedColumn[index] = {
                     ...updatedTaskFromBackend,
-                    tag: selectedTodo.tag || { text: '', color: null },
+                    ...currentAvatar,
+                    tag: {
+                        text: selectedTodo.tag?.text || '',
+                        color: selectedTodo.tag?.color || null,
+                        ...currentAvatar
+                    }
                 };
                 setAllColumns({
                     ...allColumns,
                     [column]: { ...columnData, tasks: updatedColumn },
                 });
-                console.log('Task updated locally');
             }
         }
 
