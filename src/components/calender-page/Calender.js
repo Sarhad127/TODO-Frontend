@@ -12,6 +12,8 @@ function CalendarPage() {
   const [cellColors, setCellColors] = useState({});
   const [textColors, setTextColors] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
+  const [eventTitles, setEventTitles] = useState({});
+  const [eventTimes, setEventTimes] = useState({});
 
   const colorOptions = [
     { bg: '#c93939', text: '#ffffff' },
@@ -27,6 +29,23 @@ function CalendarPage() {
   const handleDayClick = (day) => {
     setSelectedDate(new Date(day));
     setModalOpen(true);
+  };
+
+  const handleTitleChange = (dateKey, title) => {
+    setEventTitles(prev => ({
+      ...prev,
+      [dateKey]: title
+    }));
+  };
+
+  const handleTimeChange = (dateKey, timeObj) => {
+    setEventTimes(prev => ({
+      ...prev,
+      [dateKey]: {
+        ...prev[dateKey],
+        ...timeObj
+      }
+    }));
   };
 
   useEffect(() => {
@@ -82,11 +101,21 @@ function CalendarPage() {
 
         const data = await response.json();
         const notesMap = {};
+        const titlesMap = {};
+        const timesMap = {};
         const colorsMap = {};
         const textColorsMap = {};
+
         data.forEach(note => {
           const dateKey = formatDate(new Date(note.date));
           notesMap[dateKey] = note.content;
+          titlesMap[dateKey] = note.title || '';
+
+          timesMap[dateKey] = {
+            from: note.timeFrom || note.time || '',
+            to: note.timeTo || ''
+          };
+
           if (note.color) {
             colorsMap[dateKey] = note.color;
           }
@@ -94,7 +123,10 @@ function CalendarPage() {
             textColorsMap[dateKey] = note.textColor;
           }
         });
+
         setNotes(notesMap);
+        setEventTitles(titlesMap);
+        setEventTimes(timesMap);
         setCellColors(colorsMap);
         setTextColors(textColorsMap);
       } catch (error) {
@@ -119,10 +151,14 @@ function CalendarPage() {
 
       const noteDTO = {
         date: dayKey,
+        title: eventTitles[dayKey] || '',
+        timeFrom: eventTimes[dayKey]?.from || '',
+        timeTo: eventTimes[dayKey]?.to || '',
         content: notes[dayKey] || '',
         color: bgColor,
         textColor: textColor
       };
+
       const response = await fetch('http://localhost:8080/api/calendar', {
         method: 'POST',
         headers: {
@@ -236,12 +272,19 @@ function CalendarPage() {
         const cloneDay = day;
         const dayKey = formatDate(day);
         const noteValue = notes[dayKey] || '';
+        const titleValue = eventTitles[dayKey] || '';
+        const timeFrom = eventTimes[dayKey]?.from || '';
+        const timeTo = eventTimes[dayKey]?.to || '';
         const formattedDate = format(day, 'd');
         const isToday = isSameDay(day, new Date());
         const isSelected = isSameDay(day, selectedDate);
         const isOutsideMonth = !isSameMonth(day, monthStart);
         const cellColor = cellColors[dayKey] || '';
         const textColor = textColors[dayKey] || '#000000';
+
+        const displayTimeFrom = timeFrom ? timeFrom.substring(0, 5) : '';
+        const displayTimeTo = timeTo ? timeTo.substring(0, 5) : '';
+        const timeRange = timeFrom && timeTo ? `${displayTimeFrom} - ${displayTimeTo}` : timeFrom || '';
 
         days.push(
             <div
@@ -254,6 +297,13 @@ function CalendarPage() {
                 }}
             >
               <div className="day-number">{formattedDate}</div>
+              <div>
+                {titleValue && (
+                    <div className="event-title" style={{ color: textColor }}>
+                      {titleValue}
+                    </div>
+                )}
+              </div>
               <textarea
                   ref={el => textareaRefs.current[dayKey] = el}
                   value={noteValue}
@@ -263,6 +313,11 @@ function CalendarPage() {
                   spellCheck="false"
                   style={{ color: textColor }}
               />
+              {timeRange && (
+                  <div className="event-time" style={{ color: textColor }}>
+                    {timeRange}
+                  </div>
+              )}
               <div className="day-menu-container">
                 {activeMenu === dayKey && (
                     <div
@@ -312,15 +367,49 @@ function CalendarPage() {
                 <h2>{format(new Date(selectedDate), 'MMMM d, yyyy')}</h2>
                 <div className="modal-content">
                   <div className="form-group">
-                    <textarea
-                        spellCheck={false}
-                        value={notes[formatDate(selectedDate)] || ''}
-                        onChange={(e) => handleNoteChange(formatDate(selectedDate), e.target.value)}
-                        style={{
-                          color: textColors[formatDate(selectedDate)] || '#000000',
-                          backgroundColor: cellColors[formatDate(selectedDate)] || 'transparent'
-                        }}
+                      <textarea
+                          spellCheck={false}
+                          value={notes[formatDate(selectedDate)] || ''}
+                          onChange={(e) => handleNoteChange(formatDate(selectedDate), e.target.value)}
+                          placeholder="Event description"
+                          style={{
+                            color: textColors[formatDate(selectedDate)] || '#000000',
+                            backgroundColor: cellColors[formatDate(selectedDate)] || 'transparent'
+                          }}
+                      />
+                    <label>Title</label>
+                    <input
+                        type="text"
+                        value={eventTitles[formatDate(selectedDate)] || ''}
+                        onChange={(e) => handleTitleChange(formatDate(selectedDate), e.target.value)}
+                        placeholder="Event title"
                     />
+                    <div className="form-group time-group">
+                      <label>Time</label>
+                      <div className="time-inputs">
+                        <div className="time-range">
+                          <input
+                              type="time"
+                              value={eventTimes[formatDate(selectedDate)]?.from || ''}
+                              onChange={(e) => handleTimeChange(formatDate(selectedDate), {
+                                from: e.target.value,
+                                to: eventTimes[formatDate(selectedDate)]?.to || ''
+                              })}
+                              placeholder="From"
+                          />
+                          <span>to</span>
+                          <input
+                              type="time"
+                              value={eventTimes[formatDate(selectedDate)]?.to || ''}
+                              onChange={(e) => handleTimeChange(formatDate(selectedDate), {
+                                from: eventTimes[formatDate(selectedDate)]?.from || '',
+                                to: e.target.value
+                              })}
+                              placeholder="To"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div className="form-group">
                     <label>Cell Color</label>

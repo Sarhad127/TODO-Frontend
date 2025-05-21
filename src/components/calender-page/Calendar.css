@@ -14,7 +14,7 @@
     text-align: center;
     width: 400px;
     max-width: 90%;
-    height: 450px;
+    height: 700px;
 }
 
 .modal-calender h2 {
@@ -61,12 +61,6 @@
     background-color: rgba(0, 0, 0, 0.82);
 }
 
-.today .day-number {
-    font-style: italic;
-    font-weight: bold;
-    font-size: 22px;
-}
-
 .calendar-day-name {
     flex: 1;
     text-align: center;
@@ -74,12 +68,6 @@
     color: #ffffff;
     padding: 8px 0;
     font-size: 1rem;
-}
-
-.day-number {
-    font-size: 18px;
-    font-weight: bold;
-    color: rgba(0, 0, 0, 0.76);
 }
 
 .today {
@@ -121,8 +109,9 @@
 
 .calendar-cell {
     flex: 1;
-    max-height: 130px;
+    max-height: 120px;
     padding: 8px;
+    padding-top: 0px;
     border-radius: 6px;
     margin: 0 4px;
     cursor: cell;
@@ -161,7 +150,7 @@
 .note-preview {
     cursor: cell;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: normal;
     font-style: italic;
     text-align: center;
     background-color: transparent;
@@ -178,6 +167,10 @@
 
 .note-preview::-webkit-scrollbar {
     display: none;
+}
+
+.note-preview {
+    margin-top: 0;
 }
 
 @media (max-width: 1200px) {
@@ -307,12 +300,12 @@
 
 textarea.note-preview {
     width: 100%;
-    min-height: 100px;
+    min-height: 58px;
     border: none;
     background: transparent;
     resize: none;
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 13px;
+    line-height: 1.2;
     padding: 5px;
     font-family: inherit;
 }
@@ -374,4 +367,55 @@ textarea.note-preview:focus {
 
 .color-options-grid-calender {
     margin-bottom: 50px;
+}
+
+.time-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.time-range input[type="time"] {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.time-range span {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.event-time {
+    background-color: transparent;
+    text-align: center;
+    font-family: Calibri, sans-serif;
+    font-size: 13px;
+    margin: 0;
+    padding: 0;
+}
+
+.today .day-number {
+    font-style: italic;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.day-number {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.76);
+    padding: 0 !important;
+    margin: 0;
+}
+
+.event-title {
+    font-size: 0.8rem;
+    font-weight: bold;
+    white-space: nowrap;
+    text-align: center;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+    padding: 0 2px;
 }
