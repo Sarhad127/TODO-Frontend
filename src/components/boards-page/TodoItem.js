@@ -126,9 +126,25 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
                     </div>
                 )}
             </div>
+            {todo.dueDate && (
+                <div
+                    style={{
+                        marginTop: '8px',
+                        fontSize: '11px',
+                        color: dueToday ? 'black' : '#999',
+                        fontWeight: dueToday ? 'bold' : 'normal',
+                        textAlign: 'right',
+                    }}
+                    title={`Due date: ${new Date(todo.dueDate).toLocaleDateString()}`}
+                >
+                    {new Date(todo.dueDate).toLocaleDateString()}
+                </div>
+            )}
+
             {/*<div style={{ fontSize: '0.75rem', marginTop: '4px', color: '#333' }}>*/}
             {/*    ID: {todo.id} | Column ID: {todo.columnId} | Position: {todo.position}*/}
             {/*</div>*/}
+
         </div>
 
     );
