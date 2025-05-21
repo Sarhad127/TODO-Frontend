@@ -228,7 +228,7 @@ export function EditModal({
                     </div>
                 </div>
                 <div className="board-users-container">
-                    {boardUsers.length > 0 && boardUsers.map(user => (
+                    {boardUsers.length > 1 && boardUsers.map(user => (
                         <button
                             key={user.userId}
                             className={`avatar-button-tag ${isAvatarSelected(user) ? 'selected-avatar' : ''}`}
