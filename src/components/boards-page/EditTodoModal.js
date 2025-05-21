@@ -305,7 +305,29 @@ export function EditModal({
                         </div>
                     </div>
                 </div>
-
+                <div className="due-date-section">
+                    <h4>Due Date</h4>
+                    <input
+                        type="datetime-local"
+                        value={
+                            selectedTodo && selectedTodo.dueDate && !isNaN(new Date(selectedTodo.dueDate))
+                                ? new Date(
+                                    new Date(selectedTodo.dueDate).getTime() -
+                                    new Date().getTimezoneOffset() * 60000
+                                )
+                                    .toISOString()
+                                    .slice(0, 16)
+                                : ''
+                        }
+                        onChange={(e) =>
+                            selectedTodo &&
+                            setSelectedTodo({
+                                ...selectedTodo,
+                                dueDate: e.target.value,
+                            })
+                        }
+                    />
+                </div>
                 <div className="modal-buttons-todoBoard">
                     <button className="save-btn-todoBoard" onClick={saveChanges}>Save</button>
                     <button className="delete-btn-todoBoard" onClick={() => deleteTodo(selectedTodo)}>

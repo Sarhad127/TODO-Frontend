@@ -69,6 +69,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                         text: task.text,
                         color: task.color,
                         position: task.position,
+                        dueDate: task.dueDate || null,
                         tag: {
                             text: task.tagText || '',
                             color: task.tagColor || null,
@@ -283,6 +284,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     avatarBackgroundColor: taskData.avatarBackgroundColor || '',
                     avatarImageUrl: taskData.avatarImageUrl || '',
                     avatarInitials: taskData.avatarInitials || '',
+                    dueDate: taskData.dueDate || null,
                 }),
             });
 

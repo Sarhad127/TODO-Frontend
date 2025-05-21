@@ -3,6 +3,15 @@ import { useDrag, useDrop } from 'react-dnd';
 
 const ItemType = 'TODO';
 
+function isToday(dateString) {
+    if (!dateString) return false;
+    const date = new Date(dateString);
+    const today = new Date();
+    const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    return dateOnly.getTime() === todayOnly.getTime();
+}
+
 function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) {
     const ref = useRef(null);
     const [{ isDragging }, drag] = useDrag({
@@ -12,7 +21,7 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
             isDragging: !!monitor.isDragging(),
         }),
     });
-
+    const dueToday = isToday(todo.dueDate);
     const [, drop] = useDrop({
         accept: ItemType,
         hover(item, monitor) {
@@ -46,6 +55,7 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
                 padding: '8px',
                 position: 'relative',
                 zIndex: isDragging ? 10 : 1,
+                border: dueToday ? '2px solid red' : 'none',
             }}
             onClick={() => openEditModal(index, column)}
         >
@@ -62,7 +72,21 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
                     }}
                 />
             )}
-
+            {/*{dueToday && (*/}
+            {/*    <div*/}
+            {/*        style={{*/}
+            {/*            position: 'absolute',*/}
+            {/*            top: 4,*/}
+            {/*            right: 4,*/}
+            {/*            width: 12,*/}
+            {/*            height: 12,*/}
+            {/*            backgroundColor: 'red',*/}
+            {/*            borderRadius: '50%',*/}
+            {/*            border: '2px solid white',*/}
+            {/*        }}*/}
+            {/*        title="Due today"*/}
+            {/*    />*/}
+            {/*)}*/}
             <div style={{ paddingTop: todo.tag?.color ? 12 : 0 }}>
                 <strong>{todo.text}</strong>
 
