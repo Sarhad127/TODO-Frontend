@@ -127,6 +127,8 @@
     border: 1px solid black;
     padding: 0;
     margin: 0 4px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     cursor: pointer;
     display: inline-flex;
@@ -143,7 +145,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transform: scale(0.95);
+    transform: scale(1.05);
 }
 
 .avatar-button-tag:focus {
@@ -156,7 +158,6 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transform: scale(0.80);
 }
 .board-users-container {
     display: flex;

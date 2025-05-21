@@ -39,7 +39,25 @@ export function EditModal({
     };
 
     const handleAvatarClick = async (user) => {
-        console.log("Setting avatar for user:", user.username);
+        const isSelected = isAvatarSelected(user);
+
+        if (isSelected) {
+            setSelectedTodo({
+                ...selectedTodo,
+                tag: {
+                    ...selectedTodo.tag,
+                    avatarBackgroundColor: null,
+                    avatarImageUrl: null,
+                    avatarInitials: null,
+                    avatarUsername: null,
+                },
+                avatarBackgroundColor: null,
+                avatarImageUrl: null,
+                avatarInitials: null,
+                avatarUsername: null,
+            });
+            return;
+        }
 
         const updatedTodo = {
             ...selectedTodo,
@@ -58,14 +76,7 @@ export function EditModal({
             avatarUsername: user.username
         };
 
-        console.log("Updated todo with avatar:", updatedTodo);
         setSelectedTodo(updatedTodo);
-
-        try {
-            console.log("Avatar update successful");
-        } catch (error) {
-            console.error("Failed to update avatar:", error);
-        }
     };
 
     const COLOR_OPTIONS = [
