@@ -149,6 +149,84 @@ export function EditModal({
         <div className="modal-overlay">
             <div className="modal" ref={EditTodoModal}>
                 <h3>Edit Card</h3>
+                <div className="live-preview-section">
+                    <div
+                        className="todo-item-preview"
+                        style={{
+                            backgroundColor: selectedTodo.color,
+                            padding: '8px',
+                            borderRadius: '6px',
+                            boxShadow: '0 0 4px rgba(0,0,0,0.1)',
+                            marginTop: '8px',
+                            position: 'relative',
+                        }}
+                    >
+                        {selectedTodo.tag?.color && (
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    top: 4,
+                                    left: 4,
+                                    width: 40,
+                                    height: 9,
+                                    backgroundColor: selectedTodo.tag.color,
+                                    borderRadius: '4px',
+                                }}
+                            />
+                        )}
+                        <div style={{ paddingTop: selectedTodo.tag?.color ? 12 : 0 }}>
+                            <strong
+                                style={{
+                                    display: 'inline-block',
+                                    maxWidth: '220px',
+                                    whiteSpace: 'normal',
+                                    wordBreak: 'break-word',
+                                }}
+                            >
+                                {selectedTodo.text}
+                            </strong>
+
+
+                            {(selectedTodo.tag?.text || selectedTodo.tag?.avatarInitials || selectedTodo.tag?.avatarImageUrl) && (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        marginTop: '6px',
+                                        fontSize: '10px',
+                                        color: '#666',
+                                    }}
+                                >
+                                    {(selectedTodo.tag.avatarImageUrl || selectedTodo.tag.avatarInitials) && (
+                                        <div
+                                            style={{
+                                                width: 20,
+                                                height: 20,
+                                                borderRadius: '50%',
+                                                backgroundColor: selectedTodo.tag.avatarBackgroundColor || '#ccc',
+                                                backgroundImage: selectedTodo.tag.avatarImageUrl
+                                                    ? `url(${selectedTodo.tag.avatarImageUrl})`
+                                                    : 'none',
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: 'white',
+                                                fontSize: '10px',
+                                                fontWeight: 'bold',
+                                                marginRight: 6,
+                                            }}
+                                        >
+                                            {!selectedTodo.tag.avatarImageUrl && selectedTodo.tag.avatarInitials}
+                                        </div>
+                                    )}
+                                    {selectedTodo.tag.text}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
                 <div className="board-users-container">
                     {boardUsers.length > 0 && boardUsers.map(user => (
                         <button

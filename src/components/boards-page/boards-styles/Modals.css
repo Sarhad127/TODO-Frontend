@@ -170,3 +170,13 @@ h4,
 .color-option.selected {
     border: 2px solid #000;
 }
+
+.todo-item-preview {
+    width: 230px;
+    text-align: start;
+}
+.live-preview-section {
+    margin: 0 auto;
+    margin-bottom: 10px;
+    max-width: fit-content;
+}
