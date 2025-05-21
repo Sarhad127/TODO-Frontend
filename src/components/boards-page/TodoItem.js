@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-
+import dueDate from '../../icons/date-icon.png'
 const ItemType = 'TODO';
 
 function isToday(dateString) {
@@ -129,14 +129,23 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
             {todo.dueDate && (
                 <div
                     style={{
-                        marginTop: '8px',
-                        fontSize: '11px',
+                        marginTop: '0px',
+                        fontSize: '10px',
                         color: dueToday ? 'black' : '#999',
                         fontWeight: dueToday ? 'bold' : 'normal',
                         textAlign: 'right',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        gap: '4px',
                     }}
                     title={`Due date: ${new Date(todo.dueDate).toLocaleDateString()}`}
                 >
+                    <img
+                        src=  {dueDate}
+                        alt="Due date"
+                        style={{ width: 11, height: 11 }}
+                    />
                     {new Date(todo.dueDate).toLocaleDateString()}
                 </div>
             )}
