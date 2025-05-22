@@ -2,10 +2,22 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import TodoItem from './TodoItem';
 import {useUser} from "../../context/UserContext";
-import {FaTrash} from "react-icons/fa";
+import {FaPalette, FaTrash} from "react-icons/fa";
 
 const ItemType = 'TODO';
 const ColumnType = 'COLUMN';
+
+const presetColors = [
+    '#3498db',
+    '#e74c3c',
+    '#2ecc71',
+    '#f1c40f',
+    '#9b59b6',
+    '#e67e22',
+    '#7f8c8d',
+    'transparent'
+];
+
 function TodoColumn({
                         title,
                         columnName,
@@ -23,6 +35,77 @@ function TodoColumn({
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [editedTitle, setEditedTitle] = useState(title);
     const { userData } = useUser();
+
+    const columnData = allColumns[columnName];
+    const currentTitleColor = columnData?.titleColor || '#3498db';
+
+    const [showColorDropdown, setShowColorDropdown] = useState(false);
+    const colorDropdownRef = useRef(null);
+
+    const toggleColorDropdown = () => setShowColorDropdown(prev => !prev);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (colorDropdownRef.current && !colorDropdownRef.current.contains(event.target)) {
+                setShowColorDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleColorChange = async (color) => {
+        if (color === currentTitleColor) return;
+
+        const updatedColumns = {
+            ...allColumns,
+            [columnName]: {
+                ...columnData,
+                titleColor: color,
+            }
+        };
+        setAllColumns(updatedColumns);
+
+        let token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) {
+            console.error('No authentication token found');
+            return;
+        }
+
+        try {
+            const boardId = currentBoardId;
+            if (!boardId) {
+                console.error('Board ID not found in user data');
+                return;
+            }
+
+            const response = await fetch(
+                `http://localhost:8080/auth/boards/${boardId}/columns/${columnData.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        title: columnData.title,
+                        titleColor: color,
+                    }),
+                }
+            );
+
+            if (response.ok) {
+                console.log('Column color updated successfully');
+            } else {
+                console.error('Failed to update column color on backend');
+                setAllColumns(allColumns);
+            }
+        } catch (error) {
+            console.error('Error updating column color:', error);
+            setAllColumns(allColumns);
+        }
+    };
 
     const handleTitleSave = async () => {
         setIsEditingTitle(false);
@@ -197,6 +280,7 @@ function TodoColumn({
     const [{ isDragging }, drag] = useDrag({
         type: ColumnType,
         item: { index, columnName },
+        canDrag: !isEditingTitle,
         collect: (monitor) => ({
             isDragging: !!monitor.isDragging(),
         }),
@@ -271,14 +355,31 @@ function TodoColumn({
             className="todo-column"
             style={{ opacity: isDragging ? 0.5 : 1 }}
         >
+            <div
+                style={{
+                    height: currentTitleColor === 'transparent' ? '0px' : '10px',
+                    backgroundColor: currentTitleColor === 'transparent' ? 'transparent' : currentTitleColor,
+                    borderTopLeftRadius: '3px',
+                    borderTopRightRadius: '3px',
+                    transition: 'height 0.2s ease'
+                }}
+            />
             <div className="column-header">
                 {isEditingTitle ? (
                     <input
                         type="text"
                         value={editedTitle}
                         onChange={(e) => setEditedTitle(e.target.value)}
-                        onBlur={handleTitleSave}
-                        onKeyDown={(e) => e.key === 'Enter' && handleTitleSave()}
+                        onBlur={() => {
+                            handleTitleSave();
+                            setIsEditingTitle(false);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleTitleSave();
+                                setIsEditingTitle(false);
+                            }
+                        }}
                         autoFocus
                         className="edit-title-input"
                     />
@@ -288,7 +389,39 @@ function TodoColumn({
                     </h2>
                 )}
 
-                <div className="column-settings-wrapper" ref={dropdownRef}>
+                <div className="column-settings-wrapper">
+                    <div className="color-picker-wrapper" ref={colorDropdownRef}>
+                        <button
+                            className="color-picker-btn"
+                            onClick={toggleColorDropdown}
+                            title="Change column color"
+                        >
+                            <FaPalette size={12} />
+                        </button>
+                        {showColorDropdown && (
+                            <div className="color-dropdown">
+                                {presetColors.map((color) => (
+                                    <div
+                                        key={color}
+                                        className={`color-cell${color === currentTitleColor ? ' selected' : ''}`}
+                                        style={{
+                                            backgroundColor: color === 'transparent' ? 'white' : color,
+                                            border: color === 'transparent' ? '1px dashed #ccc' : 'none'
+                                        }}
+                                        onClick={() => {
+                                            handleColorChange(color);
+                                            setShowColorDropdown(false);
+                                        }}
+                                        title={color === 'transparent' ? 'Remove color' : `Set color ${color}`}
+                                    >
+                                        {color === 'transparent' && (
+                                            <span style={{ color: '#999', fontSize: '12px' }}>×</span>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                     <button
                         className="delete-column-btn"
                         onClick={() => removeColumn(columnName)}
@@ -320,5 +453,4 @@ function TodoColumn({
         </div>
     );
 }
-
 export default TodoColumn;

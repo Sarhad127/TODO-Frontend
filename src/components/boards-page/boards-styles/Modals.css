@@ -170,3 +170,29 @@ h4,
 .color-option.selected {
     border: 2px solid #000;
 }
+
+.todo-item-preview {
+    width: 230px;
+    text-align: start;
+    border: 1px solid black;
+}
+.live-preview-section {
+    margin: 0 auto;
+    margin-bottom: 10px;
+    max-width: fit-content;
+}
+.due-date-section {
+    margin-top: 16px;
+}
+
+.due-date-section h4 {
+    margin-bottom: 6px;
+}
+
+.due-date-section input {
+    width: 95%;
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

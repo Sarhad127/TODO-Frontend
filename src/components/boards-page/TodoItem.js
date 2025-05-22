@@ -1,7 +1,16 @@
 import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-
+import dueDate from '../../icons/date-icon.png'
 const ItemType = 'TODO';
+
+function isToday(dateString) {
+    if (!dateString) return false;
+    const date = new Date(dateString);
+    const today = new Date();
+    const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    return dateOnly.getTime() === todayOnly.getTime();
+}
 
 function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) {
     const ref = useRef(null);
@@ -12,7 +21,7 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
             isDragging: !!monitor.isDragging(),
         }),
     });
-
+    const dueToday = isToday(todo.dueDate);
     const [, drop] = useDrop({
         accept: ItemType,
         hover(item, monitor) {
@@ -46,6 +55,7 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
                 padding: '8px',
                 position: 'relative',
                 zIndex: isDragging ? 10 : 1,
+                border: dueToday ? '2px solid red' : 'none',
             }}
             onClick={() => openEditModal(index, column)}
         >
@@ -62,7 +72,21 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
                     }}
                 />
             )}
-
+            {/*{dueToday && (*/}
+            {/*    <div*/}
+            {/*        style={{*/}
+            {/*            position: 'absolute',*/}
+            {/*            top: 4,*/}
+            {/*            right: 4,*/}
+            {/*            width: 12,*/}
+            {/*            height: 12,*/}
+            {/*            backgroundColor: 'red',*/}
+            {/*            borderRadius: '50%',*/}
+            {/*            border: '2px solid white',*/}
+            {/*        }}*/}
+            {/*        title="Due today"*/}
+            {/*    />*/}
+            {/*)}*/}
             <div style={{ paddingTop: todo.tag?.color ? 12 : 0 }}>
                 <strong>{todo.text}</strong>
 
@@ -102,9 +126,34 @@ function TodoItem({ todo, index, column, openEditModal, moveTodoWithinColumn }) 
                     </div>
                 )}
             </div>
+            {todo.dueDate && (
+                <div
+                    style={{
+                        marginTop: '0px',
+                        fontSize: '10px',
+                        color: dueToday ? 'black' : '#999',
+                        fontWeight: dueToday ? 'bold' : 'normal',
+                        textAlign: 'right',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        gap: '4px',
+                    }}
+                    title={`Due date: ${new Date(todo.dueDate).toLocaleDateString()}`}
+                >
+                    <img
+                        src=  {dueDate}
+                        alt="Due date"
+                        style={{ width: 11, height: 11 }}
+                    />
+                    {new Date(todo.dueDate).toLocaleDateString()}
+                </div>
+            )}
+
             {/*<div style={{ fontSize: '0.75rem', marginTop: '4px', color: '#333' }}>*/}
             {/*    ID: {todo.id} | Column ID: {todo.columnId} | Position: {todo.position}*/}
             {/*</div>*/}
+
         </div>
 
     );

@@ -3,14 +3,12 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { FaPlus } from 'react-icons/fa';
 import TodoColumn from './TodoColumn';
-import { AddColumnModal } from './AddColumnModal';
 import { EditModal } from './EditTodoModal';
 import { useUser } from '../../context/UserContext';
 
 const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
     const [allColumns, setAllColumns] = useState({});
     const [selectedTodo, setSelectedTodo] = useState(null);
-    const [showAddColumnModal, setShowAddColumnModal] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
     const [board, setBoard] = useState(null);
     const [boardUsers, setBoardUsers] = useState([]);
@@ -27,7 +25,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             }
 
             try {
-                const res = await fetch(`https://email-verification-production.up.railway.app/api/boards/${boardData.id}/Allusers`, {
+                const res = await fetch(`http://localhost:8080/api/boards/${boardData.id}/Allusers`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -71,6 +69,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                         text: task.text,
                         color: task.color,
                         position: task.position,
+                        dueDate: task.dueDate || null,
                         tag: {
                             text: task.tagText || '',
                             color: task.tagColor || null,
@@ -110,7 +109,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
 
         const newColumn = {
             title: titleToUse,
-            titleColor: '#000000',
+            titleColor: 'transparent',
             tasks: [],
         };
 
@@ -127,7 +126,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         }
 
         try {
-            const response = await fetch(`https://email-verification-production.up.railway.app/auth/boards/${boardId}/columns`, {
+            const response = await fetch(`http://localhost:8080/auth/boards/${boardId}/columns`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -169,10 +168,9 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         }
 
         setNewColumnTitle('');
-        setShowAddColumnModal(false);
     };
 
-    const removeColumn = async (columnName) => {                      /* TODO removes tasks and columns */
+    const removeColumn = async (columnName) => {                                   /* TODO removes tasks and columns */
         const isConfirmed = window.confirm('Are you sure you want to delete this column? This will also delete all associated tasks.');
         if (!isConfirmed) {
             return;
@@ -201,7 +199,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             await Promise.all(
                 columnTasks.map(async (task) => {
                     const taskId = task.id;
-                    const response = await fetch(`https://email-verification-production.up.railway.app/tasks/delete/${taskId}`, {
+                    const response = await fetch(`http://localhost:8080/tasks/delete/${taskId}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
@@ -214,7 +212,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     }
                 })
             );
-            const columnResponse = await fetch(`https://email-verification-production.up.railway.app/auth/boards/${board.id}/columns/${columnId}`, {
+            const columnResponse = await fetch(`http://localhost:8080/auth/boards/${board.id}/columns/${columnId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -238,7 +236,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) throw new Error('No authentication token found');
             const columnsArray = Object.values(updatedColumns);
-            const response = await fetch('https://email-verification-production.up.railway.app/columns/update-positions', {
+            const response = await fetch('http://localhost:8080/columns/update-positions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -271,7 +269,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             return;
         }
         try {
-            const response = await fetch(`https://email-verification-production.up.railway.app/tasks/update/${taskData.id}`, {
+            const response = await fetch(`http://localhost:8080/tasks/update/${taskData.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -286,6 +284,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     avatarBackgroundColor: taskData.avatarBackgroundColor || '',
                     avatarImageUrl: taskData.avatarImageUrl || '',
                     avatarInitials: taskData.avatarInitials || '',
+                    dueDate: taskData.dueDate || null,
                 }),
             });
 
@@ -306,9 +305,16 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         }
     };
 
-    const saveChanges = async () => {                                                        /* TODO updates columns */
+    const saveChanges = async () => {
         const { column, index, isNew, isTitleChange } = selectedTodo;
         const columnData = allColumns[column];
+
+        const currentAvatar = {
+            avatarUsername: selectedTodo.avatarUsername || selectedTodo.tag?.avatarUsername || '',
+            avatarInitials: selectedTodo.avatarInitials || selectedTodo.tag?.avatarInitials || '',
+            avatarBackgroundColor: selectedTodo.avatarBackgroundColor || selectedTodo.tag?.avatarBackgroundColor || '',
+            avatarImageUrl: selectedTodo.avatarImageUrl || selectedTodo.tag?.avatarImageUrl || ''
+        };
 
         if (isTitleChange) {
             setAllColumns({
@@ -320,10 +326,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                 },
             });
 
-            let token = localStorage.getItem('token');
-            if (!token) {
-                token = sessionStorage.getItem('token');
-            }
+            let token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) {
                 console.error('No authentication token found');
                 return;
@@ -331,37 +334,32 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
 
             try {
                 const response = await fetch(
-                    `https://email-verification-production.up.railway.app/auth/boards/${board.id}/columns/${columnData.id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        title: selectedTodo.text,
-                        titleColor: selectedTodo.color,
-                    }),
-                });
+                    `http://localhost:8080/auth/boards/${board.id}/columns/${columnData.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                            title: selectedTodo.text,
+                            titleColor: selectedTodo.color,
+                        }),
+                    });
 
-                if (response.ok) {
-                    console.log('Column updated successfully');
-                } else {
+                if (!response.ok) {
                     console.error('Failed to update column on backend');
                 }
             } catch (error) {
                 console.error('Error updating column:', error);
             }
 
-        } else if (isNew) {                                                            /* TODO handles new todo task */
+        } else if (isNew) {
             if (!selectedTodo.text.trim()) {
                 alert("Todo text cannot be empty!");
                 return;
             }
 
-            let token = localStorage.getItem('token');
-            if (!token) {
-                token = sessionStorage.getItem('token');
-            }
+            let token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) {
                 console.error('No authentication token found');
                 return;
@@ -372,11 +370,15 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     text: selectedTodo.text,
                     color: selectedTodo.color,
                     columnId: columnData.id,
-                    tag: selectedTodo.tag || { avatarBackgroundColor: '', avatarImageUrl: '', avatarInitials: '', avatarUsername: '' },
-                    tagColor: selectedTodo.tag?.color || null
+                    ...currentAvatar,
+                    tag: {
+                        text: selectedTodo.tag?.text || '',
+                        color: selectedTodo.tag?.color || null,
+                        ...currentAvatar
+                    }
                 };
-                console.log('Sending the following task data to the backend:', taskData);
-                const response = await fetch('https://email-verification-production.up.railway.app/tasks/create', {
+
+                const response = await fetch('http://localhost:8080/tasks/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -387,8 +389,6 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
 
                 if (response.ok) {
                     const newTask = await response.json();
-                    console.log('Task created successfully:', newTask);
-
                     setAllColumns({
                         ...allColumns,
                         [column]: {
@@ -401,18 +401,12 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                                     color: newTask.color,
                                     position: newTask.position,
                                     columnId: newTask.columnId,
+                                    ...currentAvatar,
                                     tag: {
                                         text: newTask.tagText || '',
                                         color: newTask.tagColor || null,
-                                        avatarBackgroundColor: newTask.avatarBackgroundColor || '',
-                                        avatarImageUrl: newTask.avatarImageUrl || '',
-                                        avatarInitials: newTask.avatarInitials || '',
-                                        avatarUsername: newTask.avatarUsername || ''
-                                    },
-                                    avatarBackgroundColor: newTask.avatarBackgroundColor || '',
-                                    avatarImageUrl: newTask.avatarImageUrl || '',
-                                    avatarInitials: newTask.avatarInitials || '',
-                                    avatarUsername: newTask.avatarUsername || ''
+                                        ...currentAvatar
+                                    }
                                 }
                             ],
                         },
@@ -425,19 +419,32 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             }
 
         } else {
-            const updatedTask = { ...selectedTodo, columnId: columnData.id };
+            const updatedTask = {
+                ...selectedTodo,
+                columnId: columnData.id,
+                ...currentAvatar,
+                tag: {
+                    ...selectedTodo.tag,
+                    ...currentAvatar
+                }
+            };
+
             const updatedTaskFromBackend = await updateTask(updatedTask);
             if (updatedTaskFromBackend) {
                 const updatedColumn = [...columnData.tasks];
                 updatedColumn[index] = {
                     ...updatedTaskFromBackend,
-                    tag: selectedTodo.tag || { text: '', color: null },
+                    ...currentAvatar,
+                    tag: {
+                        text: selectedTodo.tag?.text || '',
+                        color: selectedTodo.tag?.color || null,
+                        ...currentAvatar
+                    }
                 };
                 setAllColumns({
                     ...allColumns,
                     [column]: { ...columnData, tasks: updatedColumn },
                 });
-                console.log('Task updated locally');
             }
         }
 
@@ -461,7 +468,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         }
 
         try {
-            const response = await fetch(`https://email-verification-production.up.railway.app/tasks/delete/${id}`, {
+            const response = await fetch(`http://localhost:8080/tasks/delete/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -493,64 +500,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         });
     };
 
-    const addNewColumn = async () => {                                              /* TODO creates new column*/
-        if (newColumnTitle.trim()) {
-            const newColumn = {
-                title: newColumnTitle,
-                titleColor: '#000000',
-                tasks: [],
-            };
-
-            let token = localStorage.getItem('token') || sessionStorage.getItem('token');
-            if (!token) {
-                console.error('No authentication token found');
-                return;
-            }
-
-            const boardId = board?.id;
-            if (!boardId) {
-                console.error('Board ID is missing');
-                return;
-            }
-
-            try {
-                const response = await fetch(`https://email-verification-production.up.railway.app/auth/boards/${board.id}/columns`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(newColumn),
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const backendId = data.id;
-                    const newColumnKey = `column${backendId}`;
-                    setAllColumns((prev) => ({
-                        ...prev,
-                        [newColumnKey]: {
-                            ...newColumn,
-                            id: backendId,
-                        },
-                    }));
-                    console.log('Column added successfully');
-                } else {
-                    console.error('Error adding column to backend:', await response.text());
-                }
-            } catch (error) {
-                console.error('Error with API call:', error);
-            }
-
-            setNewColumnTitle('');
-            setShowAddColumnModal(false);
-        } else {
-            alert('Column title cannot be empty!');
-        }
-    };
-
-
-    const moveColumn = async (fromIndex, toIndex) => {                  /* TODO reorders columns */
+    const moveColumn = async (fromIndex, toIndex) => {                                      /* TODO reorders columns */
 
         const columnsArray = Object.keys(allColumns);
         const columnKeys = [...columnsArray];
@@ -579,7 +529,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             }));
 
             const response = await fetch(
-                `https://email-verification-production.up.railway.app/auth/boards/${board.id}/columns/order`, {
+                `http://localhost:8080/auth/boards/${board.id}/columns/order`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -636,13 +586,6 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     </div>
                 </div>
                 </div>
-                {showAddColumnModal && (
-                    <AddColumnModal
-                        setNewColumnTitle={setNewColumnTitle}
-                        saveNewColumn={addNewColumn}
-                        cancelAddColumn={() => setShowAddColumnModal(false)}
-                    />
-                )}
                 <EditModal
                     selectedTodo={selectedTodo}
                     setSelectedTodo={setSelectedTodo}
