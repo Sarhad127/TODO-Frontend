@@ -25,7 +25,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             }
 
             try {
-                const res = await fetch(`http://localhost:8080/api/boards/${boardData.id}/Allusers`, {
+                const res = await fetch(`https://email-verification-production.up.railway.app/api/boards/${boardData.id}/Allusers`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -126,7 +126,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8080/auth/boards/${boardId}/columns`, {
+            const response = await fetch(`https://email-verification-production.up.railway.app/auth/boards/${boardId}/columns`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -199,7 +199,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             await Promise.all(
                 columnTasks.map(async (task) => {
                     const taskId = task.id;
-                    const response = await fetch(`http://localhost:8080/tasks/delete/${taskId}`, {
+                    const response = await fetch(`https://email-verification-production.up.railway.app/tasks/delete/${taskId}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
@@ -212,7 +212,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     }
                 })
             );
-            const columnResponse = await fetch(`http://localhost:8080/auth/boards/${board.id}/columns/${columnId}`, {
+            const columnResponse = await fetch(`https://email-verification-production.up.railway.app/auth/boards/${board.id}/columns/${columnId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) throw new Error('No authentication token found');
             const columnsArray = Object.values(updatedColumns);
-            const response = await fetch('http://localhost:8080/columns/update-positions', {
+            const response = await fetch('https://email-verification-production.up.railway.app/columns/update-positions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -269,7 +269,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             return;
         }
         try {
-            const response = await fetch(`http://localhost:8080/tasks/update/${taskData.id}`, {
+            const response = await fetch(`https://email-verification-production.up.railway.app/tasks/update/${taskData.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -334,7 +334,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
 
             try {
                 const response = await fetch(
-                    `http://localhost:8080/auth/boards/${board.id}/columns/${columnData.id}`, {
+                    `https://email-verification-production.up.railway.app/auth/boards/${board.id}/columns/${columnData.id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -378,7 +378,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
                     }
                 };
 
-                const response = await fetch('http://localhost:8080/tasks/create', {
+                const response = await fetch('https://email-verification-production.up.railway.app/tasks/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -468,7 +468,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8080/tasks/delete/${id}`, {
+            const response = await fetch(`https://email-verification-production.up.railway.app/tasks/delete/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -529,7 +529,7 @@ const TodoBoard = ({ backgroundColor, backgroundImage, boardData }) => {
             }));
 
             const response = await fetch(
-                `http://localhost:8080/auth/boards/${board.id}/columns/order`, {
+                `https://email-verification-production.up.railway.app/auth/boards/${board.id}/columns/order`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

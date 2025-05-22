@@ -81,7 +81,7 @@ function TodoColumn({
             }
 
             const response = await fetch(
-                `http://localhost:8080/auth/boards/${boardId}/columns/${columnData.id}`,
+                `https://email-verification-production.up.railway.app/auth/boards/${boardId}/columns/${columnData.id}`,
                 {
                     method: 'PUT',
                     headers: {

@@ -89,7 +89,7 @@ function CalendarPage() {
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
         if (!token) return;
 
-        const response = await fetch('http://localhost:8080/api/calendar', {
+        const response = await fetch('https://email-verification-production.up.railway.app/api/calendar', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -159,7 +159,7 @@ function CalendarPage() {
         textColor: textColor
       };
 
-      const response = await fetch('http://localhost:8080/api/calendar', {
+      const response = await fetch('https://email-verification-production.up.railway.app/api/calendar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -182,7 +182,7 @@ function CalendarPage() {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch(`http://localhost:8080/api/calendar/${dayKey}`, {
+      const response = await fetch(`https://email-verification-production.up.railway.app/api/calendar/${dayKey}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
