@@ -307,26 +307,51 @@ export function EditModal({
                 </div>
                 <div className="due-date-section">
                     <h4>Due Date</h4>
-                    <input
-                        type="datetime-local"
-                        value={
-                            selectedTodo && selectedTodo.dueDate && !isNaN(new Date(selectedTodo.dueDate))
-                                ? new Date(
-                                    new Date(selectedTodo.dueDate).getTime() -
-                                    new Date().getTimezoneOffset() * 60000
-                                )
-                                    .toISOString()
-                                    .slice(0, 16)
-                                : ''
-                        }
-                        onChange={(e) =>
-                            selectedTodo &&
-                            setSelectedTodo({
-                                ...selectedTodo,
-                                dueDate: e.target.value,
-                            })
-                        }
-                    />
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                        <input
+                            type="datetime-local"
+                            value={
+                                selectedTodo && selectedTodo.dueDate && !isNaN(new Date(selectedTodo.dueDate))
+                                    ? new Date(
+                                        new Date(selectedTodo.dueDate).getTime() -
+                                        new Date().getTimezoneOffset() * 60000
+                                    )
+                                        .toISOString()
+                                        .slice(0, 16)
+                                    : ''
+                            }
+                            onChange={(e) =>
+                                selectedTodo &&
+                                setSelectedTodo({
+                                    ...selectedTodo,
+                                    dueDate: e.target.value,
+                                })
+                            }
+                            style={{ paddingRight: '4rem', flex: 1 }}
+                        />
+                        <button
+                            type="button"
+                            onClick={() =>
+                                selectedTodo &&
+                                setSelectedTodo({
+                                    ...selectedTodo,
+                                    dueDate: '',
+                                })
+                            }
+                            style={{
+                                position: 'absolute',
+                                right: '0.5rem',
+                                padding: '0.3rem 0.6rem',
+                                background: '#eee',
+                                border: '1px solid #ccc',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                fontSize: '0.8rem',
+                            }}
+                        >
+                            Clear
+                        </button>
+                    </div>
                 </div>
                 <div className="modal-buttons-todoBoard">
                     <button className="save-btn-todoBoard" onClick={saveChanges}>Save</button>
