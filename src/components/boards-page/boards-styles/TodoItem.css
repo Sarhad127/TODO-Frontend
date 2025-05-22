@@ -44,7 +44,6 @@
 }
 
 .todo-list {
-    padding-bottom: 45px;
     flex-grow: 1;
 }
 
@@ -125,9 +124,11 @@
 }
 .avatar-button-tag {
     background: transparent;
-    border: none;
+    border: 1px solid black;
     padding: 0;
     margin: 0 4px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     cursor: pointer;
     display: inline-flex;
@@ -136,7 +137,7 @@
 }
 .avatar-button-tag:hover {
     background: transparent;
-    border: none;
+    border: 1px solid black;
     padding: 0;
     margin: 0 4px;
     border-radius: 50%;
@@ -144,11 +145,12 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    transform: scale(1.05);
 }
 
 .avatar-button-tag:focus {
     background: transparent;
-    border: none;
+    border: 1px solid black;
     padding: 0;
     margin: 0 4px;
     border-radius: 50%;
@@ -158,5 +160,8 @@
     justify-content: center;
 }
 .board-users-container {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0;
 }

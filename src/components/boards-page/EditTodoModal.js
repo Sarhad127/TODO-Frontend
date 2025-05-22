@@ -39,7 +39,25 @@ export function EditModal({
     };
 
     const handleAvatarClick = async (user) => {
-        console.log("Setting avatar for user:", user.username);
+        const isSelected = isAvatarSelected(user);
+
+        if (isSelected) {
+            setSelectedTodo({
+                ...selectedTodo,
+                tag: {
+                    ...selectedTodo.tag,
+                    avatarBackgroundColor: null,
+                    avatarImageUrl: null,
+                    avatarInitials: null,
+                    avatarUsername: null,
+                },
+                avatarBackgroundColor: null,
+                avatarImageUrl: null,
+                avatarInitials: null,
+                avatarUsername: null,
+            });
+            return;
+        }
 
         const updatedTodo = {
             ...selectedTodo,
@@ -58,14 +76,7 @@ export function EditModal({
             avatarUsername: user.username
         };
 
-        console.log("Updated todo with avatar:", updatedTodo);
         setSelectedTodo(updatedTodo);
-
-        try {
-            console.log("Avatar update successful");
-        } catch (error) {
-            console.error("Failed to update avatar:", error);
-        }
     };
 
     const COLOR_OPTIONS = [
@@ -102,25 +113,133 @@ export function EditModal({
         });
     };
 
+    const isAvatarSelected = (user) => {
+        if (!selectedTodo || !user) return false;
+
+        const todoAvatar = {
+            username: selectedTodo.avatarUsername || selectedTodo.tag?.avatarUsername,
+            initials: selectedTodo.avatarInitials || selectedTodo.tag?.avatarInitials,
+            bgColor: selectedTodo.avatarBackgroundColor || selectedTodo.tag?.avatarBackgroundColor,
+            imageUrl: selectedTodo.avatarImageUrl || selectedTodo.tag?.avatarImageUrl
+        };
+
+        const normalize = (str) => String(str || '').trim().toLowerCase();
+
+        const usernameMatch = normalize(todoAvatar.username) === normalize(user.username);
+        const initialsMatch = normalize(todoAvatar.initials) === normalize(user.avatarInitials);
+        const colorMatch = normalize(todoAvatar.bgColor) === normalize(user.avatarBackgroundColor);
+        const imageMatch = normalize(todoAvatar.imageUrl) === normalize(user.avatarImageUrl);
+
+        if (usernameMatch) return true;
+
+        const bothInitialsAndColorMatch =
+            !!todoAvatar.initials &&
+            !!todoAvatar.bgColor &&
+            initialsMatch &&
+            colorMatch;
+
+        if (bothInitialsAndColorMatch) return true;
+
+        if (imageMatch && (initialsMatch || usernameMatch)) return true;
+
+        return false;
+    };
+
     return (
         <div className="modal-overlay">
             <div className="modal" ref={EditTodoModal}>
                 <h3>Edit Card</h3>
+                <div className="live-preview-section">
+                    <div
+                        className="todo-item-preview"
+                        style={{
+                            backgroundColor: selectedTodo.color,
+                            padding: '8px',
+                            borderRadius: '6px',
+                            boxShadow: '0 0 4px rgba(0,0,0,0.1)',
+                            marginTop: '8px',
+                            position: 'relative',
+                        }}
+                    >
+                        {selectedTodo.tag?.color && (
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    top: 4,
+                                    left: 4,
+                                    width: 40,
+                                    height: 9,
+                                    backgroundColor: selectedTodo.tag.color,
+                                    borderRadius: '4px',
+                                }}
+                            />
+                        )}
+                        <div style={{ paddingTop: selectedTodo.tag?.color ? 12 : 0 }}>
+                            <strong
+                                style={{
+                                    display: 'inline-block',
+                                    maxWidth: '220px',
+                                    whiteSpace: 'normal',
+                                    wordBreak: 'break-word',
+                                }}
+                            >
+                                {selectedTodo.text}
+                            </strong>
+
+
+                            {(selectedTodo.tag?.text || selectedTodo.tag?.avatarInitials || selectedTodo.tag?.avatarImageUrl) && (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        marginTop: '6px',
+                                        fontSize: '10px',
+                                        color: '#666',
+                                    }}
+                                >
+                                    {(selectedTodo.tag.avatarImageUrl || selectedTodo.tag.avatarInitials) && (
+                                        <div
+                                            style={{
+                                                width: 20,
+                                                height: 20,
+                                                borderRadius: '50%',
+                                                backgroundColor: selectedTodo.tag.avatarBackgroundColor || '#ccc',
+                                                backgroundImage: selectedTodo.tag.avatarImageUrl
+                                                    ? `url(${selectedTodo.tag.avatarImageUrl})`
+                                                    : 'none',
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: 'white',
+                                                fontSize: '10px',
+                                                fontWeight: 'bold',
+                                                marginRight: 6,
+                                            }}
+                                        >
+                                            {!selectedTodo.tag.avatarImageUrl && selectedTodo.tag.avatarInitials}
+                                        </div>
+                                    )}
+                                    {selectedTodo.tag.text}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
                 <div className="board-users-container">
                     {boardUsers.length > 1 && boardUsers.map(user => (
                         <button
                             key={user.userId}
-                            className="avatar-button-tag"
+                            className={`avatar-button-tag ${isAvatarSelected(user) ? 'selected-avatar' : ''}`}
                             onClick={() => handleAvatarClick(user)}
+                            aria-label={`Select ${user.username} as assignee`}
                         >
                             <UserAvatar
                                 size="small"
-                                userData={{
-                                    avatarBackgroundColor: user.avatarBackgroundColor,
-                                    avatarInitials: user.avatarInitials,
-                                    avatarImageUrl: user.avatarImageUrl,
-                                    username: user.username
-                                }}
+                                userData={user}
+                                isSelected={isAvatarSelected(user)}
+                                showSelectionIndicator={true}
                             />
                         </button>
                     ))}
@@ -186,7 +305,54 @@ export function EditModal({
                         </div>
                     </div>
                 </div>
-
+                <div className="due-date-section">
+                    <h4>Due Date</h4>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                        <input
+                            type="datetime-local"
+                            value={
+                                selectedTodo && selectedTodo.dueDate && !isNaN(new Date(selectedTodo.dueDate))
+                                    ? new Date(
+                                        new Date(selectedTodo.dueDate).getTime() -
+                                        new Date().getTimezoneOffset() * 60000
+                                    )
+                                        .toISOString()
+                                        .slice(0, 16)
+                                    : ''
+                            }
+                            onChange={(e) =>
+                                selectedTodo &&
+                                setSelectedTodo({
+                                    ...selectedTodo,
+                                    dueDate: e.target.value,
+                                })
+                            }
+                            style={{ paddingRight: '4rem', flex: 1 }}
+                        />
+                        <button
+                            type="button"
+                            onClick={() =>
+                                selectedTodo &&
+                                setSelectedTodo({
+                                    ...selectedTodo,
+                                    dueDate: '',
+                                })
+                            }
+                            style={{
+                                position: 'absolute',
+                                right: '0.5rem',
+                                padding: '0.3rem 0.6rem',
+                                background: '#eee',
+                                border: '1px solid #ccc',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                fontSize: '0.8rem',
+                            }}
+                        >
+                            Clear
+                        </button>
+                    </div>
+                </div>
                 <div className="modal-buttons-todoBoard">
                     <button className="save-btn-todoBoard" onClick={saveChanges}>Save</button>
                     <button className="delete-btn-todoBoard" onClick={() => deleteTodo(selectedTodo)}>
